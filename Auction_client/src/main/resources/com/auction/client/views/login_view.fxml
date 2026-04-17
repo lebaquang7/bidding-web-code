@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.LoginController">
    <children>
       <Label alignment="CENTER" layoutY="14.0" prefHeight="70.0" prefWidth="600.0" text="Welcome to AuctionClient.">
          <font>
@@ -31,9 +31,9 @@
          </font>
       </Label>
       <PasswordField fx:id="loginWindowPasswordField" layoutX="183.0" layoutY="201.0" prefHeight="26.0" prefWidth="255.0" promptText="Input password here...." />
-      <CheckBox fx:id="loginWindowShowPasswordCheckbox" layoutX="465.0" layoutY="205.0" mnemonicParsing="false" text="Show Password" />
+      <CheckBox fx:id="loginWindowShowPwdCheckbox" layoutX="465.0" layoutY="205.0" mnemonicParsing="false" onAction="#loginWindowShowPwd" text="Show Password" />
       <TextField fx:id="loginWindowUsernameField" layoutX="183.0" layoutY="149.0" prefHeight="26.0" prefWidth="255.0" promptText="Input username here...." />
-      <Button fx:id="loginWindowLoginButton" layoutX="261.0" layoutY="253.0" mnemonicParsing="false" text="Login">
+      <Button layoutX="261.0" layoutY="253.0" mnemonicParsing="false" onAction="#loginWindowLoginAction" text="Login">
          <font>
             <Font size="18.0" />
          </font>
@@ -43,10 +43,12 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="loginWindowSwitchToRegisterButton" layoutX="330.0" layoutY="322.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="76.0" text="Register">
+      <Button layoutX="330.0" layoutY="322.0" mnemonicParsing="false" onAction="#loginWindowSwitchToRegister" prefHeight="26.0" prefWidth="76.0" text="Register">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
+      <Label fx:id="loginWindowErrorPrompt" layoutX="183.0" layoutY="122.0" prefHeight="18.0" prefWidth="255.0" text="             " textFill="RED" />
+      <TextField fx:id="loginWindowShownPwdTextField" layoutX="183.0" layoutY="201.0" prefHeight="26.0" prefWidth="255.0" promptText="Input password here...." visible="false" />
    </children>
 </AnchorPane>
