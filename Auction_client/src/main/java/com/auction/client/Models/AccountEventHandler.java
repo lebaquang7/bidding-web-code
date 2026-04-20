@@ -7,9 +7,23 @@ public class AccountEventHandler {
     // eventually will fwd account info to server, retrieve from server instead?
     private static HashMap<String, String> accountStorage = new HashMap<>();
     
-    public static String validateAccount(String name, String password){
+    /**
+     * Static block that always run when class is loaded. Used to load accountStorage from a config file (for now)
+     * Add extra comments if this is extended or adjusted.
+     */
+    static {
         // Temporary account login validation testing
         accountStorage.put("admin", "adminPassword");
+    }
+
+    /**
+     * Usage: validate account with name and pwd. Subject to change.
+     * @param name
+     * @param password
+     * @return
+     */
+    
+    public static String validateAccount(String name, String password){
         if (accountStorage.containsKey(name)){ //do name exists in database
             if (accountStorage.get(name).equals(password)){ //do password align with password field?
                 return "loginSuccessful";

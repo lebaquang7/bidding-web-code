@@ -1,32 +1,27 @@
 package com.auction.client.Controllers;
 
-import java.io.IOException;
 
 import com.auction.client.Models.AccountEventHandler; // Import model : AccountEventHandler
  
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class LoginController {
+    //Path to the view this controller is affiliated with
+    private static final String PATH_TO_VIEW = "/com/auction/client/views/login_view.fxml";
+    public static String getPATH_TO_VIEW(){
+        return PATH_TO_VIEW;
+    }
 
     @FXML TextField loginWindowUsernameField; //LOAD fxml UI elements
     @FXML PasswordField loginWindowPasswordField;
     @FXML TextField loginWindowShownPwdTextField;
     @FXML CheckBox loginWindowShowPwdCheckbox;
     @FXML Label loginWindowErrorPrompt;
-
-    private Stage stage; //Declare stage-scene-root (used for switching scenes)
-    private Scene scene;
-    private Parent root;
 
     /**
      * Usage: called when user presses the login button.
@@ -40,17 +35,7 @@ public class LoginController {
 
         switch (result) { //switch (essentially mass if-else) over end cases
             case "loginSuccessful" -> { //if login successful, switch to main menu.
-                //TODO: make all this scene switch into a method
-                try {
-                    root = FXMLLoader.load(getClass().getResource("/com/auction/client/views/mainMenu_view.fxml"));
-                } catch (IOException errorEvent) {
-                    errorEvent.printStackTrace();
-                }
-
-                stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                SceneController.switchToScene(getClass().getResource("/com/auction/client/views/mainMenu_view.fxml"), event);
             }
             case "invalidPassword" -> {
                 loginWindowErrorPrompt.setText("Invalid password.");
@@ -70,15 +55,7 @@ public class LoginController {
      * @param event
      */
     public void loginWindowSwitchToRegister(ActionEvent event){
-        try {
-            root = FXMLLoader.load(getClass().getResource("/com/auction/client/views/register_view.fxml"));
-        } catch (IOException errorEvent) {
-            errorEvent.printStackTrace();
-        }
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        SceneController.switchToScene(getClass().getResource("/com/auction/client/views/register_view.fxml"), event);
     }
 
 
