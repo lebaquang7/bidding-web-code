@@ -6,4 +6,5 @@ public abstract class Item extends Entity{
     private double startingPrice;
     private String sellerId;
 
+
 }
