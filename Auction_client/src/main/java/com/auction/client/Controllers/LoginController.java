@@ -35,7 +35,9 @@ public class LoginController {
 
         switch (result) { //switch (essentially mass if-else) over end cases
             case "loginSuccessful" -> { //if login successful, switch to main menu.
-                SceneController.switchToScene(getClass().getResource("/com/auction/client/views/mainMenu_view.fxml"), event);
+                System.out.println("Path: " + MainMenuController.getPATH_TO_VIEW());
+                System.out.println("Resource: " + getClass().getResource(MainMenuController.getPATH_TO_VIEW()));
+                SceneController.switchToScene(getClass().getResource(MainMenuController.getPATH_TO_VIEW()), event);
             }
             case "invalidPassword" -> {
                 loginWindowErrorPrompt.setText("Invalid password.");
@@ -67,21 +69,11 @@ public class LoginController {
         loginWindowShownPwdTextField.textProperty().bindBidirectional(loginWindowPasswordField.textProperty()); //bidirectional binding with pwd field text
 
         if (loginWindowShowPwdCheckbox.isSelected() == true){
-            /**  
-            * When show pwd checkbox is ticked...
-            * set managed, visibility of the text field of password to true,
-            * and vice versa for password field
-            */
-            loginWindowShownPwdTextField.setManaged(true); 
-            loginWindowShownPwdTextField.setVisible(true);
-            loginWindowPasswordField.setManaged(false);
-            loginWindowPasswordField.setVisible(false);
+            //make pwd shown
+            SceneController.switchElement(loginWindowShownPwdTextField, loginWindowPasswordField);
         } else {
             //reverse
-            loginWindowShownPwdTextField.setManaged(false);
-            loginWindowShownPwdTextField.setVisible(false);
-            loginWindowPasswordField.setManaged(true);
-            loginWindowPasswordField.setVisible(true);
+            SceneController.switchElement(loginWindowPasswordField, loginWindowShownPwdTextField);
         }
     }
 }

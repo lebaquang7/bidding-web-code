@@ -28,6 +28,7 @@ public class MainApp extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("/com/auction/client/views/login_view.fxml")); // load Login View as root node, with directory to login_view.fxml
         Scene scene = new Scene(root, initialStageX, initialStageY); //create scene with root
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }

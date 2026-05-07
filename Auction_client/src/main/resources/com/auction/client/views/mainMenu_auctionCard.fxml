@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.AuctionCardController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="240.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="200.0" />
+      <Label fx:id="mainMenuAuctionCardNameLabel" layoutX="5.0" layoutY="5.0" prefHeight="30.0" prefWidth="190.0" text="Label" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="mainMenuAuctionCardPriceLabel" layoutX="5.0" layoutY="36.0" prefHeight="18.0" prefWidth="190.0" text="Label" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="mainMenuAuctionCardImageView" fitHeight="120.0" fitWidth="180.0" layoutX="10.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="mainMenuAuctionCardGoToAuctionButton" layoutX="54.0" layoutY="200.0" mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToAuction" text="Go To Auction" />
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</AnchorPane>

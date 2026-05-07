@@ -18,6 +18,7 @@ public class RegisterController {
     @FXML PasswordField registerWindowPasswordConfirmationField;
     @FXML Label registerWindowErrorPrompt;
 
+    //TODO: work on this
     public void registerWindowRegisterAction(ActionEvent event){}
 
 

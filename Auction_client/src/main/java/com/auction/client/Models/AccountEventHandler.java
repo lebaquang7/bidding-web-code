@@ -13,7 +13,7 @@ public class AccountEventHandler {
      */
     static {
         // Temporary account login validation testing
-        accountStorage.put("admin", "adminPassword");
+        accountStorage.put("admin", "admin");
     }
 
     /**
