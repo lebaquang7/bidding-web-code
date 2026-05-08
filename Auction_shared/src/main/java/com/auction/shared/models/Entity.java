@@ -1,4 +1,4 @@
-package com.auction.server.models;
+package com.auction.shared.models;
 
 public abstract class Entity {
     private String id;

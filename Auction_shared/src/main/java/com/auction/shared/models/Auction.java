@@ -1,4 +1,4 @@
-package com.auction.server.models;
+package com.auction.shared.models;
 
 public class Auction extends Entity {
     private String itemId;
