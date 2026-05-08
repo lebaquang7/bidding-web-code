@@ -24,7 +24,7 @@ public class AuctionCardController {
         mainMenuAuctionCardPriceLabel.setText(Double.toString(item.getCurrentPrice())+" $");
     }
     
-    //TODO: work on this. probably needs to be private. 
     public void mainMenuAuctionCardGoToAuction(ActionEvent event){
+        SceneController.switchToItemView(event, currentItem);
     }
 }
