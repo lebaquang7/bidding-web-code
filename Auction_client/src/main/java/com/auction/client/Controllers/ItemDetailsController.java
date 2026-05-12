@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class ItemDetailsController{
+public class ItemDetailsController implements SceneController.ItemLoadable{
 
 
     @FXML Label itemDetailsItemName;
@@ -15,9 +15,10 @@ public class ItemDetailsController{
     private Item currentItem;
 
     public void itemDetailsGoBackToList(ActionEvent event){
-        SceneController.switchToScene(getClass().getResource("/com/auction/client/views/mainMenu_view.fxml"), event);
+        SceneController.closeScene(event);
     }
 
+    @Override
     public void setItem(Item item){
         this.currentItem=item;
         itemDetailsItemName.setText(currentItem.getItemName());

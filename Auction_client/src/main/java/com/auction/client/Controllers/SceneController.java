@@ -3,6 +3,7 @@ package com.auction.client.Controllers;
 import java.io.IOException;
 import java.net.URL;
 
+import com.auction.client.Properties;
 import com.auction.server.models.Item;
 
 import javafx.event.ActionEvent;
@@ -49,28 +50,43 @@ public class SceneController {
     }
 
 
+
+    //Interface for controllers that "loads" an item in, rn covers itemdetails and auctionview
+    public interface ItemLoadable {
+        void setItem(Item item);
+    }
+
+
     /**
-     * usage: switch to view of individual auction item cards
+     * usage: switch to view of individual auction item cards (itemDetailsController/auctionViewController)
      * @param event
      * @param item
      */
-    public static void switchToItemView(ActionEvent event, Item item){
+    public static <T extends ItemLoadable> void switchToItemView(String target, ActionEvent event, Item item){
         try {
             //load the view in fxmlloader
-            FXMLLoader loader = new FXMLLoader(SceneController.class.getResource("/com/auction/client/views/itemDetails_view.fxml"));
-            root = loader.load();
+            FXMLLoader loader = new FXMLLoader(SceneController.class.getResource(target));
+            Parent popupRoot = loader.load();
 
             //create controller of new scene
-            ItemDetailsController controller = loader.getController();
+            T controller = loader.getController();
             controller.setItem(item);
 
-            //copied from above. shows new scene.
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Stage popupStage = new Stage();
+            popupStage.setTitle(Properties.getAPPLICATION_NAME_AND_VERSION());
+            Scene popupScene = new Scene(popupRoot);
+            popupStage.setScene(popupScene);
+            popupStage.show();
         } catch (IOException errorEvent) {
             errorEvent.printStackTrace();
         }
+    }
+
+    /**
+     * Usage: close the scene.
+     * @param event
+     */
+    public static void closeScene(ActionEvent event){
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
     }
 }
