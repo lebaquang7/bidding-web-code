@@ -1,7 +1,10 @@
 package com.auction.client.Controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -14,10 +17,19 @@ public class RegisterController {
     }
 
     @FXML TextField registerWindowUsernameField;
-    @FXML PasswordField registerWIndowPasswordField;
+    @FXML TextField registerWindowEmailField;
+    @FXML ChoiceBox<String> registerWindowAccountTypeChoiceBox;
+    @FXML PasswordField registerWindowPasswordField;
     @FXML PasswordField registerWindowPasswordConfirmationField;
     @FXML Label registerWindowErrorPrompt;
 
+    public void initialize(){
+        //TODO: need works
+        ObservableList<String> accountTypeChoiceList = FXCollections.observableArrayList("Bidder", "Seller");
+        registerWindowAccountTypeChoiceBox.setItems(accountTypeChoiceList);
+        registerWindowAccountTypeChoiceBox.setValue("Bidder");
+    }
+    
     //TODO: work on this
     public void registerWindowRegisterAction(ActionEvent event){}
 
