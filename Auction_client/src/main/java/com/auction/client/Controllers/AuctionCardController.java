@@ -1,6 +1,6 @@
 package com.auction.client.Controllers;
 
-import com.auction.server.models.Item;
+import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,11 +23,11 @@ public class AuctionCardController {
         mainMenuAuctionCardNameLabel.setText(item.getItemName());
         mainMenuAuctionCardPriceLabel.setText(Double.toString(item.getCurrentPrice())+" $");
     }
-    
+
     public void mainMenuAuctionCardGoToItemDetails(ActionEvent event){
         SceneController.switchToItemView("/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
     }
-
+    //TODO: restrict GoToAuction for only bidder users.
     public void mainMenuAuctionCardGoToAuction(ActionEvent event){
         SceneController.switchToItemView("/com/auction/client/views/auction_view.fxml", event, currentItem);
     }

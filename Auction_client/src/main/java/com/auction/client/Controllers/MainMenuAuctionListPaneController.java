@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.auction.server.models.Item;
+import com.auction.shared.models.Item;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

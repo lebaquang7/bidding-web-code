@@ -1,4 +1,4 @@
-package com.auction.server.models;
+package com.auction.shared.models;
 
 import java.util.ArrayList;
 import java.util.List;

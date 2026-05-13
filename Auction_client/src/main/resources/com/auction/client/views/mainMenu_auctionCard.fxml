@@ -22,11 +22,11 @@
          </font>
       </Label>
       <ImageView fx:id="mainMenuAuctionCardImageView" fitHeight="120.0" fitWidth="180.0" layoutX="10.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
-      <Button layoutX="14.0" layoutY="199.0" mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToItemDetails" prefHeight="26.0" prefWidth="83.0" text="Item Details">
+      <Button layoutX="14.0" layoutY="199.0" mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToItemDetails" prefHeight="26.0" prefWidth="75.0" text="Item Details">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button layoutX="100.0" layoutY="199.0" mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToAuction" prefHeight="26.0" prefWidth="83.0" text="Open Auction">
+      <Button layoutX="93.0" layoutY="199.0" mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToAuction" prefHeight="26.0" prefWidth="90.0" text="Open Auction" textOverrun="CLIP">
          <font>
             <Font size="11.0" />
          </font>

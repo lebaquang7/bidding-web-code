@@ -32,6 +32,7 @@ public class LoginController {
 
         String result = AccountEventHandler.validateAccount(username, password);
 
+        //TODO: actual logics for this. this is temporary.
         switch (result) { //switch (essentially mass if-else) over end cases
             case "loginSuccessful" -> { //if login successful, switch to main menu.
                 System.out.println("Path: " + MainMenuController.getPATH_TO_VIEW());

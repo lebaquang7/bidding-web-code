@@ -4,8 +4,11 @@ import com.auction.client.Models.AccountEventHandler;
 import com.auction.server.models.Bidder;
 import com.auction.server.models.NetworkRequest;
 import com.auction.server.models.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -26,6 +29,8 @@ public class RegisterController {
     }
 
     @FXML TextField registerWindowUsernameField;
+    @FXML TextField registerWindowEmailField;
+    @FXML ChoiceBox<String> registerWindowAccountTypeChoiceBox;
     @FXML PasswordField registerWindowPasswordField;
     @FXML PasswordField registerWindowPasswordConfirmationField;
     @FXML Label registerWindowErrorPrompt;
