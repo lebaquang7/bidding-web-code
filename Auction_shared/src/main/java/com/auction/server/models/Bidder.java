@@ -1,6 +1,8 @@
 package com.auction.server.models;
 
-public class Bidder extends User {
+import java.io.Serializable;
+
+public class Bidder extends User implements Serializable{
     private double balance;
 
     private static final long serialVersionUID = 1L;
@@ -16,5 +18,9 @@ public class Bidder extends User {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public void addBalance(double balance) {
+        this.balance += balance;
     }
 }

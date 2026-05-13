@@ -20,20 +20,23 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
+            //Tạo output trước rồi flush để đẩy hết dữ liệu đi rồi tạo input
             out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
             in = new ObjectInputStream(socket.getInputStream());
 
-            System.out.println("Đang lắng nghe dữ liệu từ client...");
-
+            //Tạo vong lặp đợi xử lý yêu cầu
             while (true) {
                 Object request = in.readObject();
                 if (request == null) break;
-                //Xử lý yêu cầu
                 handleRequest(request);
             }
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Một Client đã ngắt kết nối.");
+        } finally {
+            // Đảm bảo đóng socket khi kết thúc
+            try { socket.close(); } catch (IOException e) { e.printStackTrace(); }
         }
     }
 
@@ -59,42 +62,50 @@ public class ClientHandler extends Thread {
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
-                User loginInfo = (User) networkRequest.getData();
-                User authenticatedUser = null;
+                User loginInfo = (User) networkRequest.getData(); //
 
-                //Admin đăng nhập
-                Admin admin = Admin.getInstance();
-                if (loginInfo.getUserName().equals(admin.getUserName()) && loginInfo.getPassWord().equals(admin.getPassWord())) {
-                    authenticatedUser = admin;
-                } else {
-                    //Seller/Bidder đăng nhập sử dụng Hashmap
-                    User user = Main.users.get(loginInfo.getUserName());
-                    if (user != null && loginInfo.getPassWord().equals(user.getPassWord())) {
-                        authenticatedUser = user;
-                    }
-                }
+                // Gọi DatabaseConfig để tìm user
+                User authenticatedUser = DatabaseConfig.findUserByUsername(loginInfo.getUsername());
 
                 try {
-                    //Đăng nhập được thì gửi dữ liệu của user đi
-                    if (authenticatedUser != null) {
+                    // Kiểm tra: nếu tìm thấy user và mật khẩu khớp
+                    if (authenticatedUser != null && authenticatedUser.getPassword().equals(loginInfo.getPassword())) {
+                        // Gửi lại đúng đối tượng Admin/Bidder/Seller về cho Client
                         out.writeObject(authenticatedUser);
                     } else {
-                        out.writeObject("Không thể đăng nhập: Tên đăng nhập hoặc mật khẩu không đúng");
+                        // Trả về chuỗi thông báo lỗi nếu sai thông tin
+                        out.writeObject("invalidCredentials");
                     }
                     out.flush();
                 } catch (IOException e) {
-                    System.out.println("Lỗi khi gửi dữ liệu về client");
+                    System.err.println("Lỗi khi phản hồi đăng nhập: " + e.getMessage());
                 }
             }
 
             //Yêu cầu đăng ký
             if (networkRequest.getType() == NetworkRequest.requestType.Register) {
+                User newUser = (User) networkRequest.getData(); //
 
-            }
+                try {
+                    // 1. Kiểm tra xem username đã tồn tại trong database chưa
+                    User existingUser = DatabaseConfig.findUserByUsername(newUser.getUsername());
 
-            //Yêu cầu đăng xuất
-            if (networkRequest.getType() == NetworkRequest.requestType.Logout) {
-
+                    if (existingUser != null) {
+                        // Nếu đã tồn tại, gửi thông báo lỗi trùng lặp về Client
+                        out.writeObject("duplicate");
+                    } else {
+                        // 2. Nếu chưa có, lưu vào database
+                        boolean isSaved = DatabaseConfig.saveNewUser(newUser);
+                        if (isSaved) {
+                            out.writeObject("success");
+                        } else {
+                            out.writeObject("error");
+                        }
+                    }
+                    out.flush(); //Đẩy kết quả về lại Client
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
+                }
             }
         }
     }

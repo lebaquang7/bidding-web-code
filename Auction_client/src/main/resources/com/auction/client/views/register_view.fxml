@@ -45,7 +45,7 @@
          </font>
       </Button>
       <PasswordField fx:id="registerWindowPasswordConfirmationField" layoutX="195.0" layoutY="209.0" prefHeight="26.0" prefWidth="273.0" promptText="Enter password again...." />
-      <PasswordField fx:id="registerWIndowPasswordField" layoutX="195.0" layoutY="154.0" prefHeight="26.0" prefWidth="274.0" promptText="Enter password...." />
+      <PasswordField fx:id="registerWindowPasswordField" layoutX="195.0" layoutY="154.0" prefHeight="26.0" prefWidth="274.0" promptText="Enter password...." />
       <TextField fx:id="registerWindowUsernameField" layoutX="194.0" layoutY="99.0" prefHeight="26.0" prefWidth="274.0" promptText="Enter username...." />
       <Label fx:id="registerWindowErrorPrompt" layoutX="195.0" layoutY="76.0" prefHeight="18.0" prefWidth="274.0" textFill="RED" />
    </children>

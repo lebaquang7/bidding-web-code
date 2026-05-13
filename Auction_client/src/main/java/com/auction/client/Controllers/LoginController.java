@@ -25,7 +25,6 @@ public class LoginController {
 
     /**
      * Usage: called when user presses the login button.
-     * @param event
      */
     public void loginWindowLoginAction(ActionEvent event){
         String username = loginWindowUsernameField.getText();
@@ -50,6 +49,8 @@ public class LoginController {
             }
         }
     }
+
+    //Sửa thành sai tên đăng nhập hoặc mật khẩu
 
 
     /**

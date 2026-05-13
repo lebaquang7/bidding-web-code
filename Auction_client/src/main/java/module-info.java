@@ -5,5 +5,6 @@ module Auction_client {
 
     opens com.auction.client to javafx.fxml;
     opens com.auction.client.Controllers to javafx.fxml;
+    opens com.auction.client.views to javafx.fxml;
     exports com.auction.client;
 }

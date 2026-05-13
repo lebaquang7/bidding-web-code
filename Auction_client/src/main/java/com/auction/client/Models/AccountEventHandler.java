@@ -1,37 +1,71 @@
 package com.auction.client.Models;
 
-import java.util.HashMap;
+import com.auction.server.models.NetworkRequest;
+import com.auction.server.models.User;
+import com.auction.server.models.Bidder;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
+import static com.auction.server.models.NetworkRequest.requestType.Register;
 
 public class AccountEventHandler {
-    // Temporary hashmap representation of account storage/database, need works...? 
-    // eventually will fwd account info to server, retrieve from server instead?
-    private static HashMap<String, String> accountStorage = new HashMap<>();
-    
-    /**
-     * Static block that always run when class is loaded. Used to load accountStorage from a config file (for now)
-     * Add extra comments if this is extended or adjusted.
-     */
-    static {
-        // Temporary account login validation testing
-        accountStorage.put("admin", "admin");
+    //Loại bỏ accountStorage HashMap, dùng database thay thế
+
+    //Xác thực đăng nhập
+    public static String validateAccount(String name, String password) {
+        //Sử dụng bidder tạm thời để tìm kiếm User trong database
+        //Nếu tìm được người dùng sẽ tự trả về đúng kiểu
+        User loginRequestData = new Bidder(0.0, name, password, 0);
+
+        try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+            out.flush();
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            // 1. Gửi yêu cầu Login
+            NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.Login, loginRequestData);
+            out.writeObject(request);
+            out.flush();
+
+            // 2. Đợi phản hồi từ Server
+            Object response = in.readObject();
+
+            if (response instanceof User) {
+                // Server trả về một đối tượng User(Admin/Bidder/Seller)
+                return "loginSuccessful";
+            } else if (response instanceof String) {
+                // Trả về đúng các từ khóa mà switch-case trong LoginController đang đợi
+                String msg = (String) response;
+                if (msg.equals("invalidCredentials")) return "invalidPassword";
+            }
+
+            return "accountDoesntExist";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "serverError"; // Trường hợp mất kết nối Server
+        }
     }
 
-    /**
-     * Usage: validate account with name and pwd. Subject to change.
-     * @param name
-     * @param password
-     * @return
-     */
-    
-    public static String validateAccount(String name, String password){
-        if (accountStorage.containsKey(name)){ //do name exists in database
-            if (accountStorage.get(name).equals(password)){ //do password align with password field?
-                return "loginSuccessful";
-            } else { //if password doesnt align with password field:
-                return "invalidPassword";
-            } 
-        } else { //if name doesnt exist in database
-            return "accountDoesntExist";
+    //Đăng ký
+    public static String registerAccount(User newUser) {
+        try (Socket socket = new Socket("127.0.0.1", 1234);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+            out.flush();
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            //Gửi dữ liệu đến server
+            NetworkRequest request = new NetworkRequest(Register, newUser);
+            out.writeObject(request);
+            out.flush();
+
+            //Nhận và xử lý phản hồi từ server
+            Object response = in.readObject();
+            return (response instanceof String) ? (String) response : "fail";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "connection_error";
         }
     }
 }

@@ -2,8 +2,10 @@ package com.auction.server.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Seller extends User {
+
+public class Seller extends User implements Serializable{
     private List<Item> itemsForSale;
 
     private static final long serialVersionUID = 1L;
