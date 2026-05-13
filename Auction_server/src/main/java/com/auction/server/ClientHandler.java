@@ -1,6 +1,9 @@
 package com.auction.server;
 
-import com.auction.server.models.*;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

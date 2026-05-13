@@ -3,7 +3,7 @@ package com.auction.client.Controllers;
 import java.io.IOException;
 import java.net.URL;
 
-import com.auction.server.models.Item;
+import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
