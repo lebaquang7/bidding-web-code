@@ -28,7 +28,7 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
     @Override
     public void setItem(Item item){
         this.currentItem=item;
-        itemDetailsID.setText(Integer.toString(item.getId()));
+        itemDetailsID.setText(item.getId());
         itemDetailsItemName.setText(currentItem.getItemName());
         itemDetailsDescription.setText(currentItem.getDescription());
         itemDetailsInitialPrice.setText(Double.toString(item.getStartingPrice()));

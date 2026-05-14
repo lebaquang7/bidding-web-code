@@ -1,6 +1,6 @@
 package com.auction.client.Controllers;
 
-import com.auction.server.models.Item;
+import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
