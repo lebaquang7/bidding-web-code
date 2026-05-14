@@ -6,7 +6,7 @@ import com.auction.shared.models.Vehicle;
 public class VehicleFactory implements ItemFactory{
 
     @Override
-    public Item createItem(String name, String description, double startingPrice, double currentPrice, String id) {
-        return new Vehicle(name, description, startingPrice, currentPrice, id);
+    public Item createItem(String name, String description, double startingPrice, double currentPrice) {
+        return new Vehicle(name, description, startingPrice, currentPrice);
     }
 }

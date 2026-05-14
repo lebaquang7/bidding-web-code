@@ -5,8 +5,8 @@ public class Vehicle extends Item{
     private int mileage;
     private int manufacturingYear;
 
-    public Vehicle(String name, String description, double startingPrice, double currentPrice, String id){
-        super(name, description, startingPrice, currentPrice,id);
+    public Vehicle(String name, String description, double startingPrice, double currentPrice){
+        super(name, description, startingPrice, currentPrice);
     }
 
     public String getLicensePlate() {

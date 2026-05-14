@@ -37,15 +37,15 @@ public class DatabaseConfig {
                 // Trả về đúng loại Object dựa trên role trong database
                 return switch (role) {
                     case "Admin" -> new Admin(
-                            username, pass, id,
+                            username, pass,
                             rs.getInt("accessLevel"),
                             rs.getString("department"),
                             rs.getString("internalEmployeeId")
                     );
 
-                    case "Seller" -> new Seller(username, pass, id);
+                    case "Seller" -> new Seller(username, pass);
                     default -> new Bidder(
-                            username, pass, id,
+                            username, pass,
                             rs.getString("shippingAddress"),
                             rs.getDouble("balance"),
                             rs.getInt("reputationScore")
@@ -68,8 +68,8 @@ public class DatabaseConfig {
 
             preparedStatement.setString(1, user.getId());
             preparedStatement.setString(2, user.getUsername());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setString(6, user.getId());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setString(6, user.getEmail());
 
             if (user instanceof Admin admin) {
                 preparedStatement.setString(4, "Admin");

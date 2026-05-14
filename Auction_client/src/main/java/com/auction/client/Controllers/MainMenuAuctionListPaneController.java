@@ -29,11 +29,11 @@ public class MainMenuAuctionListPaneController implements Initializable{
 
         //Placeholder item
         //TODO: wait for other's works on this, and then link it with their item list
-        itemList.add(new Item("item", "desc", 50.0, 70.0, "3") {
+        itemList.add(new Item("item", "desc", 50.0, 70.0) {
         });
-        itemList.add(new Item("item2", "desc", 20.0, 60.0, "3") {
+        itemList.add(new Item("item2", "desc", 20.0, 60.0) {
         });
-        itemList.add(new Item("item3", "desc", 10.0, 30.0, "3") {
+        itemList.add(new Item("item3", "desc", 10.0, 30.0) {
         });
 
         renderItem(itemList);

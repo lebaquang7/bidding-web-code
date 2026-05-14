@@ -6,8 +6,8 @@ public class Electronics extends Item{
     private String model;
     private String condition;
 
-    public Electronics(String name, String description, double startingPrice, double currentPrice, String id) {
-        super(name, description, startingPrice, currentPrice, id);
+    public Electronics(String name, String description, double startingPrice, double currentPrice) {
+        super(name, description, startingPrice, currentPrice);
     }
 
     public int getWarrantyMonths() {

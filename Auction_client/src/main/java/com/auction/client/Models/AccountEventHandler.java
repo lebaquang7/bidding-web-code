@@ -17,7 +17,7 @@ public class AccountEventHandler {
     public static String validateAccount(String name, String password) {
         //Sử dụng bidder tạm thời để tìm kiếm User trong database
         //Nếu tìm được người dùng sẽ tự trả về đúng kiểu
-        User loginRequestData = new Bidder(name, password, null, null, 0.0, 0);
+        User loginRequestData = new Bidder(name, password, null, 0.0, 0);
 
         // new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server

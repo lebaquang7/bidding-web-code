@@ -8,8 +8,8 @@ public abstract class Item extends Entity {
 
     private static final long serialVersionUID = 1L;
 
-    public Item(String name, String description, double startingPrice, double currentPrice, String id) {
-        super(id);
+    public Item(String name, String description, double startingPrice, double currentPrice) {
+        super();
         this.name = name;
         this.currentPrice = currentPrice;
         this.startingPrice = startingPrice;

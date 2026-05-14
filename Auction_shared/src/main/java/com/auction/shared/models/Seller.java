@@ -9,8 +9,8 @@ public class Seller extends User implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    public Seller(String userName, String passWord, String id) {
-        super(userName, passWord, id);
+    public Seller(String userName, String passWord) {
+        super(userName, passWord);
         this.itemsForSale = new ArrayList<>();
     }
 

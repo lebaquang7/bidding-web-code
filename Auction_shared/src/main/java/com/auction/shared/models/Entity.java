@@ -1,14 +1,14 @@
 package com.auction.shared.models;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public abstract class Entity implements Serializable{
     private String id;
 
-    public Entity(String id) {
+    public Entity() {
+        this.id = UUID.randomUUID().toString(); //Khởi tạo Id
     }
-
-    public Entity() {}
 
     public String getId(){
         return id ;

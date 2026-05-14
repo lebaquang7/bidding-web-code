@@ -30,7 +30,7 @@ public class RegisterController {
         String password = registerWindowPasswordField.getText();
 
         // Phải khai báo và gán giá trị rõ ràng TRƯỚC khi sử dụng
-        User newUser = new Bidder(name, password, null, null, 0.0, 0);
+        User newUser = new Bidder(name, password, null, 0.0, 0);
 
         try {
             // Truyền biến newUser vừa tạo vào hàm

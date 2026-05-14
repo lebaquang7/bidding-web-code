@@ -6,8 +6,8 @@ public class Art extends Item{
     private int creationYear;
     private String medium;
 
-    public Art(String name, String description, double startingPrice, double currentPrice, String id){
-        super(name, description, startingPrice, currentPrice, id);
+    public Art(String name, String description, double startingPrice, double currentPrice){
+        super(name, description, startingPrice, currentPrice);
     }
 
     public String getArtistName() {

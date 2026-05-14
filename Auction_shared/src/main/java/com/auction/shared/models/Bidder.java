@@ -7,8 +7,8 @@ public class Bidder extends User {
 
     private static final long serialVersionUID = 1L;
 
-    public Bidder(String userName, String passWord, String id, String shippingAddress, double balance, int reputationScore) {
-        super(userName, passWord, id);
+    public Bidder(String userName, String passWord, String shippingAddress, double balance, int reputationScore) {
+        super(userName, passWord);
         this.balance = balance;
         this.shippingAddress = shippingAddress;
         this.reputationScore = reputationScore;
