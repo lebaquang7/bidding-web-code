@@ -19,6 +19,7 @@ public class AccountEventHandler {
         //Nếu tìm được người dùng sẽ tự trả về đúng kiểu
         User loginRequestData = new Bidder(name, password, null, null, 0.0, 0);
 
+        // new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
             out.flush();
@@ -51,6 +52,7 @@ public class AccountEventHandler {
 
     //Đăng ký
     public static String registerAccount(User newUser) {
+        //new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("127.0.0.1", 1234);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
             out.flush();

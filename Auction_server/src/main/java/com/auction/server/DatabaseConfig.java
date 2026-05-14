@@ -9,6 +9,9 @@ import java.sql.*;
 
 public class DatabaseConfig {
     // Kết nối vói database
+    // Sửa localhost
+    // private static final String URL = "jdbc:mysql://192.168.x.x:3306/auction_system";
+
     private static final String URL = "jdbc:mysql://localhost:3306/auction_system";
     private static final String USER = "root";
     private static final String PASS = "";

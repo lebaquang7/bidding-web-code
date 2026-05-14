@@ -28,7 +28,7 @@ public class ClientHandler extends Thread {
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
 
-            //Tạo vong lặp đợi xử lý yêu cầu
+            //Tạo vòng lặp đợi xử lý yêu cầu
             while (true) {
                 Object request = in.readObject();
                 if (request == null) break;
