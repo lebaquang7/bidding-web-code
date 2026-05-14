@@ -1,27 +1,29 @@
 package com.auction.shared.models;
 
-public abstract class User extends Entity {
-    private String userName;
+import java.io.Serializable;
+
+public abstract class User extends Entity implements Serializable {
+    private String username;
     private String password;
     private String email;
 
     private static final long serialVersionUID = 1L;
 
-    public User(String userName, String password, String email, String id) {
+    // Để email là null để đỡ phải sửa nhiều hàm khởi tạo, về sau để tự setEmail
+    public User(String username, String password, String id) {
         super(id);
-        this.userName = userName;
+        this.username = username;
         this.password = password;
-        this.email = email;
+        this.email = null;
     }
 
-    public User() {
-        super();
-    } // Constructor rỗng cho việc parse dữ liệu sau này
+    // Constructor rỗng để parse
+    public User() {}
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
-    public void setUsername(String userName) { this.userName = userName; }
+    public void setUsername(String userName) { this.username = userName; }
 
     public String getPassword() {
         return password;

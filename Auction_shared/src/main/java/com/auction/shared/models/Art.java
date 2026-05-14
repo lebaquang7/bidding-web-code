@@ -10,10 +10,6 @@ public class Art extends Item{
         super(name, description, startingPrice, currentPrice, id);
     }
 
-    public Art(){
-        super();
-    }
-
     public String getArtistName() {
         return artistName;
     }

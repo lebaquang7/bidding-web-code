@@ -1,21 +1,16 @@
 package com.auction.shared.models;
 
-
 public class Admin extends User {
 
     private int accessLevel;
     private String department;
     private String internalEmployeeId;
 
-    public Admin(String userName, String password, String email, String id, int accessLevel, String department, String internalEmployeeId){
-        super(userName, password, email, id);
+    public Admin(String userName, String password, String id, int accessLevel, String department, String internalEmployeeId) {
+        super(userName, password, id);
         this.accessLevel = accessLevel;
         this.department = department;
         this.internalEmployeeId = internalEmployeeId;
-    }
-
-    public Admin(){
-        super();
     }
 
     public int getAccessLevel() { return accessLevel; }

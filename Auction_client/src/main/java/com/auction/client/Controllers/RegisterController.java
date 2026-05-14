@@ -1,25 +1,14 @@
 package com.auction.client.Controllers;
 
 import com.auction.client.Models.AccountEventHandler;
-import com.auction.server.models.Bidder;
-import com.auction.server.models.NetworkRequest;
-import com.auction.server.models.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
-import java.net.Socket;
-
-import static com.auction.server.models.NetworkRequest.requestType.Register;
 
 public class RegisterController {
     //Path to the view this controller is affiliated with
@@ -41,7 +30,7 @@ public class RegisterController {
         String password = registerWindowPasswordField.getText();
 
         // Phải khai báo và gán giá trị rõ ràng TRƯỚC khi sử dụng
-        User newUser = new Bidder(0.0, name, password, 0);
+        User newUser = new Bidder(name, password, null, null, 0.0, 0);
 
         try {
             // Truyền biến newUser vừa tạo vào hàm

@@ -10,10 +10,6 @@ public class Electronics extends Item{
         super(name, description, startingPrice, currentPrice, id);
     }
 
-    public Electronics() {
-        super();
-    }
-
     public int getWarrantyMonths() {
         return warrantyMonths;
     }

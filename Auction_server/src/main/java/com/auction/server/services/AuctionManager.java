@@ -28,6 +28,6 @@ public class AuctionManager {
 
     public void startNewAuction(String auctionId, Item item) {
         // Code logic tạo phiên đấu giá và nhét vào activeAuctions
-        System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getName());
+        System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
     }
 }

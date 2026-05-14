@@ -1,13 +1,14 @@
 package com.auction.client.Models;
 
-import com.auction.server.models.NetworkRequest;
-import com.auction.server.models.User;
-import com.auction.server.models.Bidder;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import static com.auction.server.models.NetworkRequest.requestType.Register;
+import static com.auction.shared.models.NetworkRequest.requestType.Register;
 
 public class AccountEventHandler {
     //Loại bỏ accountStorage HashMap, dùng database thay thế
@@ -16,7 +17,7 @@ public class AccountEventHandler {
     public static String validateAccount(String name, String password) {
         //Sử dụng bidder tạm thời để tìm kiếm User trong database
         //Nếu tìm được người dùng sẽ tự trả về đúng kiểu
-        User loginRequestData = new Bidder(0.0, name, password, 0);
+        User loginRequestData = new Bidder(name, password, null, null, 0.0, 0);
 
         try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {

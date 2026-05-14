@@ -1,10 +1,14 @@
 package com.auction.server;
 
-import com.auction.server.models.*;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Seller;
+import com.auction.shared.models.User;
+
 import java.sql.*;
 
 public class DatabaseConfig {
-    // Thay đổi thông số kết nối phù hợp với máy của bạn
+    // Kết nối vói database
     private static final String URL = "jdbc:mysql://localhost:3306/auction_system";
     private static final String USER = "root";
     private static final String PASS = "";
@@ -25,13 +29,24 @@ public class DatabaseConfig {
             if (rs.next()) {
                 String role = rs.getString("role");
                 String pass = rs.getString("password");
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
 
                 // Trả về đúng loại Object dựa trên role trong database
                 return switch (role) {
-                    case "Admin" -> new Admin(username, pass, id);
+                    case "Admin" -> new Admin(
+                            username, pass, id,
+                            rs.getInt("accessLevel"),
+                            rs.getString("department"),
+                            rs.getString("internalEmployeeId")
+                    );
+
                     case "Seller" -> new Seller(username, pass, id);
-                    default -> new Bidder(rs.getDouble("balance"), username, pass, id);
+                    default -> new Bidder(
+                            username, pass, id,
+                            rs.getString("shippingAddress"),
+                            rs.getDouble("balance"),
+                            rs.getInt("reputationScore")
+                    );
                 };
             }
         } catch (SQLException e) {
@@ -42,28 +57,42 @@ public class DatabaseConfig {
 
     //Lưu User vào database khi đăng ký
     public static boolean saveNewUser(User user) {
-        String sql = "INSERT INTO users (username, password, role, balance, email) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (id, username, password, role, balance, email, shippingAddress, reputationScore, accessLevel, department, internalEmployeeId) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(1, user.getId());
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(6, user.getId());
 
-            // Xác định Role để lưu vào cột ENUM của DB
-            if (user instanceof Admin) {
-                preparedStatement.setString(3, "Admin");
-                preparedStatement.setDouble(4, 0.0);
-            } else if (user instanceof Seller) {
-                preparedStatement.setString(3, "Seller"); //
-                preparedStatement.setDouble(4, 0.0);
+            if (user instanceof Admin admin) {
+                preparedStatement.setString(4, "Admin");
+                preparedStatement.setDouble(5, 0.0);
+                preparedStatement.setNull(7, java.sql.Types.VARCHAR);
+                preparedStatement.setNull(8, java.sql.Types.INTEGER);
+                preparedStatement.setInt(9, admin.getAccessLevel());
+                preparedStatement.setString(10, admin.getDepartment());
+                preparedStatement.setString(11, admin.getInternalEmployeeId());
+            } else if (user instanceof Bidder bidder) {
+                preparedStatement.setString(4, "Bidder");
+                preparedStatement.setDouble(5, bidder.getBalance());
+                preparedStatement.setString(7, bidder.getShippingAddress());
+                preparedStatement.setInt(8, bidder.getReputationScore());
+                preparedStatement.setNull(9, java.sql.Types.INTEGER);
+                preparedStatement.setNull(10, java.sql.Types.VARCHAR);
+                preparedStatement.setNull(11, java.sql.Types.VARCHAR);
             } else {
-                preparedStatement.setString(3, "Bidder");
-                // Lấy balance thực tế của Bidder nếu có
-                double bal = (user instanceof Bidder) ? ((Bidder) user).getBalance() : 0.0;
-                preparedStatement.setDouble(4, bal);
+                preparedStatement.setString(4, "Seller");
+                preparedStatement.setDouble(5, java.sql.Types.DOUBLE);
+                preparedStatement.setNull(7, java.sql.Types.VARCHAR);
+                preparedStatement.setNull(8, java.sql.Types.INTEGER);
+                preparedStatement.setNull(9, java.sql.Types.INTEGER);
+                preparedStatement.setNull(10, java.sql.Types.VARCHAR);
+                preparedStatement.setNull(11, java.sql.Types.VARCHAR);
             }
-            preparedStatement.setString(5, "user@example.com");
 
             return preparedStatement.executeUpdate() > 0;
 

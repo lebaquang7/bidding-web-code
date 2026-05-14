@@ -8,6 +8,8 @@ public abstract class Entity implements Serializable{
     public Entity(String id) {
     }
 
+    public Entity() {}
+
     public String getId(){
         return id ;
     }

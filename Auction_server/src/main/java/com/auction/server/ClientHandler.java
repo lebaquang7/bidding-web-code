@@ -1,6 +1,6 @@
 package com.auction.server;
 
-import com.auction.shared.models.Admin;
+import com.auction.shared.models.NetworkRequest;
 import com.auction.shared.models.Auction;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.User;

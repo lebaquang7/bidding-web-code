@@ -9,10 +9,6 @@ public class Vehicle extends Item{
         super(name, description, startingPrice, currentPrice,id);
     }
 
-    public Vehicle(String name, String description, double startingPrice, String id){
-        super();
-    }
-
     public String getLicensePlate() {
         return licensePlate;
     }
