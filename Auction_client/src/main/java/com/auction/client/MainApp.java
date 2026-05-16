@@ -2,6 +2,8 @@ package com.auction.client;
 
 import java.io.IOException;
 
+import com.auction.client.Controllers.SceneController;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,5 +32,11 @@ public class MainApp extends Application{
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        //displays prompt on pressing X to close client
+        primaryStage.setOnCloseRequest(event ->{
+            event.consume(); //consume the event, so it only executes closing if user presses OK 
+            SceneController.closeWithExitPrompt(primaryStage);
+        });
     }
 }
