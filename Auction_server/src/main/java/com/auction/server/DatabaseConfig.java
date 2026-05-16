@@ -1,9 +1,6 @@
 package com.auction.server;
 
-import com.auction.shared.models.Admin;
-import com.auction.shared.models.Bidder;
-import com.auction.shared.models.Seller;
-import com.auction.shared.models.User;
+import com.auction.shared.models.*;
 
 import java.sql.*;
 
@@ -87,7 +84,7 @@ public class DatabaseConfig {
                 preparedStatement.setNull(9, java.sql.Types.INTEGER);
                 preparedStatement.setNull(10, java.sql.Types.VARCHAR);
                 preparedStatement.setNull(11, java.sql.Types.VARCHAR);
-            } else {
+            } else if (user instanceof Seller seller) {
                 preparedStatement.setString(4, "Seller");
                 preparedStatement.setDouble(5, java.sql.Types.DOUBLE);
                 preparedStatement.setNull(7, java.sql.Types.VARCHAR);
@@ -96,13 +93,77 @@ public class DatabaseConfig {
                 preparedStatement.setNull(10, java.sql.Types.VARCHAR);
                 preparedStatement.setNull(11, java.sql.Types.VARCHAR);
             }
-
             return preparedStatement.executeUpdate() > 0;
-
         } catch (SQLException e) {
             System.err.println("Lỗi SQL khi đăng ký: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
+    }
+
+    //Thêm vật phẩm vào database khi bán vật phẩm
+    public static boolean saveNewItem(Item item) {
+        String sqlItem = "INSERT INTO items (id, name, description, startingPrice, currentPrice, itemType) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlSub = "";
+
+        if (item instanceof Art) {
+            sqlSub = "INSERT INTO artworks (itemId, artistName, isOriginal, creationYear, medium) VALUES (?, ?, ?, ?, ?)";
+        } else if (item instanceof Electronics) {
+            sqlSub = "INSERT INTO electronic_items (itemId, brand, model, warrantyMonths, itemCondition) VALUES (?, ?, ?, ?, ?)";
+        } else if (item instanceof Vehicle) {
+            sqlSub = "INSERT INTO vehicle (itemId, licensePlate, mileage, manufacturingYear) VALUES (?, ?, ?, ?)";
+        }
+
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            connection.setAutoCommit(false);
+
+            //Lưu vào bảng chung items
+            try (PreparedStatement psItem = connection.prepareStatement(sqlItem)) {
+                psItem.setString(1, item.getId()); // ID sinh ra từ Entity
+                psItem.setString(2, item.getItemName());
+                psItem.setString(3, item.getDescription());
+                psItem.setDouble(4, item.getStartingPrice());
+                psItem.setDouble(5, item.getCurrentPrice());
+
+                String type = item instanceof Art ? "Art" : (item instanceof Electronics ? "Electronics" : "Vehicle");
+                psItem.setString(6, type);
+                psItem.executeUpdate();
+            }
+
+            // Lưu vào bảng ứng với lớp con
+            try (PreparedStatement psSub = connection.prepareStatement(sqlSub)) {
+                psSub.setString(1, item.getId()); // Khóa ngoại trỏ về items(id)
+
+                if (item instanceof Art art) {
+                    psSub.setString(2, art.getArtistName());
+                    psSub.setBoolean(3, art.getIsOriginal());
+                    psSub.setInt(4, art.getCreationYear());
+                    psSub.setString(5, art.getMedium());
+                } else if (item instanceof Electronics ele) {
+                    psSub.setString(2, ele.getBrand());
+                    psSub.setString(3, ele.getModel());
+                    psSub.setInt(4, ele.getWarrantyMonths());
+                    psSub.setString(5, ele.getCondition());
+                } else if (item instanceof Vehicle veh) {
+                    psSub.setString(2, veh.getLicensePlate());
+                    psSub.setInt(3, veh.getMileage());
+                    psSub.setInt(4, veh.getManufacturingYear());
+                }
+                psSub.executeUpdate();
+            }
+            connection.commit(); // Xác nhận lưu cả 2 bảng thành công
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi bán sản phẩm: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (connection != null) {
+                try {connection.setAutoCommit(true); connection.close();} catch (SQLException e) {e.printStackTrace();}
+            }
+        }
+
     }
 }

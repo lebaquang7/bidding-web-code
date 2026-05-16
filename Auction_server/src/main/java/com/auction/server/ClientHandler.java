@@ -1,9 +1,6 @@
 package com.auction.server;
 
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.Auction;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.User;
+import com.auction.shared.models.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -108,6 +105,18 @@ public class ClientHandler extends Thread {
                     out.flush(); //Đẩy kết quả về lại Client
                 } catch (IOException e) {
                     System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
+                }
+            }
+
+            // Yêu cầu bán vật phẩm
+            if (networkRequest.getType() == NetworkRequest.requestType.SellItem) {
+                Item newItem = (Item) networkRequest.getData();
+
+                try {
+                    boolean success = DatabaseConfig.saveNewItem(newItem);
+                    out.writeObject(success ? "success" : "fail");
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
                 }
             }
         }

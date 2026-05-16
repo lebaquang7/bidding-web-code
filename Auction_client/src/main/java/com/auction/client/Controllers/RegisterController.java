@@ -37,7 +37,7 @@ public class RegisterController {
             String result = AccountEventHandler.registerAccount(newUser);
 
             if ("success".equals(result)) {
-                registerWindowErrorPrompt.setText("Đăng ký thành công!");
+                registerWindowErrorPrompt.setText("Đăng ký thành công. Quay lại đăng nhập");
                 registerWindowErrorPrompt.setStyle("-fx-text-fill: green;");
             } else {
                 registerWindowErrorPrompt.setText("Lỗi: " + result);
