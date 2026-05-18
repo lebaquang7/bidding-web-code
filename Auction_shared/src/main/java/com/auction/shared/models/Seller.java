@@ -15,10 +15,15 @@ public class Seller extends User implements Serializable{
     }
 
     public void addItem(Item item) {
-        itemsForSale.add(item);
+        if (itemsForSale == null) {this.itemsForSale = new ArrayList<>();}
+        this.itemsForSale.add(item);
     }
 
     public List<Item> getItem() {
         return itemsForSale;
+    }
+
+    public void setItemsForSale(List<Item> items) {
+        this.itemsForSale = items;
     }
 }

@@ -5,6 +5,7 @@ public abstract class Item extends Entity {
     private String description;
     private final double startingPrice;
     private double currentPrice;
+    private String sellerId;
 
     private static final long serialVersionUID = 1L;
 
@@ -41,4 +42,6 @@ public abstract class Item extends Entity {
         this.currentPrice = currentPrice;
     }
 
+    public String getSellerId() {return sellerId;}
+    public void setSellerId(String id) {this.sellerId = id;}
 }

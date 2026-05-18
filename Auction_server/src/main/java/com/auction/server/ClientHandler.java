@@ -115,6 +115,7 @@ public class ClientHandler extends Thread {
                 try {
                     boolean success = DatabaseConfig.saveNewItem(newItem);
                     out.writeObject(success ? "success" : "fail");
+                    out.flush();
                 } catch (IOException e) {
                     System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
                 }

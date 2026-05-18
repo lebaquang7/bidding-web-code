@@ -28,21 +28,21 @@ public class DatabaseConfig {
 
             if (rs.next()) {
                 String role = rs.getString("role");
-                String pass = rs.getString("password");
+                String password = rs.getString("password");
                 String id = rs.getString("id");
 
                 // Trả về đúng loại Object dựa trên role trong database
                 return switch (role) {
                     case "Admin" -> new Admin(
-                            username, pass,
+                            username, password,
                             rs.getInt("accessLevel"),
                             rs.getString("department"),
                             rs.getString("internalEmployeeId")
                     );
 
-                    case "Seller" -> new Seller(username, pass);
+                    case "Seller" -> new Seller(username, password);
                     default -> new Bidder(
-                            username, pass,
+                            username, password,
                             rs.getString("shippingAddress"),
                             rs.getDouble("balance"),
                             rs.getInt("reputationScore")
@@ -55,6 +55,7 @@ public class DatabaseConfig {
         return null;
     }
 
+    //Cần sửa lại sau khi cập nhật database, tách riêng từng loại User
     //Lưu User vào database khi đăng ký
     public static boolean saveNewUser(User user) {
         String sql = "INSERT INTO users (id, username, password, role, balance, email, shippingAddress, reputationScore, accessLevel, department, internalEmployeeId) " +
@@ -103,15 +104,15 @@ public class DatabaseConfig {
 
     //Thêm vật phẩm vào database khi bán vật phẩm
     public static boolean saveNewItem(Item item) {
-        String sqlItem = "INSERT INTO items (id, name, description, startingPrice, currentPrice, itemType) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, sellerId) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlSub = "";
 
         if (item instanceof Art) {
-            sqlSub = "INSERT INTO artworks (itemId, artistName, isOriginal, creationYear, medium) VALUES (?, ?, ?, ?, ?)";
+            sqlSub = "INSERT INTO artworks (id, artistName, isOriginal, creationYear, medium) VALUES (?, ?, ?, ?, ?)";
         } else if (item instanceof Electronics) {
-            sqlSub = "INSERT INTO electronic_items (itemId, brand, model, warrantyMonths, itemCondition) VALUES (?, ?, ?, ?, ?)";
+            sqlSub = "INSERT INTO electronic_items (id, brand, model, warrantyMonths, itemCondition) VALUES (?, ?, ?, ?, ?)";
         } else if (item instanceof Vehicle) {
-            sqlSub = "INSERT INTO vehicle (itemId, licensePlate, mileage, manufacturingYear) VALUES (?, ?, ?, ?)";
+            sqlSub = "INSERT INTO vehicle (id, licensePlate, mileage, manufacturingYear) VALUES (?, ?, ?, ?)";
         }
 
         Connection connection = null;
@@ -122,13 +123,15 @@ public class DatabaseConfig {
             //Lưu vào bảng chung items
             try (PreparedStatement psItem = connection.prepareStatement(sqlItem)) {
                 psItem.setString(1, item.getId()); // ID sinh ra từ Entity
-                psItem.setString(2, item.getItemName());
-                psItem.setString(3, item.getDescription());
-                psItem.setDouble(4, item.getStartingPrice());
-                psItem.setDouble(5, item.getCurrentPrice());
 
                 String type = item instanceof Art ? "Art" : (item instanceof Electronics ? "Electronics" : "Vehicle");
-                psItem.setString(6, type);
+                psItem.setString(2, type);
+                psItem.setString(3, item.getItemName());
+                psItem.setString(4, item.getDescription());
+                psItem.setDouble(5, item.getStartingPrice());
+                psItem.setDouble(6, item.getCurrentPrice());
+                psItem.setString(7, item.getSellerId());
+
                 psItem.executeUpdate();
             }
 
@@ -156,8 +159,11 @@ public class DatabaseConfig {
             connection.commit(); // Xác nhận lưu cả 2 bảng thành công
             return true;
         } catch (SQLException e) {
+            //rollback để hủy lưu nếu có lỗi chỉ lưu được bảng 1 nhưng bảng 2 không được
+            if (connection != null) {
+                try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
             System.err.println("Lỗi SQL khi bán sản phẩm: " + e.getMessage());
-            e.printStackTrace();
             return false;
         } finally {
             if (connection != null) {

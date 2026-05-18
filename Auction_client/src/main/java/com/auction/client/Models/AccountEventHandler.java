@@ -15,6 +15,11 @@ import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 public class AccountEventHandler {
     //Loại bỏ accountStorage HashMap, dùng database thay thế
 
+    private static User currentUser;
+
+    public static void setCurrentUser(User user) {currentUser = user;}
+    public static User getCurrentUser() {return currentUser;}
+
     //Xác thực đăng nhập
     public static String validateAccount(String name, String password) {
         //Sử dụng bidder tạm thời để tìm kiếm User trong database
@@ -37,6 +42,7 @@ public class AccountEventHandler {
 
             if (response instanceof User) {
                 // Server trả về một đối tượng User(Admin/Bidder/Seller)
+                setCurrentUser((User) response);
                 return "loginSuccessful";
             } else if (response instanceof String) {
                 // Trả về đúng các từ khóa mà switch-case trong LoginController đang đợi
