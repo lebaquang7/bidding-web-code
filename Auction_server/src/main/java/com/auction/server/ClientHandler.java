@@ -62,23 +62,23 @@ public class ClientHandler extends Thread {
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
-                User loginInfo = (User) networkRequest.getData(); //
-
-                // Gọi DatabaseConfig để tìm user
-                User authenticatedUser = DatabaseConfig.findUserByUsername(loginInfo.getUsername());
-
                 try {
-                    // Kiểm tra: nếu tìm thấy user và mật khẩu khớp
-                    if (authenticatedUser != null && authenticatedUser.getPassword().equals(loginInfo.getPassword())) {
-                        // Gửi lại đúng đối tượng Admin/Bidder/Seller về cho Client
-                        out.writeObject(authenticatedUser);
-                    } else {
-                        // Trả về chuỗi thông báo lỗi nếu sai thông tin
-                        out.writeObject("invalidCredentials");
+                    User loginUser = (User) networkRequest.getData();
+                    User existingUser = DatabaseConfig.findUserByUsername(loginUser.getUsername());
+
+                    if (existingUser == null) {
+                        out.writeObject("accountDoesntExist");
+                    }
+                    else if (existingUser.getPassword().equals(loginUser.getPassword())) {
+                        out.writeObject("loginSuccessful");
+                        out.writeObject(existingUser);
+                    }
+                    else {
+                        out.writeObject("invalidPassword");
                     }
                     out.flush();
                 } catch (IOException e) {
-                    System.err.println("Lỗi khi phản hồi đăng nhập: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 

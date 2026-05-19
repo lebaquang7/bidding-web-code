@@ -40,21 +40,19 @@ public class AccountEventHandler {
             // 2. Đợi phản hồi từ Server
             Object response = in.readObject();
 
-            if (response instanceof User) {
-                // Server trả về một đối tượng User(Admin/Bidder/Seller)
-                setCurrentUser((User) response);
-                return "loginSuccessful";
-            } else if (response instanceof String) {
-                // Trả về đúng các từ khóa mà switch-case trong LoginController đang đợi
-                String msg = (String) response;
-                if (msg.equals("invalidCredentials")) return "invalidPassword";
+            if (response instanceof String result) {
+                if ("loginSuccessful".equals(result)) {
+                    Object userData = in.readObject();
+                    if (userData instanceof User) {
+                        setCurrentUser((User) userData);
+                    }
+                }
+                return result;
             }
-
-            return "accountDoesntExist";
-
+            return "fail";
         } catch (Exception e) {
             e.printStackTrace();
-            return "serverError"; // Trường hợp mất kết nối Server
+            return "connection_error";
         }
     }
 
