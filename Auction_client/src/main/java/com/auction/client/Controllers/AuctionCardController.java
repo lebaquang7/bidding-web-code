@@ -1,5 +1,6 @@
 package com.auction.client.Controllers;
 
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
@@ -15,13 +16,16 @@ public class AuctionCardController {
     @FXML Label mainMenuAuctionCardPriceLabel;
     @FXML ImageView mainMenuAuctionCardImageView;
 
+    public void initialize(){
+    }
+
     //each auction card holds the current item
     private Item currentItem;
 
     public void setData(Item item){
         currentItem=item;
         mainMenuAuctionCardNameLabel.setText(item.getItemName());
-        mainMenuAuctionCardPriceLabel.setText(Double.toString(item.getCurrentPrice())+" $");
+        CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardNameLabel, item.getCurrentPrice());
     }
 
     public void mainMenuAuctionCardGoToItemDetails(ActionEvent event){

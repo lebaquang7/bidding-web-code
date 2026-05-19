@@ -1,5 +1,6 @@
 package com.auction.client.Controllers;
 
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
@@ -33,7 +34,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
     public void setItem(Item item){
         this.currentItem=item;
         auctionViewItemName.setText(currentItem.getItemName());
-        auctionViewStartingBid.setText(Double.toString(currentItem.getStartingPrice()));
-        auctionViewCurrentBid.setText(Double.toString(currentItem.getCurrentPrice()));
+        CurrencySelectorHandler.bindPriceLabel(auctionViewStartingBid, currentItem.getStartingPrice());
+        CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, currentItem.getCurrentPrice());
     }
 }

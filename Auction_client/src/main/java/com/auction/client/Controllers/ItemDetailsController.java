@@ -1,5 +1,6 @@
 package com.auction.client.Controllers;
 
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
@@ -28,10 +29,10 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
     @Override
     public void setItem(Item item){
         this.currentItem=item;
-        itemDetailsID.setText(item.getId());
+        itemDetailsID.setText(currentItem.getId());
         itemDetailsItemName.setText(currentItem.getItemName());
         itemDetailsDescription.setText(currentItem.getDescription());
-        itemDetailsInitialPrice.setText(Double.toString(item.getStartingPrice()));
-        itemDetailsCurrentPrice.setText(Double.toString(currentItem.getCurrentPrice()));
+        CurrencySelectorHandler.bindPriceLabel(itemDetailsInitialPrice, currentItem.getStartingPrice());
+        CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, currentItem.getCurrentPrice());
     }
 }

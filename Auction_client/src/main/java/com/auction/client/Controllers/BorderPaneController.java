@@ -7,7 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 
 public class BorderPaneController {
-//Class handling switching specific border pane views
+    //Class handling switching specific border pane views
     private static BorderPane mainLayout;
 
     public static void setMainLayout(BorderPane layout){

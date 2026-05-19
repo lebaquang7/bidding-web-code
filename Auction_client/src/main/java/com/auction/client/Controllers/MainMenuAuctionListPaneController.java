@@ -1,9 +1,7 @@
 package com.auction.client.Controllers;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import com.auction.shared.models.Item;
 
@@ -11,29 +9,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.layout.FlowPane;
 
-public class MainMenuAuctionListPaneController implements Initializable{
+public class MainMenuAuctionListPaneController {
     @FXML FlowPane mainMenuAuctionListFlowPane;
     ObservableList<Item> itemList = FXCollections.observableArrayList();
 
-    /**
-     * Override initialize, to load in cellfact
-     * @param url
-     * @param res
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle res){
-
+    public void initialize(){
         //Placeholder item
         //TODO: wait for other's works on this, and then link it with their item list
-        itemList.add(new Item("item", "desc", 50.0, 70.0) {
+        itemList.add(new Item("item", "desc", 500000.0, 9000000.0) {
         });
-        itemList.add(new Item("item2", "desc", 20.0, 60.0) {
+        itemList.add(new Item("item2", "desc", 200000.0, 6000000.0) {
         });
-        itemList.add(new Item("item3", "desc", 10.0, 30.0) {
+        itemList.add(new Item("item3", "desc", 100000.0, 300000.0) {
         });
 
         renderItem(itemList);

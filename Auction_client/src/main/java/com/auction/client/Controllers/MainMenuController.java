@@ -1,19 +1,15 @@
 package com.auction.client.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.auction.shared.models.Item;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 
-public class MainMenuController implements Initializable {
+public class MainMenuController {
     //Path to the view this controller is affiliated with
     private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_view.fxml";
     public static String getPATH_TO_VIEW(){
@@ -24,13 +20,7 @@ public class MainMenuController implements Initializable {
     @FXML FlowPane mainMenuAuctionListFlowPane;
     ObservableList<Item> itemList = FXCollections.observableArrayList();
 
-    /**
-     * Override initialize, to load in cellfact
-     * @param url
-     * @param res
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle res){
+    public void initialize(){
 
         BorderPaneController.setMainLayout(mainMenuMainBorderPane);
         BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
