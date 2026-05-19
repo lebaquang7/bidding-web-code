@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/database/admins.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/artworks.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/bidders.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/electronic_items.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/items.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/sellers.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/users.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/vehicle.sql" dialect="GenericSQL" />
   </component>
 </project>

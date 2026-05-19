@@ -2,6 +2,7 @@ package com.auction.client.Controllers;
 
 import com.auction.client.Models.AccountEventHandler;
 import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,28 +26,55 @@ public class RegisterController {
     @FXML Label registerWindowErrorPrompt;
 
     @FXML
-    void registerWindowRegisterAction(ActionEvent event) {
-        String name = registerWindowUsernameField.getText();
-        String password = registerWindowPasswordField.getText();
+    public void initialize() {
+        if (registerWindowAccountTypeChoiceBox != null) {
+            registerWindowAccountTypeChoiceBox.getItems().addAll("Bidder","Seller");
+            registerWindowAccountTypeChoiceBox.setValue("Bidder");
+        }
+    }
 
-        // Phải khai báo và gán giá trị rõ ràng TRƯỚC khi sử dụng
-        User newUser = new Bidder(name, password, null, 0.0, 0);
+    @FXML
+    void registerWindowRegisterAction(ActionEvent event) {
+        String username = registerWindowUsernameField.getText();
+        String email = registerWindowEmailField.getText();
+        String password = registerWindowPasswordField.getText();
+        String confirmPassword = registerWindowPasswordConfirmationField.getText();
+        String accountType = registerWindowAccountTypeChoiceBox.getValue();
+
+
+        if (username.isEmpty() || password.isEmpty()) {
+            registerWindowErrorPrompt.setText("Vui lòng điền đầy đủ Username và Password");
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            registerWindowErrorPrompt.setText("Mật khẩu xác nhận không khớp");
+            return;
+        }
+
+        User newUser;
+        switch (accountType) {
+            case "Seller" -> { newUser = new Seller(username, password); }
+            default -> {newUser = new Bidder(username, password, "", 0.0, 0);}
+        }
+
+        newUser.setEmail(email);
 
         try {
-            // Truyền biến newUser vừa tạo vào hàm
             String result = AccountEventHandler.registerAccount(newUser);
 
             if ("success".equals(result)) {
-                registerWindowErrorPrompt.setText("Đăng ký thành công!");
+                registerWindowErrorPrompt.setText("Đăng ký thành công. Quay lại đăng nhập");
                 registerWindowErrorPrompt.setStyle("-fx-text-fill: green;");
+            } else if ("duplicate".equals(result)) {
+                registerWindowErrorPrompt.setText("Tên đăng nhập đã tồn tại!");
+                registerWindowErrorPrompt.setStyle("-fx-text-fill: red;");
             } else {
                 registerWindowErrorPrompt.setText("Lỗi: " + result);
                 registerWindowErrorPrompt.setStyle("-fx-text-fill: red;");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            registerWindowErrorPrompt.setText("Không thể kết nối Server!");
-        }
+
+        } catch (Exception e) {e.printStackTrace(); registerWindowErrorPrompt.setText("Không thể kết nối Server!"); }
     }
 
     public void registerWindowSwitchToLogin(ActionEvent event){

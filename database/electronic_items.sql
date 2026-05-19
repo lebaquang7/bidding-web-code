@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 19, 2026 lúc 07:08 PM
+-- Thời gian đã tạo: Th5 18, 2026 lúc 06:45 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -24,34 +24,36 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Cấu trúc bảng cho bảng `electronic_items`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE `electronic_items` (
   `id` varchar(40) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(20) NOT NULL,
-  `email` varchar(100) DEFAULT NULL
+  `brand` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  `warrantyMonths` int(11) NOT NULL,
+  `itemCondition` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Đang đổ dữ liệu cho bảng `users`
---
-
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `email`) VALUES
-('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder', ''),
-('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller', '');
 
 --
 -- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Chỉ mục cho bảng `users`
+-- Chỉ mục cho bảng `electronic_items`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `electronic_items`
+  ADD KEY `fk_electronic_items_items` (`id`);
+
+--
+-- Các ràng buộc cho các bảng đã đổ
+--
+
+--
+-- Các ràng buộc cho bảng `electronic_items`
+--
+ALTER TABLE `electronic_items`
+  ADD CONSTRAINT `fk_electronic_items_items` FOREIGN KEY (`id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

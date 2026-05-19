@@ -24,34 +24,42 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Cấu trúc bảng cho bảng `bidders`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE `bidders` (
   `id` varchar(40) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(20) NOT NULL,
-  `email` varchar(100) DEFAULT NULL
+  `shippingAddress` varchar(255) NOT NULL,
+  `balance` double NOT NULL DEFAULT 0,
+  `reputationScore` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `users`
+-- Đang đổ dữ liệu cho bảng `bidders`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `email`) VALUES
-('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder', ''),
-('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller', '');
+INSERT INTO `bidders` (`id`, `shippingAddress`, `balance`, `reputationScore`) VALUES
+('23312c96-d768-4e4f-b7ff-de57529c1e97', '', 0, 0);
 
 --
 -- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Chỉ mục cho bảng `users`
+-- Chỉ mục cho bảng `bidders`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `bidders`
+  ADD KEY `fk_bidders_users` (`id`);
+
+--
+-- Các ràng buộc cho các bảng đã đổ
+--
+
+--
+-- Các ràng buộc cho bảng `bidders`
+--
+ALTER TABLE `bidders`
+  ADD CONSTRAINT `fk_bidders_users` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,9 +1,6 @@
 package com.auction.server;
 
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.Auction;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.User;
+import com.auction.shared.models.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -65,23 +62,23 @@ public class ClientHandler extends Thread {
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
-                User loginInfo = (User) networkRequest.getData(); //
-
-                // Gọi DatabaseConfig để tìm user
-                User authenticatedUser = DatabaseConfig.findUserByUsername(loginInfo.getUsername());
-
                 try {
-                    // Kiểm tra: nếu tìm thấy user và mật khẩu khớp
-                    if (authenticatedUser != null && authenticatedUser.getPassword().equals(loginInfo.getPassword())) {
-                        // Gửi lại đúng đối tượng Admin/Bidder/Seller về cho Client
-                        out.writeObject(authenticatedUser);
-                    } else {
-                        // Trả về chuỗi thông báo lỗi nếu sai thông tin
-                        out.writeObject("invalidCredentials");
+                    User loginUser = (User) networkRequest.getData();
+                    User existingUser = DatabaseConfig.findUserByUsername(loginUser.getUsername());
+
+                    if (existingUser == null) {
+                        out.writeObject("accountDoesntExist");
+                    }
+                    else if (existingUser.getPassword().equals(loginUser.getPassword())) {
+                        out.writeObject("loginSuccessful");
+                        out.writeObject(existingUser);
+                    }
+                    else {
+                        out.writeObject("invalidPassword");
                     }
                     out.flush();
                 } catch (IOException e) {
-                    System.err.println("Lỗi khi phản hồi đăng nhập: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
@@ -108,6 +105,19 @@ public class ClientHandler extends Thread {
                     out.flush(); //Đẩy kết quả về lại Client
                 } catch (IOException e) {
                     System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
+                }
+            }
+
+            // Yêu cầu bán vật phẩm
+            if (networkRequest.getType() == NetworkRequest.requestType.SellItem) {
+                Item newItem = (Item) networkRequest.getData();
+
+                try {
+                    boolean success = DatabaseConfig.saveNewItem(newItem);
+                    out.writeObject(success ? "success" : "fail");
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
                 }
             }
         }
