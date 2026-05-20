@@ -1,8 +1,19 @@
 package com.auction.server;
 
-import com.auction.shared.models.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import java.sql.*;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Art;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Electronics;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.Seller;
+import com.auction.shared.models.User;
+import com.auction.shared.models.Vehicle;
 
 public class DatabaseConfig {
     // Kết nối vói database
@@ -174,8 +185,8 @@ public class DatabaseConfig {
                 psItem.setString(2, type);
                 psItem.setString(3, item.getItemName());
                 psItem.setString(4, item.getDescription());
-                psItem.setDouble(5, item.getStartingPrice());
-                psItem.setDouble(6, item.getCurrentPrice());
+                psItem.setBigDecimal(5, item.getStartingPrice());
+                psItem.setBigDecimal(6, item.getCurrentPrice());
                 psItem.setString(7, item.getSellerId());
 
                 psItem.executeUpdate();

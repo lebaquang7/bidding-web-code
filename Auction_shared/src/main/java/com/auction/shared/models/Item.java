@@ -1,15 +1,17 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public abstract class Item extends Entity {
     private String name;
     private String description;
-    private final double startingPrice;
-    private double currentPrice;
+    private final BigDecimal startingPrice;
+    private BigDecimal currentPrice;
     private String sellerId;
 
     private static final long serialVersionUID = 1L;
 
-    public Item(String name, String description, double startingPrice, double currentPrice) {
+    public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
         super();
         this.name = name;
         this.currentPrice = currentPrice;
@@ -31,14 +33,14 @@ public abstract class Item extends Entity {
         this.description = description;
     }
 
-    public double getStartingPrice() {
+    public BigDecimal getStartingPrice() {
         return startingPrice;
     }
 
-    public double getCurrentPrice() {
+    public BigDecimal getCurrentPrice() {
         return currentPrice;
     }
-    public void setCurrentPrice(double currentPrice) {
+    public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
     }
 

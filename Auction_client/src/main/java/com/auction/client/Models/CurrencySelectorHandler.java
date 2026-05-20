@@ -1,10 +1,14 @@
 package com.auction.client.Models;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.auction.client.Properties;
 
-import javafx.beans.binding.Bindings;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 public class CurrencySelectorHandler {
     //Singleton stuffs, since this only needs one instance
@@ -34,17 +38,24 @@ public class CurrencySelectorHandler {
      * @param label
      * @param price
      */
-    public static void bindPriceLabel(Label label, double price) {
-        label.textProperty().bind(Bindings.createStringBinding(()->{
+    public static void bindPriceLabel(Label label, BigDecimal price) {
+        Tooltip tooltip = new Tooltip();
+        label.setTooltip(tooltip);
+        Runnable updateUI = () -> {
             String currencyUnit = CurrencySelectorHandler.getInstance().getActiveCurrency();
-            double convertedPrice;
+            BigDecimal convertedPrice;
             switch (currencyUnit) {
                 case "VND" -> convertedPrice = price;
-                case "USD" -> convertedPrice = price / Properties.getUSD_TO_VND_RATE();
+                case "USD" -> convertedPrice = price.divide(Properties.getUSD_TO_VND_RATE(), RoundingMode.HALF_UP);
                 default -> convertedPrice = price;
             }
-            return String.format("%.2f %s", convertedPrice, currencyUnit);
-            //^ custom formatting, display first variable (price) with two decimals max, then second variable (currency unit)
-        }, CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty())); //Dependency on active currency object property changing
+            tooltip.setText(convertedPrice.toString()+" "+currencyUnit);
+            label.setText(String.format("%s %s", LabelFormatHandler.abbreviateCurrency(convertedPrice), currencyUnit));
+            //^ custom formatting, display first variable (price) with two decimals max (abbreviated, tooltip reveals full), then second variable (currency unit)
+        };
+        updateUI.run();
+        //runs once upon start
+        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable) -> Platform.runLater(updateUI));;
+        //Listens to active currency object property changing and runs updateUI
     }
 }

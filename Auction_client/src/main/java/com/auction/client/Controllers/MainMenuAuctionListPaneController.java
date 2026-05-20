@@ -1,6 +1,7 @@
 package com.auction.client.Controllers;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.auction.shared.models.Item;
@@ -19,11 +20,11 @@ public class MainMenuAuctionListPaneController {
     public void initialize(){
         //Placeholder item
         //TODO: wait for other's works on this, and then link it with their item list
-        itemList.add(new Item("item", "desc", 500000.0, 9000000.0) {
+        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
         });
-        itemList.add(new Item("item2", "desc", 200000.0, 6000000.0) {
+        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
         });
-        itemList.add(new Item("item3", "desc", 100000.0, 300000.0) {
+        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
         });
 
         renderItem(itemList);

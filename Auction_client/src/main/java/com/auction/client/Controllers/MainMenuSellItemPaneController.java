@@ -1,12 +1,19 @@
 package com.auction.client.Controllers;
 
+import java.math.BigDecimal;
+
+import com.auction.client.Models.AccountEventHandler;
+import com.auction.shared.models.Art;
+import com.auction.shared.models.Electronics;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.User;
+import com.auction.shared.models.Vehicle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.shared.models.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
 public class MainMenuSellItemPaneController {
     @FXML TextField mainMenuSellItemPaneItemNameField;
@@ -15,7 +22,7 @@ public class MainMenuSellItemPaneController {
     @FXML TextField mainMenuSellItemPanePriceIncrementField;
 
     @FXML private ComboBox<String> itemTypeComboBox;
-    //Cần thêm Comobox cho phép chọn loại vật phẩm đấu giá (Artworks, Vehicle, Electronic items)
+    //TODO: Cần thêm Comobox cho phép chọn loại vật phẩm đấu giá (Artworks, Vehicle, Electronic items)
 
     @FXML
     public void initialize() {
@@ -35,8 +42,8 @@ public class MainMenuSellItemPaneController {
 
             String name = mainMenuSellItemPaneItemNameField.getText();
             String description = mainMenuSellItemPaneItemDescriptionField.getText();
-            double startingPrice = Double.parseDouble(mainMenuSellItemPaneStartingPriceField.getText());
-            double currentPrice = startingPrice;
+            BigDecimal startingPrice = BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText())));
+            BigDecimal currentPrice = startingPrice;
 
             User currentUser = AccountEventHandler.getCurrentUser();
             if (currentUser == null) {

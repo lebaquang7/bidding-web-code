@@ -1,12 +1,14 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public class Electronics extends Item{
     private int warrantyMonths;
     private String brand;
     private String model;
     private String condition;
 
-    public Electronics(String name, String description, double startingPrice, double currentPrice) {
+    public Electronics(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
         super(name, description, startingPrice, currentPrice);
     }
 

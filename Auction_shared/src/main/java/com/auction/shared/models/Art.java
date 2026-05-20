@@ -1,12 +1,14 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public class Art extends Item{
     private String artistName;
     private boolean isOriginal;
     private int creationYear;
     private String medium;
 
-    public Art(String name, String description, double startingPrice, double currentPrice){
+    public Art(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice){
         super(name, description, startingPrice, currentPrice);
     }
 
