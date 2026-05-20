@@ -1,6 +1,7 @@
 package com.auction.client.Controllers;
 
 import com.auction.client.Models.CurrencySelectorHandler;
+import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
 
 import javafx.event.ActionEvent;
@@ -24,8 +25,12 @@ public class AuctionCardController {
 
     public void setData(Item item){
         currentItem=item;
+        
         mainMenuAuctionCardNameLabel.setText(item.getItemName());
-        CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardNameLabel, item.getCurrentPrice());
+        LabelHandler.setDetailedTooltip(mainMenuAuctionCardNameLabel);
+
+        CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, item.getCurrentPrice());
+        LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
     }
 
     public void mainMenuAuctionCardGoToItemDetails(ActionEvent event){

@@ -40,12 +40,12 @@
             </HBox>
             <HBox prefHeight="26.0" prefWidth="200.0">
                <children>
-                  <Label prefHeight="30.0" prefWidth="114.0" text="Starting bid:">
+                  <Label prefHeight="30.0" prefWidth="84.0" text="Starting bid:">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="auctionViewStartingBid" prefHeight="30.0" prefWidth="53.0" text="----">
+                  <Label fx:id="auctionViewStartingBid" prefHeight="30.0" prefWidth="108.0" text="----">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -57,9 +57,9 @@
             </HBox>
             <HBox prefHeight="26.0" prefWidth="200.0">
                <children>
-                  <Label prefHeight="30.0" prefWidth="174.0" text="Current bid:">
+                  <Label prefHeight="30.0" prefWidth="109.0" text="Current bid:">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                   </Label>
                   <Label fx:id="auctionViewCurrentBid" prefHeight="30.0" prefWidth="135.0" text="----">
@@ -74,11 +74,7 @@
             </HBox>
             <HBox prefHeight="26.0" prefWidth="200.0">
                <children>
-                  <Label prefHeight="30.0" prefWidth="174.0" text="Time Remaining:">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>
+                  <Label prefHeight="26.0" prefWidth="125.0" text="Time Remaining:" />
                   <Label fx:id="auctionViewRemainingTime" prefHeight="30.0" prefWidth="135.0" text="------">
                      <font>
                         <Font size="15.0" />
