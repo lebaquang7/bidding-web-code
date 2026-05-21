@@ -120,6 +120,52 @@ public class ClientHandler extends Thread {
                     System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
                 }
             }
+            // Xử lý yêu cầu lấy toàn bộ sản phẩm trên sàn
+            if (networkRequest.getType() == NetworkRequest.requestType.GetAllItems) {
+                try {
+                    java.util.ArrayList<Item> allItems = DatabaseConfig.getAllItems();
+                    out.writeObject(allItems);
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi phản hồi GetAllItems: " + e.getMessage());
+                }
+            }
+
+            // Xử lý yêu cầu lấy danh sách đồ của riêng một Seller
+            if (networkRequest.getType() == NetworkRequest.requestType.GetSellerItems) {
+                try {
+                    String sellerId = (String) networkRequest.getData();
+                    java.util.ArrayList<Item> sellerItems = DatabaseConfig.getSellerItems(sellerId);
+                    out.writeObject(sellerItems);
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi phản hồi GetSellerItems: " + e.getMessage());
+                }
+            }
+
+            // Xử lý yêu cầu xóa đồ
+            if (networkRequest.getType() == NetworkRequest.requestType.DeleteItem) {
+                try {
+                    String itemId = (String) networkRequest.getData();
+                    boolean isDeleted = DatabaseConfig.deleteItem(itemId);
+                    out.writeObject(isDeleted ? "success" : "fail");
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi phản hồi DeleteItem: " + e.getMessage());
+                }
+            }
+
+            // Xử lý yêu cầu cập nhật đồ
+            if (networkRequest.getType() == NetworkRequest.requestType.UpdateItem) {
+                try {
+                    Item updatedItem = (Item) networkRequest.getData();
+                    boolean isUpdated = DatabaseConfig.updateItem(updatedItem);
+                    out.writeObject(isUpdated ? "success" : "fail");
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi phản hồi UpdateItem: " + e.getMessage());
+                }
+            }
         }
     }
 }
