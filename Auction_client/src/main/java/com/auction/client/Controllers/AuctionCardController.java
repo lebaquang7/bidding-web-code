@@ -17,9 +17,6 @@ public class AuctionCardController {
     @FXML Label mainMenuAuctionCardPriceLabel;
     @FXML ImageView mainMenuAuctionCardImageView;
 
-    public void initialize(){
-    }
-
     //each auction card holds the current item
     private Item currentItem;
 
