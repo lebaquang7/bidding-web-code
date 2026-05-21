@@ -9,6 +9,8 @@ public abstract class Item extends Entity {
     private BigDecimal currentPrice;
     private String sellerId;
 
+    private BigDecimal priceIncrement;
+
     private static final long serialVersionUID = 1L;
 
     public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
@@ -46,4 +48,11 @@ public abstract class Item extends Entity {
 
     public String getSellerId() {return sellerId;}
     public void setSellerId(String id) {this.sellerId = id;}
+    public BigDecimal getPriceIncrement() {
+        return priceIncrement;
+    }
+
+    public void setPriceIncrement(BigDecimal priceIncrement) {
+        this.priceIncrement = priceIncrement;
+    }
 }
