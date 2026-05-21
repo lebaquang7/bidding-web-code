@@ -16,9 +16,9 @@ import com.auction.shared.models.User;
 import com.auction.shared.models.Vehicle;
 
 public class DatabaseConfig {
-    // Kết nối vói database
-    // Sửa localhost
-    // private static final String URL = "jdbc:mysql://192.168.x.x:3306/auction_system";
+// Kết nối với database
+// Sửa localhost
+// private static final String URL = "jdbc:mysql://192.168.x.x:3306/auction_system";
 
     private static final String URL = "jdbc:mysql://localhost:3306/auction_system";
     private static final String USER = "root";
@@ -29,7 +29,7 @@ public class DatabaseConfig {
     }
 
     //Tìm User khi đăng nhập
-    // Tìm User khi đăng nhập
+// Tìm User khi đăng nhập
     public static User findUserByUsername(String username) {
         // 1. Chỉ tìm trong bảng users trước để kiểm tra tài khoản có tồn tại không
         String sql = "SELECT * FROM users WHERE username = ?";
@@ -102,7 +102,7 @@ public class DatabaseConfig {
     }
 
     //Cần sửa lại sau khi cập nhật database, tách riêng từng loại User
-    //Lưu User vào database khi đăng ký
+//Lưu User vào database khi đăng ký
     public static boolean saveNewUser(User user) {
         String sqlUser = "INSERT INTO users (id, username, password, role, email) VALUES (?, ?, ?, ?, ?)";
         String sqlSub = "";
@@ -150,18 +150,27 @@ public class DatabaseConfig {
 
         } catch (SQLException e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             System.err.println("Lỗi SQL khi đăng ký: " + e.getMessage());
             return false;
         } finally {
-            if (connection != null) try { connection.setAutoCommit(true); connection.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (connection != null) try {
+                connection.setAutoCommit(true);
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     //Thêm vật phẩm vào database khi bán vật phẩm
     public static boolean saveNewItem(Item item) {
-        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, sellerId) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, price_increment, sellerId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlSub = "";
 
         if (item instanceof Art) {
@@ -187,7 +196,8 @@ public class DatabaseConfig {
                 psItem.setString(4, item.getDescription());
                 psItem.setBigDecimal(5, item.getStartingPrice());
                 psItem.setBigDecimal(6, item.getCurrentPrice());
-                psItem.setString(7, item.getSellerId());
+                psItem.setBigDecimal(7, item.getPriceIncrement());
+                psItem.setString(8, item.getSellerId());
 
                 psItem.executeUpdate();
             }
@@ -218,15 +228,153 @@ public class DatabaseConfig {
         } catch (SQLException e) {
             //rollback để hủy lưu nếu có lỗi chỉ lưu được bảng 1 nhưng bảng 2 không được
             if (connection != null) {
-                try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             System.err.println("Lỗi SQL khi bán sản phẩm: " + e.getMessage());
             return false;
         } finally {
             if (connection != null) {
-                try {connection.setAutoCommit(true); connection.close();} catch (SQLException e) {e.printStackTrace();}
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+    // Lấy toàn bộ sản phẩm trên sàn đấu giá
+    public static java.util.ArrayList<Item> getAllItems() {
+        java.util.ArrayList<Item> list = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM items";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Item item = extractItemFromResultSet(conn, rs);
+                if (item != null) list.add(item);
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi lấy toàn bộ vật phẩm: " + e.getMessage());
+        }
+        return list;
+    }
 
+    // Lấy sản phẩm của riêng một Seller cụ thể
+    public static java.util.ArrayList<Item> getSellerItems(String sellerId) {
+        java.util.ArrayList<Item> list = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM items WHERE sellerId = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, sellerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Item item = extractItemFromResultSet(conn, rs);
+                    if (item != null) list.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi lấy vật phẩm seller: " + e.getMessage());
+        }
+        return list;
+    }
+
+    // Tự động tách và định danh đúng loại đối tượng (Art, Electronics, Vehicle)
+    private static Item extractItemFromResultSet(Connection conn, ResultSet rs) throws SQLException {
+        String id = rs.getString("id");
+        String type = rs.getString("type");
+        String name = rs.getString("name");
+        String description = rs.getString("description");
+        java.math.BigDecimal startingPrice = rs.getBigDecimal("starting_price");
+        java.math.BigDecimal currentPrice = rs.getBigDecimal("current_price");
+        java.math.BigDecimal priceIncrement = rs.getBigDecimal("price_increment");
+        String sellerId = rs.getString("sellerId");
+
+        Item item = null;
+        if ("Art".equals(type)) {
+            String sqlArt = "SELECT * FROM artworks WHERE id = ?";
+            try (PreparedStatement psArt = conn.prepareStatement(sqlArt)) {
+                psArt.setString(1, id);
+                try (ResultSet rsArt = psArt.executeQuery()) {
+                    if (rsArt.next()) {
+                        Art art = new Art(name, description, startingPrice, currentPrice);
+                        art.setArtistName(rsArt.getString("artistName"));
+                        art.setIsOriginal(rsArt.getBoolean("isOriginal"));
+                        art.setCreationYear(rsArt.getInt("creationYear"));
+                        art.setMedium(rsArt.getString("medium"));
+                        item = art;
+                    }
+                }
+            }
+        } else if ("Electronics".equals(type)) {
+            String sqlElec = "SELECT * FROM electronic_items WHERE id = ?";
+            try (PreparedStatement psElec = conn.prepareStatement(sqlElec)) {
+                psElec.setString(1, id);
+                try (ResultSet rsElec = psElec.executeQuery()) {
+                    if (rsElec.next()) {
+                        Electronics elec = new Electronics(name, description, startingPrice, currentPrice);
+                        elec.setBrand(rsElec.getString("brand"));
+                        elec.setModel(rsElec.getString("model"));
+                        elec.setWarrantyMonths(rsElec.getInt("warrantyMonths"));
+                        elec.setCondition(rsElec.getString("itemCondition"));
+                        item = elec;
+                    }
+                }
+            }
+        } else if ("Vehicle".equals(type)) {
+            String sqlVeh = "SELECT * FROM vehicle WHERE id = ?";
+            try (PreparedStatement psVeh = conn.prepareStatement(sqlVeh)) {
+                psVeh.setString(1, id);
+                try (ResultSet rsVeh = psVeh.executeQuery()) {
+                    if (rsVeh.next()) {
+                        Vehicle veh = new Vehicle(name, description, startingPrice, currentPrice);
+                        veh.setLicensePlate(rsVeh.getString("licensePlate"));
+                        veh.setMileage(rsVeh.getInt("mileage"));
+                        veh.setManufacturingYear(rsVeh.getInt("manufacturingYear"));
+                        item = veh;
+                    }
+                }
+            }
+        }
+        if (item != null) {
+            item.setId(id);
+            item.setSellerId(sellerId);
+            item.setPriceIncrement(priceIncrement);
+        }
+        return item;
+    }
+
+    // Xóa sản phẩm khỏi hệ thống
+    public static boolean deleteItem(String itemId) {
+        String sql = "DELETE FROM items WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, itemId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi xóa vật phẩm: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Cập nhật thông tin sửa đổi của sản phẩm
+    public static boolean updateItem(Item item) {
+        String sqlItem = "UPDATE items SET name = ?, description = ?, starting_price = ?, price_increment = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement psItem = conn.prepareStatement(sqlItem)) {
+            psItem.setString(1, item.getItemName());
+            psItem.setString(2, item.getDescription());
+            psItem.setBigDecimal(3, item.getStartingPrice());
+            psItem.setBigDecimal(4, item.getPriceIncrement());
+            psItem.setString(5, item.getId());
+            return psItem.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi cập nhật vật phẩm: " + e.getMessage());
+            return false;
+        }
     }
 }
