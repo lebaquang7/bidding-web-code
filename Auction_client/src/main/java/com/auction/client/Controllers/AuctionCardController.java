@@ -92,6 +92,52 @@ public class AuctionCardController {
             );
         }
 
+        javafx.scene.layout.VBox autoBidBox = new javafx.scene.layout.VBox(10);
+        autoBidBox.setStyle("-fx-border-color: #3498db; -fx-border-width: 2px; -fx-padding: 10; -fx-border-radius: 5;");
+        javafx.scene.control.Label abTitle = new javafx.scene.control.Label(" Chế độ Auto-Bidding");
+        abTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #3498db;");
+
+        javafx.scene.control.TextField maxBidInput = new javafx.scene.control.TextField();
+        maxBidInput.setPromptText("Nhập giá tối đa bạn trả");
+        javafx.scene.control.TextField incrementInput = new javafx.scene.control.TextField();
+        incrementInput.setPromptText("Nhập bước giá nhảy");
+
+        javafx.scene.control.Button btnSaveAutoBid = new javafx.scene.control.Button("Bật tự động trả giá");
+        btnSaveAutoBid.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
+
+        btnSaveAutoBid.setOnAction(event -> {
+            try {
+                double max = Double.parseDouble(maxBidInput.getText());
+                double inc = Double.parseDouble(incrementInput.getText());
+
+                com.auction.shared.models.BidTransaction autoBidData = new com.auction.shared.models.BidTransaction(
+                        item.getCurrentPrice().doubleValue(),
+                        java.time.LocalDateTime.now(),
+                        null,
+                        null
+                );
+
+                autoBidData.setMaxBid(max);
+                autoBidData.setIncrement(inc);
+
+                autoBidData.setTempUsername("Bot_Cua_Toi");
+                autoBidData.setTempAuctionId("AUC_123");
+
+                com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(
+                        com.auction.shared.models.NetworkRequest.requestType.Bid,
+                        autoBidData
+                );
+
+                System.out.println(" Đã gửi cấu hình Auto-Bid lên Server!");
+                detailStage.close();
+            } catch (Exception ex) {
+                maxBidInput.setText("");
+                maxBidInput.setPromptText("Lỗi: Vui lòng nhập số! ");
+            }
+        });
+        autoBidBox.getChildren().addAll(abTitle, maxBidInput, incrementInput, btnSaveAutoBid);
+        root.getChildren().add(autoBidBox);
+
         // Thêm nút Đóng popup
         javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("Đóng");
         closeBtn.setOnAction(e -> detailStage.close());
