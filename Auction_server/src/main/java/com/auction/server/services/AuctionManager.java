@@ -8,8 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AuctionManager {
 
-    private Map<String, Object> activeAuctions; // Tạm để Object, sau này đổi thành class Auction
-
+    private Map<String, Object> activeAuctions;
     private static volatile AuctionManager instance;
     private AuctionManager() {}
 
@@ -51,7 +50,7 @@ public class AuctionManager {
             currentPrice = ((com.auction.shared.models.Auction) auctionObj).getCurrentPrice();
         }
 
-        System.out.println(" KÍCH HOẠT ENGINE TỰ ĐỘNG ĐÈ GIÁ ");
+        System.out.println(" KÍCH HOẠT TỰ ĐỘNG ĐÈ GIÁ ");
         do {
             priceChanged = false;
 

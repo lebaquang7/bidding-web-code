@@ -31,9 +31,6 @@ public class AuctionCardController {
     }
 
     public void mainMenuAuctionCardGoToItemDetails(ActionEvent event){
-        /*
-        SceneController.switchToItemView("/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
-        */
         showDetailPopup(currentItem);
     }
     //TODO: restrict GoToAuction for only bidder users.
@@ -66,7 +63,6 @@ public class AuctionCardController {
 
         root.getChildren().addAll(titleLabel, new javafx.scene.control.Separator(), descLabel, priceLabel, incLabel, new javafx.scene.control.Separator());
 
-        // Tách thông tin đặc trưng tùy loại sản phẩm dựa trên OOP Kế thừa
         if (item instanceof com.auction.shared.models.Art) {
             com.auction.shared.models.Art art = (com.auction.shared.models.Art) item;
             root.getChildren().addAll(
@@ -138,7 +134,7 @@ public class AuctionCardController {
         autoBidBox.getChildren().addAll(abTitle, maxBidInput, incrementInput, btnSaveAutoBid);
         root.getChildren().add(autoBidBox);
 
-        // Thêm nút Đóng popup
+        // Thêm nút đóng popup
         javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("Đóng");
         closeBtn.setOnAction(e -> detailStage.close());
         closeBtn.setStyle("-fx-background-color: #bdc3c7; -fx-text-fill: black; -fx-cursor: hand;");

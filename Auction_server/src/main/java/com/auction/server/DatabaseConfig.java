@@ -29,7 +29,6 @@ public class DatabaseConfig {
     }
 
     //Tìm User khi đăng nhập
-// Tìm User khi đăng nhập
     public static User findUserByUsername(String username) {
         // 1. Chỉ tìm trong bảng users trước để kiểm tra tài khoản có tồn tại không
         String sql = "SELECT * FROM users WHERE username = ?";
