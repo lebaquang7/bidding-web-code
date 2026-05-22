@@ -62,23 +62,21 @@ public class ClientHandler extends Thread {
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
-                try {
-                    User loginUser = (User) networkRequest.getData();
-                    User existingUser = DatabaseConfig.findUserByUsername(loginUser.getUsername());
+                User loginData = (User) networkRequest.getData();
 
-                    if (existingUser == null) {
+                User user = DatabaseConfig.findUserByUsername(loginData.getUsername());
+
+                try {
+                    if (user == null) {
                         out.writeObject("accountDoesntExist");
-                    }
-                    else if (existingUser.getPassword().equals(loginUser.getPassword())) {
-                        out.writeObject("loginSuccessful");
-                        out.writeObject(existingUser);
-                    }
-                    else {
+                    } else if (!user.getPassword().equals(loginData.getPassword())) {
                         out.writeObject("invalidPassword");
+                    } else {
+                        out.writeObject(user);
                     }
                     out.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println("Lỗi khi phản hồi đăng nhập: " + e.getMessage());
                 }
             }
 

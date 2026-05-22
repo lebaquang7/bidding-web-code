@@ -38,66 +38,67 @@ public class DatabaseConfig {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    String id = rs.getString("id");
-                    String role = rs.getString("role");
-                    String pass = rs.getString("password");
-                    String email = rs.getString("email");
+            ResultSet rs = ps.executeQuery();
 
-                    // 2. Tùy theo vai trò (role) để truy vấn bảng chi tiết tương ứng và khởi tạo đúng đối tượng
-                    switch (role) {
-                        case "Bidder" -> {
-                            String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
-                            try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
-                                psBidder.setString(1, id);
-                                try (ResultSet rsBidder = psBidder.executeQuery()) {
-                                    if (rsBidder.next()) {
-                                        return new Bidder(
-                                                username, pass,
-                                                rsBidder.getString("shippingAddress"),
-                                                rsBidder.getDouble("balance"),
-                                                rsBidder.getInt("reputationScore")
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                        case "Admin" -> {
-                            String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
-                            try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
-                                psAdmin.setString(1, id);
-                                try (ResultSet rsAdmin = psAdmin.executeQuery()) {
-                                    if (rsAdmin.next()) {
-                                        return new Admin(
-                                                username, pass,
-                                                rsAdmin.getInt("accessLevel"),
-                                                rsAdmin.getString("department"),
-                                                rsAdmin.getString("adminCode")
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                        case "Seller" -> {
-                            String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
-                            try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
-                                psSeller.setString(1, id);
-                                try (ResultSet rsSeller = psSeller.executeQuery()) {
-                                    if (rsSeller.next()) {
-                                        return new Seller(
-                                                username, pass
-                                        );
-                                    }
-                                }
-                            }
+            if(rs.next()) {
+                String role = rs.getString("role");
+                String pass = rs.getString("password");
+                String id = rs.getString("id");
+
+                User user = null;
+                if ("Bidder".equals(role)) {
+                    String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
+                    try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
+                        psBidder.setString(1, id);
+                        ResultSet rsBidder = psBidder.executeQuery();
+                        if (rsBidder.next()) {
+                            user = new Bidder(
+                                    username, pass,
+                                    rsBidder.getString("shippingAddress"),
+                                    rsBidder.getDouble("balance"),
+                                    rsBidder.getInt("reputationScore")
+                            );
                         }
                     }
                 }
+                if ("Admin".equals(role)) {
+                    String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
+                    try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
+                        psAdmin.setString(1, id);
+                        ResultSet rsAdmin = psAdmin.executeQuery();
+                        if (rsAdmin.next()) {
+                            user = new Admin(
+                                    username, pass,
+                                    rsAdmin.getInt("accessLevel"),
+                                    rsAdmin.getString("department"),
+                                    rsAdmin.getString("internalEmployeeId")
+                            );
+                        }
+                    }
+                }
+                if ("Seller".equals(role)) {
+                    String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
+                    try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
+                        psSeller.setString(1, id);
+                        ResultSet rsSeller = psSeller.executeQuery();
+                        if (rsSeller.next()) {
+                            user = new Seller(
+                                    username, pass
+                            );
+                        }
+                    }
+                }
+                if (user != null) {
+                    user.setId(id);
+                }
+
+                return user;
             }
+
         } catch (SQLException e) {
-            System.err.println("Lỗi SQL khi xác thực đăng nhập: " + e.getMessage());
+            System.err.print("Lỗi khi tìm User: " + e.getMessage());
         }
+
         return null;
     }
 
@@ -186,7 +187,7 @@ public class DatabaseConfig {
                 psItem.setString(3, item.getItemName());
                 psItem.setString(4, item.getDescription());
                 psItem.setBigDecimal(5, item.getStartingPrice());
-                psItem.setBigDecimal(6, item.getCurrentPrice());
+                psItem.setBigDecimal(6, item.getStartingPrice());
                 psItem.setString(7, item.getSellerId());
 
                 psItem.executeUpdate();

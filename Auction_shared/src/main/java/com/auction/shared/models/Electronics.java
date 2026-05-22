@@ -8,8 +8,12 @@ public class Electronics extends Item{
     private String model;
     private String condition;
 
-    public Electronics(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
+    public Electronics(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice, int warrantyMonths, String brand, String model, String condition) {
         super(name, description, startingPrice, currentPrice);
+        this.warrantyMonths= warrantyMonths;
+        this.brand = brand;
+        this.model = model;
+        this.condition = condition;
     }
 
     public int getWarrantyMonths() {

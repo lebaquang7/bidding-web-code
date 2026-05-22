@@ -8,8 +8,12 @@ public class Art extends Item{
     private int creationYear;
     private String medium;
 
-    public Art(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice){
+    public Art(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice, String artistName, boolean isOriginal, int creationYear, String medium){
         super(name, description, startingPrice, currentPrice);
+        this.artistName = artistName;
+        this.creationYear = creationYear;
+        this.isOriginal = isOriginal;
+        this.medium = medium;
     }
 
     public String getArtistName() {

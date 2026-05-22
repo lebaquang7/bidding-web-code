@@ -54,11 +54,11 @@ public class MainMenuSellItemPaneController {
             Item newItem = null;
             String typeOfItem = itemTypeComboBox.getValue();
             if ("Artwork".equals(typeOfItem)) {
-                newItem = new Art(name, description, startingPrice, currentPrice);
+                newItem = new Art(name, description, startingPrice, currentPrice, "", true, 0, "");
             } else if ("Electronics".equals(typeOfItem)) {
-                newItem = new Electronics(name, description, startingPrice, currentPrice);
+                newItem = new Electronics(name, description, startingPrice, currentPrice, 24, "", "", "");
             } else {
-                newItem = new Vehicle(name, description, startingPrice, currentPrice);
+                newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
             }
             newItem.setSellerId(currentUser.getId());
 

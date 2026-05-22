@@ -40,14 +40,14 @@ public class AccountEventHandler {
             // 2. Đợi phản hồi từ Server
             Object response = in.readObject();
 
-            if (response instanceof String result) {
-                if ("loginSuccessful".equals(result)) {
-                    Object userData = in.readObject();
-                    if (userData instanceof User) {
-                        setCurrentUser((User) userData);
-                    }
-                }
-                return result;
+            if (response instanceof User) {
+                User loggedInUser = (User) response;
+
+                setCurrentUser(loggedInUser);
+
+                return "loginSuccessful";
+            } else if (response instanceof String) {
+                return (String) response;
             }
             return "fail";
         } catch (Exception e) {
