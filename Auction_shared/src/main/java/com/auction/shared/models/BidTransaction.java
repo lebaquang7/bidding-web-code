@@ -31,4 +31,20 @@ public class BidTransaction implements Serializable{
     public LocalDateTime getBidTime() {
         return bidTime;
     }
+
+    private double maxBid = 0;
+    private double increment = 0;
+
+    public double getMaxBid() { return maxBid; }
+    public void setMaxBid(double maxBid) { this.maxBid = maxBid; }
+    public double getIncrement() { return increment; }
+    public void setIncrement(double increment) { this.increment = increment; }
+
+    private String tempUsername;
+    private String tempAuctionId;
+
+    public String getTempUsername() { return tempUsername; }
+    public void setTempUsername(String tempUsername) { this.tempUsername = tempUsername; }
+    public String getTempAuctionId() { return tempAuctionId; }
+    public void setTempAuctionId(String tempAuctionId) { this.tempAuctionId = tempAuctionId; }
 }
