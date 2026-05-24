@@ -3,6 +3,7 @@ package com.auction.client.Controllers;
 import java.math.BigDecimal;
 
 import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.Electronics;
 import com.auction.shared.models.Item;
@@ -62,7 +63,7 @@ public class MainMenuSellItemPaneController {
             }
             newItem.setSellerId(currentUser.getId());
 
-            String result = AccountEventHandler.sellItem(newItem);
+            String result = ItemsEventHandler.sellItem(newItem);
             if ("success".equals(result)) {
                 showSuccess("Đưa vật phẩm lên sàn đấu giá thành công");
                 clearFields();

@@ -1,10 +1,13 @@
 package com.auction.server;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.auction.shared.models.Admin;
 import com.auction.shared.models.Art;
@@ -228,6 +231,82 @@ public class DatabaseConfig {
                 try {connection.setAutoCommit(true); connection.close();} catch (SQLException e) {e.printStackTrace();}
             }
         }
+    }
 
+    public static List<Item> getAllItems() {
+        List<Item> items = new ArrayList<>();
+
+        String sql = "SELECT * FROM items";
+
+        try (Connection connection = getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String type = rs.getString("type");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                BigDecimal startingPrice = rs.getBigDecimal("starting_price");
+                BigDecimal currentPrice = rs.getBigDecimal("current_price");
+                String sellerId = rs.getString("sellerId");
+
+                Item item = null;
+                if ("Art".equals(type)) {
+                    String sqlArtwork = "SELECT * FROM artworks WHERE id = ?";
+                    try (PreparedStatement psSub = connection.prepareStatement(sqlArtwork)) {
+                        psSub.setString(1, id);
+                        try (ResultSet rsSub = psSub.executeQuery()) {
+                            if (rsSub.next()) {
+                                String artistName = rsSub.getString("artistName");
+                                boolean isOriginal = rsSub.getBoolean("isOriginal");
+                                int creationYear = rsSub.getInt("creationYear");
+                                String medium = rsSub.getString("medium");
+
+                                item = new Art(name, description, startingPrice, currentPrice, artistName, isOriginal, creationYear, medium);
+                            }
+                        }
+                    }
+                } else if ("Electronics".equals(type)) {
+                    String sqlElectronics = "SELECT * FROM electronic_items WHERE id = ?";
+                    try (PreparedStatement psSub = connection.prepareStatement(sqlElectronics)) {
+                        psSub.setString(1, id);
+                        try (ResultSet rsSub = psSub.executeQuery()) {
+                            if (rsSub.next()) {
+                                String brand = rsSub.getString("brand");
+                                String model = rsSub.getString("model");
+                                int warrantyMonths = rsSub.getInt("warrantyMonths");
+                                String itemCondition = rsSub.getString("itemCondition");
+
+                                item = new Electronics(name, description, startingPrice, currentPrice, warrantyMonths, itemCondition, brand, model);
+                            }
+                        }
+                    }
+                } else if ("Vehicle".equals(type)) {
+                    String sqlVehicle = "SELECT * FROM vehicle WHERE id = ?";
+                    try (PreparedStatement psSub = connection.prepareStatement(sqlVehicle)) {
+                        psSub.setString(1, id);
+                        try (ResultSet rsSub = psSub.executeQuery()) {
+                            if (rsSub.next()) {
+                                String licensePlate = rsSub.getString("licensePlate");
+                                int mileage = rsSub.getInt("mileage");
+                                int manufacturingYear = rsSub.getInt("manufacturingYear");
+
+                                item = new Vehicle(name, description, startingPrice, currentPrice, licensePlate, mileage, manufacturingYear);
+                            }
+                        }
+                    }
+                }
+
+                if (item != null) {
+                    item.setId(id);
+                    item.setSellerId(sellerId);
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi lấy danh sách sản phẩm: " + e.getMessage());
+        }
+        return items;
     }
 }

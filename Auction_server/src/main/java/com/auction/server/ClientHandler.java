@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -44,21 +45,6 @@ public class ClientHandler extends Thread {
     private void handleRequest(Object request) {
         if (request instanceof NetworkRequest) {
             NetworkRequest networkRequest = (NetworkRequest) request;
-
-            //Yêu cầu trả giá
-            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
-                BidTransaction bid = (BidTransaction) networkRequest.getData();
-                System.out.println("Nhận mức giá: " + bid.getBidAmount());
-
-                Auction currentAuction = bid.getAuction();
-
-                if (bid.getBidAmount() > currentAuction.getCurrentPrice()) {
-                    System.out.println(">>> Trả giá THÀNH CÔNG!");
-                    // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
-                } else {
-                    System.out.println(">>> Trả giá THẤP HƠN giá hiện tại. Thất bại!");
-                }
-            }
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
@@ -116,6 +102,17 @@ public class ClientHandler extends Thread {
                     out.flush();
                 } catch (IOException e) {
                     System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
+                }
+            }
+
+            // Yêu cầu lấy thông tin các vật phẩm trên DB về
+            if (networkRequest.getType() == NetworkRequest.requestType.GetAllItems) {
+                try {
+                    List<Item> allItems = DatabaseConfig.getAllItems();
+                    out.writeObject(allItems); // Gửi nguyên List đối tượng về cho Client
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi gửi danh sách Item: " + e.getMessage());
                 }
             }
         }
