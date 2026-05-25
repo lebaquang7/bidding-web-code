@@ -1,5 +1,6 @@
 package com.auction.server;
 
+import com.auction.server.services.BiddingService;
 import com.auction.shared.models.*;
 
 import java.io.IOException;
@@ -37,7 +38,11 @@ public class ClientHandler extends Thread {
             System.out.println("Một Client đã ngắt kết nối.");
         } finally {
             // Đảm bảo đóng socket khi kết thúc
-            try { socket.close(); } catch (IOException e) { e.printStackTrace(); }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -115,6 +120,41 @@ public class ClientHandler extends Thread {
                     System.err.println("Lỗi gửi danh sách Item: " + e.getMessage());
                 }
             }
+
+            //Yêu cầu trả giá cho vật phẩm
+            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
+                BidTransaction bidData = (BidTransaction) networkRequest.getData();
+
+                try {
+                    BidStatus.bidStatus status = BiddingService.placeBid(
+                            bidData.getItemId(),
+                            bidData.getBidderId(),
+                            bidData.getBidAmount()
+                    );
+
+                    out.writeObject(status);
+                    out.flush();
+
+                    if (status == BidStatus.bidStatus.SUCCESS) {
+                        // Gửi thông tin mới về giá vật phẩm hiện tại
+                        for (ClientHandler client : MainServer.clients) {
+                            client.sendNotification(bidData);
+                        }
+                    }
+
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi phản hồi đặt giá: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void sendNotification(Object msg) {
+        try {
+            out.writeObject(msg);
+            out.flush();
+        } catch (IOException e) {
+            MainServer.clients.remove(this); // Xóa nếu client ngắt kết nối
         }
     }
 }

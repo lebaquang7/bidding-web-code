@@ -45,6 +45,8 @@ public class MainMenuSellItemPaneController {
             String description = mainMenuSellItemPaneItemDescriptionField.getText();
             BigDecimal startingPrice = BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText())));
             BigDecimal currentPrice = startingPrice;
+            double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
+            BigDecimal priceIncrement = startingPrice.multiply(BigDecimal.valueOf(percentage / 100.0));
 
             User currentUser = AccountEventHandler.getCurrentUser();
             if (currentUser == null) {
@@ -62,6 +64,7 @@ public class MainMenuSellItemPaneController {
                 newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
             }
             newItem.setSellerId(currentUser.getId());
+            newItem.setPriceIncrement(priceIncrement);
 
             String result = ItemsEventHandler.sellItem(newItem);
             if ("success".equals(result)) {

@@ -1,10 +1,13 @@
 package com.auction.client.Models;
 
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.NetworkRequest;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,7 @@ public class ItemsEventHandler {
         }
     }
 
-    // Tìm item
+    // Lấy item từ DB về
     public static List<Item> fetchAllItems() {
         try (Socket socket = new Socket("127.0.0.1", 1234);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
@@ -56,6 +59,37 @@ public class ItemsEventHandler {
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public static BidStatus.bidStatus placeBid(String itemId, String userId, BigDecimal amount) {
+        try (Socket socket = new Socket("127.0.0.1", 1234);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+            out.flush();
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            // Đóng gói dữ liệu trả giá
+            BidTransaction bidData = new BidTransaction(itemId, userId, amount);
+
+            // Gửi request với type là PlaceBid
+            NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.Bid, bidData);
+            out.writeObject(request);
+            out.flush();
+
+            // Đọc phản hồi Enum (SUCCESS, LOW_BID, INVALID...) từ Server
+            Object response = in.readObject();
+
+            if (response instanceof BidStatus.bidStatus) {
+                return (BidStatus.bidStatus) response;
+            } else {
+                return BidStatus.bidStatus.INVALID;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Lỗi kết nối mạng hoặc Server không phản hồi
+            return BidStatus.bidStatus.INVALID;
         }
     }
 }
