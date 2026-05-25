@@ -105,7 +105,7 @@
                   <Insets left="50.0" right="50.0" top="10.0" />
                </VBox.margin>
             </Button>
-            <Label fx:id="auctionViewPlaceBidErrorBox" prefHeight="18.0" prefWidth="186.0">
+            <Label fx:id="auctionViewPlaceBidErrorBox" prefHeight="18.0" prefWidth="186.0" styleClass="label-forced-warning">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
@@ -141,7 +141,7 @@
                   <Button mnemonicParsing="false" onAction="#auctionViewStopAutoBid" prefHeight="30.0" prefWidth="50.0" text="Stop" />
                </children>
             </HBox>
-            <Label fx:id="auctionViewAutoBidderErrorBox" prefHeight="18.0" prefWidth="186.0">
+            <Label id="label-forced-warning" fx:id="auctionViewAutoBidderErrorBox" prefHeight="18.0" prefWidth="186.0">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
@@ -153,7 +153,7 @@
             </Button>
          </children>
       </VBox>
-      <LineChart fx:id="auctionViewPriceChart" layoutX="200.0" prefHeight="600.0" prefWidth="700.0">
+      <LineChart fx:id="auctionViewPriceChart" layoutX="200.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0">
         <xAxis>
           <NumberAxis fx:id="auctionViewPriceChartXAxis" side="BOTTOM" />
         </xAxis>

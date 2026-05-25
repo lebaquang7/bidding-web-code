@@ -32,44 +32,6 @@ public class MainMenuAuctionListPaneController {
         });
         itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
         });
-        //placeholder extra item for pagination testing. To be removed.
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
-        //^^^^placeholder extra item for pagination testing. To be removed.
 
         //calc page count
         int pageCount = (int) Math.ceil(itemList.size() / ITEMS_PER_PAGE);

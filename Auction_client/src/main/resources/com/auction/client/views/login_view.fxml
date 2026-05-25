@@ -39,7 +39,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label fx:id="loginWindowErrorPrompt" layoutX="183.0" layoutY="122.0" prefHeight="18.0" prefWidth="255.0" text="             " textFill="RED" />
+      <Label fx:id="loginWindowErrorPrompt" layoutX="183.0" layoutY="122.0" prefHeight="18.0" prefWidth="255.0" styleClass="label-forced-warning" text="             " textFill="RED" />
       <VBox layoutX="48.0" layoutY="148.0" prefHeight="80.0" prefWidth="528.0" spacing="25.0">
          <children>
             <HBox prefHeight="28.0" prefWidth="528.0" spacing="35.0">

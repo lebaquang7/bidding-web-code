@@ -17,7 +17,7 @@ public class LoginController {
         return PATH_TO_VIEW;
     }
 
-    @FXML TextField loginWindowUsernameField; //LOAD fxml UI elements
+    @FXML TextField loginWindowUsernameField; //load fxml UI elements
     @FXML PasswordField loginWindowPasswordField;
     @FXML TextField loginWindowShownPwdTextField;
     @FXML CheckBox loginWindowShowPwdCheckbox;
@@ -51,7 +51,7 @@ public class LoginController {
         }
     }
 
-    //Sửa thành sai tên đăng nhập hoặc mật khẩu
+    //TODO: ^^Sửa thành sai tên đăng nhập hoặc mật khẩu
 
 
     /**

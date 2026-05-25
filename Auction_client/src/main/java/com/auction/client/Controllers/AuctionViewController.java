@@ -71,6 +71,9 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
         auctionViewPriceChartYAxis.setUpperBound(item.getCurrentPrice().doubleValue());
 
+        //TODO: tick mark auto adjust based on lower and upper bound
+        auctionViewPriceChartYAxis.setTickUnit(500000);
+
         auctionViewPriceChart.setData(TestChartData.getSalesData());
     }
 }

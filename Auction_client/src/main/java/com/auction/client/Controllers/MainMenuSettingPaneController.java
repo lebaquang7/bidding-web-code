@@ -1,6 +1,7 @@
 package com.auction.client.Controllers;
 
 import com.auction.client.Models.CurrencySelectorHandler;
+import com.auction.client.Models.ThemeHandler;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,12 +47,12 @@ public class MainMenuSettingPaneController {
         
 
 
-
-
-        
-        //TODO: custom theme handling
-        ObservableList<String> themeSetting = FXCollections.observableArrayList("default", "TBD");
+        //Custom theme handling
+        ObservableList<String> themeSetting = FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
         mainMenuSettingPaneThemeSettingBox.setItems(themeSetting);
-        mainMenuSettingPaneThemeSettingBox.setValue("default");
+        mainMenuSettingPaneThemeSettingBox.setValue(ThemeHandler.getInstance().getActiveTheme());
+        mainMenuSettingPaneThemeSettingBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            ThemeHandler.getInstance().setTheme(newValue);
+        });
     }
 }

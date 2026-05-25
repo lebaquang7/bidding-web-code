@@ -22,11 +22,11 @@ public class MainMenuSellItemPaneController {
     @FXML TextField mainMenuSellItemPanePriceIncrementField;
 
     @FXML private ComboBox<String> itemTypeComboBox;
-    //TODO: Cần thêm Comobox cho phép chọn loại vật phẩm đấu giá (Artworks, Vehicle, Electronic items)
 
     @FXML
     public void initialize() {
         if (itemTypeComboBox != null) {
+            //TODO: elements based on actual available class types?
             itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
             itemTypeComboBox.getSelectionModel().selectFirst();
         }

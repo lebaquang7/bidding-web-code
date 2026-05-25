@@ -3,6 +3,7 @@ package com.auction.client;
 import java.io.IOException;
 
 import com.auction.client.Controllers.SceneController;
+import com.auction.client.Models.ThemeHandler;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,8 @@ public class MainApp extends Application{
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        ThemeHandler.getInstance().addActiveScene(scene);
 
         //displays prompt on pressing X to close client
         primaryStage.setOnCloseRequest(event ->{
