@@ -9,6 +9,6 @@ public class ElectronicsFactory implements ItemFactory{
 
     @Override
     public Item createItem(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
-        return new Electronics(name, description, startingPrice, currentPrice);
+        return new Electronics(name, description, startingPrice, currentPrice, 24, "", "", "");
     }
 }

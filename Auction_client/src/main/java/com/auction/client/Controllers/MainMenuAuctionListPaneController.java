@@ -1,9 +1,9 @@
 package com.auction.client.Controllers;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
+import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Item;
 
 import javafx.collections.FXCollections;
@@ -18,64 +18,86 @@ import javafx.scene.layout.GridPane;
 public class MainMenuAuctionListPaneController {
     @FXML GridPane mainMenuAuctionListGridPane;
     @FXML Pagination mainMenuAuctionListPagination;
-    ObservableList<Item> itemList = FXCollections.observableArrayList();
-    //no. of items displayed per gridpane page and columns of grid
+
+    private ObservableList<Item> itemList = FXCollections.observableArrayList();
+
+    // Số lượng vật phẩm hiển thị trên mỗi trang và số cột của lưới
     private static final int ITEMS_PER_PAGE = 6;
     private static final int COLUMN_COUNT = 2;
 
-    public void initialize(){
-        //Placeholder item
-        //TODO: wait for other's works on this, and then link it with their item list
-        itemList.add(new Item("item", "desc", BigDecimal.valueOf(500000.0), BigDecimal.valueOf(9000000.0)) {
-        });
-        itemList.add(new Item("item2", "desc", BigDecimal.valueOf(200000.0), BigDecimal.valueOf(6000000.0)) {
-        });
-        itemList.add(new Item("item3", "desc", BigDecimal.valueOf(100000.0), BigDecimal.valueOf(300000.0)) {
-        });
+    public void initialize() {
+        // 1. Lấy dữ liệu thật từ Server thay vì placeholder
+        refreshItems();
 
-        //calc page count
-        int pageCount = (int) Math.ceil(itemList.size() / ITEMS_PER_PAGE);
-        //safety checkfor 0 page count
-        mainMenuAuctionListPagination.setPageCount(pageCount == 0 ? 1 : pageCount);
-        //initial set
-        mainMenuAuctionListPagination.setCurrentPageIndex(0);
-        renderItem(itemList, 0);
-
-        //listen to change in page pagination
+        // 2. Lắng nghe thay đổi của trang hiện tại trên Pagination
         mainMenuAuctionListPagination.currentPageIndexProperty().addListener((observable, oldIndex, newIndex) -> {
             renderItem(itemList, newIndex.intValue());
         });
-        //listen to change in list eles
+
+        // 3. Lắng nghe thay đổi của danh sách phần tử (nếu có cập nhật danh sách)
         itemList.addListener((ListChangeListener<Item>) change -> {
+            updatePagination();
             renderItem(itemList, mainMenuAuctionListPagination.getCurrentPageIndex());
         });
     }
 
     /**
-     * render list of pane items
-     * @param list
+     * Gọi Server để lấy danh sách vật phẩm mới nhất và cập nhật UI
      */
-    public void renderItem(List<Item> list, int paginationIndex){
-        //clear old panes
+    public void refreshItems() {
+        List<Item> fetchedItems = ItemsEventHandler.fetchAllItems();
+
+        if (fetchedItems != null) {
+            itemList.setAll(fetchedItems);
+        } else {
+            itemList.clear();
+        }
+
+        updatePagination();
+        renderItem(itemList, 0);
+    }
+
+    /**
+     * Cập nhật số lượng trang dựa trên kích thước danh sách thực tế
+     */
+    private void updatePagination() {
+        // Sử dụng (double) để tránh lỗi chia số nguyên (Integer Division)
+        int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
+        mainMenuAuctionListPagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+    }
+
+    /**
+     * Hiển thị danh sách vật phẩm lên GridPane dựa trên chỉ mục trang
+     */
+    public void renderItem(List<Item> list, int paginationIndex) {
+        // Xóa các card cũ trên giao diện
         mainMenuAuctionListGridPane.getChildren().clear();
-        //calc index of list items to display
+
+        if (list.isEmpty()) return;
+
+        // Tính toán khoảng vật phẩm cần hiển thị cho trang hiện tại
         int startIndex = paginationIndex * ITEMS_PER_PAGE;
-        int endIndex = Math.min(paginationIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE, list.size());
+        int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, list.size());
+
+        if (startIndex >= list.size()) return;
 
         List<Item> itemListSublist = list.subList(startIndex, endIndex);
+
         for (int i = 0; i < itemListSublist.size(); i++) {
             try {
                 Item item = itemListSublist.get(i);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/auction/client/views/mainMenu_auctionCard.fxml"));
-              
-                //load data of the card
+
                 Parent card = loader.load();
-                //get loader controller, set data to each item's data
+
+                // Lấy controller của card và truyền dữ liệu Item vào
                 AuctionCardController controller = loader.getController();
                 controller.setData(item);
 
-                int columnIndex = i/COLUMN_COUNT;
-                int rowIndex = i%COLUMN_COUNT;
+                // Tính toán vị trí cột và dòng (2 cột, nhiều dòng)
+                int columnIndex = i % COLUMN_COUNT;
+                int rowIndex = i / COLUMN_COUNT;
+
                 mainMenuAuctionListGridPane.add(card, columnIndex, rowIndex);
             } catch (IOException e) {
                 e.printStackTrace();

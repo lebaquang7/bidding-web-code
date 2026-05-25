@@ -1,7 +1,6 @@
 package com.auction.client.Models;
 
 import com.auction.shared.models.Bidder;
-import com.auction.shared.models.Item;
 import com.auction.shared.models.NetworkRequest;
 import com.auction.shared.models.User;
 
@@ -10,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import static com.auction.shared.models.NetworkRequest.requestType.Register;
-import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
 public class AccountEventHandler {
     //Loại bỏ accountStorage HashMap, dùng database thay thế
@@ -40,14 +38,14 @@ public class AccountEventHandler {
             // 2. Đợi phản hồi từ Server
             Object response = in.readObject();
 
-            if (response instanceof String result) {
-                if ("loginSuccessful".equals(result)) {
-                    Object userData = in.readObject();
-                    if (userData instanceof User) {
-                        setCurrentUser((User) userData);
-                    }
-                }
-                return result;
+            if (response instanceof User) {
+                User loggedInUser = (User) response;
+
+                setCurrentUser(loggedInUser);
+
+                return "loginSuccessful";
+            } else if (response instanceof String) {
+                return (String) response;
             }
             return "fail";
         } catch (Exception e) {
@@ -77,26 +75,4 @@ public class AccountEventHandler {
             return "connection_error";
         }
     }
-
-    //Sell item
-    public static String sellItem (Item newItem) {
-        //new Socket("192.168.x.x", port)
-        try (Socket socket = new Socket("127.0.0.1", 1234);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-            NetworkRequest request = new NetworkRequest(SellItem, newItem);
-            out.writeObject(request);
-            out.flush();
-
-            Object response = in.readObject();
-            return (response instanceof String) ? (String) response : "fail";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "connection_error";
-        }
-    }
-
 }

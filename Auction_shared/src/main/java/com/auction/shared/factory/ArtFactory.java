@@ -9,6 +9,6 @@ public class ArtFactory implements ItemFactory{
 
     @Override
     public Item createItem(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
-        return new Art(name, description, startingPrice, currentPrice);
+        return new Art(name, description, startingPrice, currentPrice, "", true, 0, "");
     }
 }

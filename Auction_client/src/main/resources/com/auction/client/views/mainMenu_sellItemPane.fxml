@@ -17,7 +17,7 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <Button layoutX="233.0" layoutY="374.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="234.0" text="Submit item for auction">
+      <Button layoutX="233.0" layoutY="374.0" mnemonicParsing="false" onAction="#handleSubmitItem" prefHeight="40.0" prefWidth="234.0" text="Submit item for auction">
          <font>
             <Font size="18.0" />
          </font>

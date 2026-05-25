@@ -3,6 +3,7 @@ package com.auction.client.Controllers;
 import java.math.BigDecimal;
 
 import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.Electronics;
 import com.auction.shared.models.Item;
@@ -54,15 +55,15 @@ public class MainMenuSellItemPaneController {
             Item newItem = null;
             String typeOfItem = itemTypeComboBox.getValue();
             if ("Artwork".equals(typeOfItem)) {
-                newItem = new Art(name, description, startingPrice, currentPrice);
+                newItem = new Art(name, description, startingPrice, currentPrice, "", true, 0, "");
             } else if ("Electronics".equals(typeOfItem)) {
-                newItem = new Electronics(name, description, startingPrice, currentPrice);
+                newItem = new Electronics(name, description, startingPrice, currentPrice, 24, "", "", "");
             } else {
-                newItem = new Vehicle(name, description, startingPrice, currentPrice);
+                newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
             }
             newItem.setSellerId(currentUser.getId());
 
-            String result = AccountEventHandler.sellItem(newItem);
+            String result = ItemsEventHandler.sellItem(newItem);
             if ("success".equals(result)) {
                 showSuccess("Đưa vật phẩm lên sàn đấu giá thành công");
                 clearFields();
