@@ -1,0 +1,340 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th5 26, 2026 lúc 12:40 PM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Cơ sở dữ liệu: `auction_system`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` varchar(40) NOT NULL,
+  `accessLevel` int(11) NOT NULL,
+  `department` varchar(100) NOT NULL,
+  `internalEmployeeId` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `artworks`
+--
+
+CREATE TABLE `artworks` (
+  `id` varchar(40) NOT NULL,
+  `artistName` varchar(255) NOT NULL,
+  `isOriginal` tinyint(1) NOT NULL,
+  `creationYear` int(11) NOT NULL,
+  `medium` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `artworks`
+--
+
+INSERT INTO `artworks` (`id`, `artistName`, `isOriginal`, `creationYear`, `medium`) VALUES
+('01799397-9cb6-4358-a54c-e46389880ea0', '', 1, 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `bidders`
+--
+
+CREATE TABLE `bidders` (
+  `id` varchar(40) NOT NULL,
+  `shippingAddress` varchar(255) NOT NULL,
+  `balance` double NOT NULL DEFAULT 0,
+  `reputationScore` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `bidders`
+--
+
+INSERT INTO `bidders` (`id`, `shippingAddress`, `balance`, `reputationScore`) VALUES
+('23312c96-d768-4e4f-b7ff-de57529c1e97', '', 0, 0),
+('969885f3-1093-4903-ad56-aa4e123306eb', '', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `bid_history`
+--
+
+CREATE TABLE `bid_history` (
+  `bid_id` int(11) NOT NULL,
+  `item_Id` varchar(40) NOT NULL,
+  `bidder_Id` varchar(40) NOT NULL,
+  `bid_amount` decimal(19,2) NOT NULL,
+  `bid_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` varchar(20) NOT NULL DEFAULT 'SUCCESS'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `bid_history`
+--
+
+INSERT INTO `bid_history` (`bid_id`, `item_Id`, `bidder_Id`, `bid_amount`, `bid_time`, `status`) VALUES
+(1, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 8000000.00, '2026-05-25 13:22:26', 'SUCCESS'),
+(2, '01799397-9cb6-4358-a54c-e46389880ea0', '969885f3-1093-4903-ad56-aa4e123306eb', 90000000.00, '2026-05-25 17:09:18', 'SUCCESS'),
+(3, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 150000000.00, '2026-05-26 07:48:07', 'SUCCESS'),
+(4, '01799397-9cb6-4358-a54c-e46389880ea0', '969885f3-1093-4903-ad56-aa4e123306eb', 160000000.00, '2026-05-26 09:14:23', 'SUCCESS'),
+(5, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 180000000.00, '2026-05-26 09:22:48', 'SUCCESS'),
+(6, '01799397-9cb6-4358-a54c-e46389880ea0', '969885f3-1093-4903-ad56-aa4e123306eb', 190000000.00, '2026-05-26 09:27:50', 'SUCCESS'),
+(7, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 200000000.00, '2026-05-26 10:00:37', 'SUCCESS'),
+(8, '01799397-9cb6-4358-a54c-e46389880ea0', '969885f3-1093-4903-ad56-aa4e123306eb', 210000000.00, '2026-05-26 10:04:37', 'SUCCESS'),
+(9, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 220000000.00, '2026-05-26 10:21:08', 'SUCCESS'),
+(10, '01799397-9cb6-4358-a54c-e46389880ea0', '969885f3-1093-4903-ad56-aa4e123306eb', 230000000.00, '2026-05-26 10:30:19', 'SUCCESS'),
+(11, '01799397-9cb6-4358-a54c-e46389880ea0', '23312c96-d768-4e4f-b7ff-de57529c1e97', 240000000.00, '2026-05-26 10:35:20', 'SUCCESS');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `electronic_items`
+--
+
+CREATE TABLE `electronic_items` (
+  `id` varchar(40) NOT NULL,
+  `brand` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  `warrantyMonths` int(11) NOT NULL,
+  `itemCondition` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `items`
+--
+
+CREATE TABLE `items` (
+  `id` varchar(40) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `starting_price` decimal(15,2) NOT NULL,
+  `current_price` decimal(15,2) NOT NULL,
+  `seller_Id` varchar(40) NOT NULL,
+  `highest_Bidder_Id` varchar(40) DEFAULT NULL,
+  `price_Increment` decimal(15,2) NOT NULL DEFAULT 0.00
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `items`
+--
+
+INSERT INTO `items` (`id`, `type`, `name`, `description`, `starting_price`, `current_price`, `seller_Id`, `highest_Bidder_Id`, `price_Increment`) VALUES
+('01799397-9cb6-4358-a54c-e46389880ea0', 'Art', 'randompicture', 'drawn by a 2 yo kid', 5000000.00, 240000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 0.00),
+('1d27b154-9af4-4257-af67-6cbca151ce1f', 'Vehicle', 'Mercedes-Benz 300SL', 'Manufactured in 1954', 45000000000.00, 45000000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', NULL, 2700000000.00);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `sellers`
+--
+
+CREATE TABLE `sellers` (
+  `id` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `sellers`
+--
+
+INSERT INTO `sellers` (`id`) VALUES
+('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `users`
+--
+
+CREATE TABLE `users` (
+  `id` varchar(40) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(20) NOT NULL,
+  `email` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `email`) VALUES
+('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder', ''),
+('969885f3-1093-4903-ad56-aa4e123306eb', 'Bidder2', '1234', 'Bidder', ''),
+('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller', '');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `vehicle`
+--
+
+CREATE TABLE `vehicle` (
+  `id` varchar(40) NOT NULL,
+  `licensePlate` varchar(20) NOT NULL,
+  `mileage` int(11) NOT NULL,
+  `manufacturingYear` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `vehicle`
+--
+
+INSERT INTO `vehicle` (`id`, `licensePlate`, `mileage`, `manufacturingYear`) VALUES
+('1d27b154-9af4-4257-af67-6cbca151ce1f', '', 0, 0);
+
+--
+-- Chỉ mục cho các bảng đã đổ
+--
+
+--
+-- Chỉ mục cho bảng `admins`
+--
+ALTER TABLE `admins`
+  ADD KEY `fk_admin_users` (`id`);
+
+--
+-- Chỉ mục cho bảng `artworks`
+--
+ALTER TABLE `artworks`
+  ADD KEY `fk_artworks_items` (`id`);
+
+--
+-- Chỉ mục cho bảng `bidders`
+--
+ALTER TABLE `bidders`
+  ADD KEY `fk_bidders_users` (`id`);
+
+--
+-- Chỉ mục cho bảng `bid_history`
+--
+ALTER TABLE `bid_history`
+  ADD PRIMARY KEY (`bid_id`),
+  ADD KEY `fk_bid_history_items` (`item_Id`),
+  ADD KEY `fk_bid_history_users` (`bidder_Id`);
+
+--
+-- Chỉ mục cho bảng `electronic_items`
+--
+ALTER TABLE `electronic_items`
+  ADD KEY `fk_electronic_items_items` (`id`);
+
+--
+-- Chỉ mục cho bảng `items`
+--
+ALTER TABLE `items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_items_sellers` (`seller_Id`),
+  ADD KEY `fk_items_bidders` (`highest_Bidder_Id`);
+
+--
+-- Chỉ mục cho bảng `sellers`
+--
+ALTER TABLE `sellers`
+  ADD KEY `fk_sellers_users` (`id`);
+
+--
+-- Chỉ mục cho bảng `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `vehicle`
+--
+ALTER TABLE `vehicle`
+  ADD KEY `fk_vehicle_items` (`id`);
+
+--
+-- AUTO_INCREMENT cho các bảng đã đổ
+--
+
+--
+-- AUTO_INCREMENT cho bảng `bid_history`
+--
+ALTER TABLE `bid_history`
+  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- Các ràng buộc cho các bảng đã đổ
+--
+
+--
+-- Các ràng buộc cho bảng `admins`
+--
+ALTER TABLE `admins`
+  ADD CONSTRAINT `fk_admin_users` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `artworks`
+--
+ALTER TABLE `artworks`
+  ADD CONSTRAINT `fk_artworks_items` FOREIGN KEY (`id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `bidders`
+--
+ALTER TABLE `bidders`
+  ADD CONSTRAINT `fk_bidders_users` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `bid_history`
+--
+ALTER TABLE `bid_history`
+  ADD CONSTRAINT `fk_bid_history_items` FOREIGN KEY (`item_Id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_bid_history_users` FOREIGN KEY (`bidder_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `electronic_items`
+--
+ALTER TABLE `electronic_items`
+  ADD CONSTRAINT `fk_electronic_items_items` FOREIGN KEY (`id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `items`
+--
+ALTER TABLE `items`
+  ADD CONSTRAINT `fk_items_bidders` FOREIGN KEY (`highest_Bidder_Id`) REFERENCES `bidders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_items_sellers` FOREIGN KEY (`seller_Id`) REFERENCES `sellers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `sellers`
+--
+ALTER TABLE `sellers`
+  ADD CONSTRAINT `fk_sellers_users` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `vehicle`
+--
+ALTER TABLE `vehicle`
+  ADD CONSTRAINT `fk_vehicle_items` FOREIGN KEY (`id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
