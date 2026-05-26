@@ -1,17 +1,27 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public abstract class Item extends Entity {
     private String name;
     private String description;
-    private final double startingPrice;
-    private double currentPrice;
+    private final BigDecimal startingPrice;
+    private transient ObjectProperty<BigDecimal> currentPrice = new SimpleObjectProperty<>();    private String sellerId;
+    private String highestBidderId;
+    private BigDecimal priceIncrement;
 
     private static final long serialVersionUID = 1L;
 
-    public Item(String name, String description, double startingPrice, double currentPrice) {
+    public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
         super();
         this.name = name;
-        this.currentPrice = currentPrice;
+        this.currentPrice = new SimpleObjectProperty<>(currentPrice);;
         this.startingPrice = startingPrice;
         this.description = description;
     }
@@ -30,15 +40,41 @@ public abstract class Item extends Entity {
         this.description = description;
     }
 
-    public double getStartingPrice() {
+    public BigDecimal getStartingPrice() {
         return startingPrice;
     }
 
-    public double getCurrentPrice() {
+
+    // Hàm Getter cho currentPrice (Dùng để Bind UI ở Client)
+    public ObjectProperty<BigDecimal> currentPriceProperty() {
         return currentPrice;
     }
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
+
+    // Getter/Setter thông thường
+    public BigDecimal getCurrentPrice() {
+        return currentPrice.get();
+    }
+    public void setCurrentPrice(BigDecimal price) {
+        this.currentPrice.set(price);
     }
 
+    public String getSellerId() {return sellerId;}
+    public void setSellerId(String id) {this.sellerId = id;}
+
+    public String getHighestBidderId() { return highestBidderId; }
+    public void setHighestBidderId(String highestBidderId) { this.highestBidderId = highestBidderId; }
+
+    public BigDecimal getPriceIncrement() { return priceIncrement; }
+    public void setPriceIncrement(BigDecimal priceIncrement) { this.priceIncrement = priceIncrement; }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(getCurrentPrice()); // Ghi giá trị BigDecimal thực tế
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        BigDecimal price = (BigDecimal) in.readObject();
+        this.currentPrice = new SimpleObjectProperty<>(price); // Khởi tạo lại Property sau khi nhận
+    }
 }

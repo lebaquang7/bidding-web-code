@@ -1,14 +1,14 @@
 package com.auction.server;
 
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.Auction;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.User;
+import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
+import com.auction.shared.models.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -39,7 +39,11 @@ public class ClientHandler extends Thread {
             System.out.println("Một Client đã ngắt kết nối.");
         } finally {
             // Đảm bảo đóng socket khi kết thúc
-            try { socket.close(); } catch (IOException e) { e.printStackTrace(); }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -48,36 +52,19 @@ public class ClientHandler extends Thread {
         if (request instanceof NetworkRequest) {
             NetworkRequest networkRequest = (NetworkRequest) request;
 
-            //Yêu cầu trả giá
-            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
-                BidTransaction bid = (BidTransaction) networkRequest.getData();
-                System.out.println("Nhận mức giá: " + bid.getBidAmount());
-
-                Auction currentAuction = bid.getAuction();
-
-                if (bid.getBidAmount() > currentAuction.getCurrentPrice()) {
-                    System.out.println(">>> Trả giá THÀNH CÔNG!");
-                    // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
-                } else {
-                    System.out.println(">>> Trả giá THẤP HƠN giá hiện tại. Thất bại!");
-                }
-            }
-
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
-                User loginInfo = (User) networkRequest.getData(); //
+                User loginData = (User) networkRequest.getData();
 
-                // Gọi DatabaseConfig để tìm user
-                User authenticatedUser = DatabaseConfig.findUserByUsername(loginInfo.getUsername());
+                User user = DatabaseConfig.findUserByUsername(loginData.getUsername());
 
                 try {
-                    // Kiểm tra: nếu tìm thấy user và mật khẩu khớp
-                    if (authenticatedUser != null && authenticatedUser.getPassword().equals(loginInfo.getPassword())) {
-                        // Gửi lại đúng đối tượng Admin/Bidder/Seller về cho Client
-                        out.writeObject(authenticatedUser);
+                    if (user == null) {
+                        out.writeObject("accountDoesntExist");
+                    } else if (!user.getPassword().equals(loginData.getPassword())) {
+                        out.writeObject("invalidPassword");
                     } else {
-                        // Trả về chuỗi thông báo lỗi nếu sai thông tin
-                        out.writeObject("invalidCredentials");
+                        out.writeObject(user);
                     }
                     out.flush();
                 } catch (IOException e) {
@@ -110,6 +97,79 @@ public class ClientHandler extends Thread {
                     System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
                 }
             }
+
+            // Yêu cầu bán vật phẩm
+            if (networkRequest.getType() == NetworkRequest.requestType.SellItem) {
+                Item newItem = (Item) networkRequest.getData();
+
+                try {
+                    boolean success = DatabaseConfig.saveNewItem(newItem);
+                    out.writeObject(success ? "success" : "fail");
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
+                }
+            }
+
+            // Yêu cầu lấy thông tin các vật phẩm trên DB về
+            if (networkRequest.getType() == NetworkRequest.requestType.GetAllItems) {
+                try {
+                    List<Item> allItems = DatabaseConfig.getAllItems();
+                    out.writeObject(allItems); // Gửi nguyên List đối tượng về cho Client
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi gửi danh sách Item: " + e.getMessage());
+                }
+            }
+
+            //Yêu cầu trả giá cho vật phẩm
+            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
+                BidTransaction bidData = (BidTransaction) networkRequest.getData();
+
+                try {
+                    BidStatus.bidStatus status = BiddingService.placeBid(
+                            bidData.getItemId(),
+                            bidData.getBidderId(),
+                            bidData.getBidAmount()
+                    );
+
+                    out.writeObject(status);
+                    out.flush();
+
+                    if (status == BidStatus.bidStatus.SUCCESS) {
+                        NotificationService.broadcast(bidData);
+                    }
+
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi phản hồi đặt giá: " + e.getMessage());
+                }
+            }
+
+            // Tạo một Thread luôn mở để nhận thông báo thay đổi về giá vật phẩm,etc
+            if (networkRequest.getType() == NetworkRequest.requestType.SubscribeNotification) {
+                NotificationService.addClient(this);
+                System.out.println("Một kết nối đã đăng ký nhận Real-time.");
+
+                try {
+                    while (true) {
+                        Thread.sleep(3600000);
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println("Luồng Real-time đã dừng.");
+                }
+
+                return;
+            }
+        }
+    }
+
+    public void sendToClient(Object message) {
+        try {
+            out.writeObject(message);
+            out.flush();
+        } catch (IOException e) {
+            NotificationService.removeClient(this);
+            System.err.println("Không thể gửi thông báo tới một client.");
         }
     }
 }

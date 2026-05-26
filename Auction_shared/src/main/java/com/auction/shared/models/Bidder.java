@@ -1,7 +1,9 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public class Bidder extends User {
-    private double balance;
+    private BigDecimal balance;
     private String shippingAddress;
     private int reputationScore; // đc tính sau những lần đấu giá
 
@@ -9,15 +11,15 @@ public class Bidder extends User {
 
     public Bidder(String userName, String passWord, String email, String shippingAddress, int reputationScore) {
         super(userName, passWord, email);
-        this.balance = 0.0;
+        this.balance = BigDecimal.ZERO;
         this.shippingAddress = shippingAddress;
         this.reputationScore = reputationScore;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

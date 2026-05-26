@@ -1,10 +1,12 @@
 package com.auction.server.services;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 
 import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Bidder;
@@ -16,22 +18,19 @@ public class AuctionSession {
     private final String sessionId;
     private final Item auctionItem;
     private Bidder highestBidder;
+
     private AuctionStatus currentState;
     private final List<BidTransaction> bidHistory;
     private final long durationInSeconds;
 
     private final Object lock = new Object();
-
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(); // Dùng để quản lý thời gian của phiên đấu giá và thời gian chờ thanh toán
 
     public AuctionSession(String sessionId, Item auctionItem ,long durationInSeconds) {
         this.sessionId = sessionId;
         this.auctionItem = auctionItem;
-
         this.durationInSeconds = durationInSeconds;
-
         this.bidHistory = new ArrayList<>();
-
         this.currentState = AuctionStatus.OPEN;
     }
 
@@ -49,38 +48,6 @@ public class AuctionSession {
             scheduler.schedule(this::finish, durationInSeconds, TimeUnit.SECONDS);
             return true;
         }
-    }
-
-    /**
-     *  Người tham gia có thể đặt giá trong suốt thời gian phiên đấu giá đang chạy. Mỗi lần đặt giá, hệ thống sẽ kiểm tra xem giá đặt có hợp lệ (phải cao hơn giá hiện tại) hay không. Nếu hợp lệ, thì sẽ cập nhật giá hiện tại và người thắng tạm thời (highestBidder). Đồng thời, hệ thống cũng sẽ lưu vết lịch sử giao dịch (BidTransaction) để phục vụ tính năng vẽ đồ thị trực quan sau này.
-     * @param bidder
-     * @param bidAmount
-     * @return
-     */
-
-    public boolean placeBid(Bidder bidder, double bidAmount){
-        synchronized (lock) {
-            if (currentState != AuctionStatus.RUNNING) {
-                System.out.println("phiên đấu giá chưa bắt đầu hoặc đã kết thúc, không thể đặt giá");
-                return false;
-            }
-
-            if(bidAmount <= auctionItem.getCurrentPrice()){
-                System.out.println("Giá đặt phải cao hơn giá hiện tại. Giá hiện tại: " + auctionItem.getCurrentPrice());
-                return false;
-            }
-
-            auctionItem.setCurrentPrice(bidAmount);
-            this.highestBidder = bidder;
-
-            // 3. Đóng gói và lưu vết lịch sử giao dịch (BidTransaction) phục vụ tính năng vẽ đồ thị trực quan
-            BidTransaction transaction = new BidTransaction(bidAmount,bidder, sessionId);
-            bidHistory.add(transaction);
-
-            System.out.println("[Phiên đấu giá " + sessionId + "]: Người dùng " + bidder.getUserName() + " đã đặt giá: " + bidAmount);
-            return true;
-        }
-
     }
 
     /**
@@ -109,6 +76,56 @@ public class AuctionSession {
     }
 
     /**
+     * Nếu người thắng không thanh toán trong thời gian quy định, hoặc nếu phiên đấu giá bị hủy bỏ bởi admin, thì sẽ chuyển trạng thái sang CANCELLED và thông báo cho tất cả người tham gia.
+     */
+
+    public boolean cancle(){
+        synchronized (lock){
+            if(this.currentState != AuctionStatus.RUNNING && this.currentState != AuctionStatus.FINISHED){
+                return false;
+            }
+
+            this.currentState = AuctionStatus.CANCELLED;
+            System.out.println("[Phiên đấu giá " + sessionId + "]: đã bị hủy bỏ.");
+            scheduler.shutdown();
+            return true;
+
+        }
+    }
+
+    /**
+     *  Người tham gia có thể đặt giá trong suốt thời gian phiên đấu giá đang chạy. Mỗi lần đặt giá, hệ thống sẽ kiểm tra xem giá đặt có hợp lệ (phải cao hơn giá hiện tại) hay không. Nếu hợp lệ, thì sẽ cập nhật giá hiện tại và người thắng tạm thời (highestBidder). Đồng thời, hệ thống cũng sẽ lưu vết lịch sử giao dịch (BidTransaction) để phục vụ tính năng vẽ đồ thị trực quan sau này.
+     * @param bidder
+     * @param bidAmount
+     * @return
+     */
+
+    public boolean placeBid(Bidder bidder, BigDecimal bidAmount){
+        synchronized (lock) {
+            if (currentState != AuctionStatus.RUNNING) {
+                System.out.println("phiên đấu giá chưa bắt đầu hoặc đã kết thúc, không thể đặt giá");
+                return false;
+            }
+
+            if(bidAmount.compareTo(auctionItem.getCurrentPrice()) <= 0){
+                System.out.println("Giá đặt phải cao hơn giá hiện tại. Giá hiện tại: " + auctionItem.getCurrentPrice());
+                return false;
+            }
+
+            auctionItem.setCurrentPrice(bidAmount);
+            this.highestBidder = bidder;
+
+            // 3. Đóng gói và lưu vết lịch sử giao dịch (BidTransaction) phục vụ tính năng vẽ đồ thị trực quan
+            BidTransaction transaction = new BidTransaction( auctionItem.getId(), bidder.getId(), bidAmount, LocalDateTime.now());
+            bidHistory.add(transaction);
+
+            System.out.println("[Phiên đấu giá " + sessionId + "]: Người dùng " + bidder.getUserName() + " đã đặt giá: " + bidAmount);
+            return true;
+        }
+
+    }
+
+    /**
      * Sau khi phiên đấu giá kết thúc, người thắng sẽ có một khoảng thời gian nhất định (10 phút) để thực hiện thanh toán. Nếu người thắng thanh toán thành công, thì sẽ chuyển trạng thái sang PAID và thông báo cho tất cả người tham gia. Nếu người thắng không thanh toán trong thời gian quy định, thì sẽ hủy bỏ phiên đấu giá và thông báo cho tất cả người tham gia.
      */
 
@@ -130,24 +147,6 @@ public class AuctionSession {
 
             System.out.println(" [Phiên " + sessionId + "] Thanh toán thất bại. Người thắng " + highestBidder.getUserName() + " không đủ tiền để thanh toán.");
             return false;
-        }
-    }
-
-    /**
-     * Nếu người thắng không thanh toán trong thời gian quy định, hoặc nếu phiên đấu giá bị hủy bỏ bởi admin, thì sẽ chuyển trạng thái sang CANCELLED và thông báo cho tất cả người tham gia.
-     */
-
-    public boolean cancle(){
-        synchronized (lock){
-            if(this.currentState != AuctionStatus.RUNNING && this.currentState != AuctionStatus.FINISHED){
-                return false;
-            }
-
-            this.currentState = AuctionStatus.CANCELLED;
-            System.out.println("[Phiên đấu giá " + sessionId + "]: đã bị hủy bỏ.");
-            scheduler.shutdown();
-            return true;
-
         }
     }
 

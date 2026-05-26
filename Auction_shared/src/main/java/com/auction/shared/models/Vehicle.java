@@ -1,12 +1,17 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public class Vehicle extends Item{
     private String licensePlate;
     private int mileage;
     private int manufacturingYear;
 
-    public Vehicle(String name, String description, double startingPrice, double currentPrice){
+    public Vehicle(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice, String licensePlate, int mileage, int manufacturingYear){
         super(name, description, startingPrice, currentPrice);
+        this.licensePlate = licensePlate;
+        this.mileage = mileage;
+        this.manufacturingYear = manufacturingYear;
     }
 
     public String getLicensePlate() {

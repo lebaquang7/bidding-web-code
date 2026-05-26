@@ -3,6 +3,7 @@ package com.auction.client.Controllers;
 import java.io.IOException;
 import java.net.URL;
 
+import com.auction.client.Models.ThemeHandler;
 import com.auction.client.Properties;
 import com.auction.shared.models.Item;
 
@@ -34,6 +35,7 @@ public class SceneController {
         }
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        ThemeHandler.getInstance().addActiveScene(scene);
         stage.setScene(scene);
         stage.show();
     }
@@ -78,6 +80,7 @@ public class SceneController {
             Stage popupStage = new Stage();
             popupStage.setTitle(Properties.getAPPLICATION_NAME_AND_VERSION());
             Scene popupScene = new Scene(popupRoot);
+            ThemeHandler.getInstance().addActiveScene(popupScene);
             popupStage.setScene(popupScene);
             popupStage.show();
         } catch (IOException errorEvent) {

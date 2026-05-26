@@ -1,5 +1,7 @@
 package com.auction.client;
 
+import java.math.BigDecimal;
+
 import javafx.stage.Screen;
 
 public class Properties {
@@ -29,10 +31,14 @@ public class Properties {
     }
 
 
+    //Consolidated exchange rate between currencies and VND, used for Currency Selector setting (Models/CurrencySelectorHandler.java).
+    private static final BigDecimal USD_TO_VND_RATE = new BigDecimal("26300");
+    public static BigDecimal getUSD_TO_VND_RATE(){
+        return USD_TO_VND_RATE;
+    }
 
-    /**
-     * Consolidated Window Size config values
-     */
+    //Consolidated window size config value
+    //TODO: find an use or delete this.
 
     private static final int DEFAULT_STAGE_SIZE_X = 600;
     private static final int DEFAULT_STAGE_SIZE_Y = 400;

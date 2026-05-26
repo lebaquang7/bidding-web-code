@@ -2,32 +2,35 @@ package com.auction.shared.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
-public class BidTransaction extends Entity implements Serializable{
-    private double bidAmount;
+public class BidTransaction implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String itemId;
+    private String bidderId;
+    private BigDecimal bidAmount;
     private LocalDateTime bidTime;
-    private User bidder;
-    private String auctionId;
 
-    public BidTransaction(double bidAmount, User bidder, String auctionId) {
-        super();
+    // Constructor dùng khi Client gửi yêu cầu đặt giá (Request)
+    public BidTransaction(String itemId, String bidderId, BigDecimal bidAmount) {
+        this.itemId = itemId;
+        this.bidderId = bidderId;
         this.bidAmount = bidAmount;
         this.bidTime = LocalDateTime.now();
-        this.auctionId = auctionId;
-        this.bidder = bidder;
     }
 
-    public double getBidAmount() {
-        return bidAmount;
+    // Constructor đầy đủ (Dùng khi lấy dữ liệu lịch sử từ DB lên)
+    public BidTransaction(String itemId, String bidderId, BigDecimal bidAmount, LocalDateTime bidTime) {
+        this.itemId = itemId;
+        this.bidderId = bidderId;
+        this.bidAmount = bidAmount;
+        this.bidTime = bidTime;
     }
 
-    public String getAuctionId() { return auctionId; }
-
-    public User getBidder() {
-        return bidder;
-    }
-
-    public LocalDateTime getBidTime() {
-        return bidTime;
-    }
+    // Getters
+    public String getItemId() { return itemId; }
+    public String getBidderId() { return bidderId; }
+    public BigDecimal getBidAmount() { return bidAmount; }
+    public LocalDateTime getBidTime() { return bidTime; }
 }
