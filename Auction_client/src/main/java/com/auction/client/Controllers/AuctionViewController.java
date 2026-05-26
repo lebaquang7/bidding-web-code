@@ -2,9 +2,11 @@ package com.auction.client.Controllers;
 
 import com.auction.client.Models.*;
 import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 
 import com.auction.shared.models.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -38,7 +40,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
 
     @FXML
     public void auctionViewPlaceBid(ActionEvent event) {
-        // 1. Xóa thông báo lỗi/thành công cũ (reset màu chữ về đỏ mặc định)
+        // 1. Xóa thông báo lỗi/thành công cũ
         auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: red;");
         auctionViewPlaceBidErrorBox.setText("");
 
@@ -100,7 +102,21 @@ public class AuctionViewController implements SceneController.ItemLoadable{
 
     @Override
     public void setItem(Item item){
-        this.currentItem=item;
+        this.currentItem = Inventory.getItemById(item.getId());
+        if (this.currentItem == null) this.currentItem = item; // Phòng hờ nếu Inventory rỗng
+
+        this.currentItem.currentPriceProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> {
+                if (newVal != null) {
+                    CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
+                    LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
+                    System.out.println("UI đã cập nhật giá mới: " + newVal);
+                }
+            });
+        });
+
+        // Hiển thị giá ban đầu
+        CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, item.getCurrentPrice());
 
         //init labels
         auctionViewItemName.setText(currentItem.getItemName());

@@ -38,6 +38,7 @@ public class ItemsEventHandler {
 
     // Lấy item từ DB về
     public static List<Item> fetchAllItems() {
+        //new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("127.0.0.1", 1234);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
@@ -52,7 +53,11 @@ public class ItemsEventHandler {
             // Nhận kết quả từ ClientHandler trả về
             Object response = in.readObject();
             if (response instanceof List<?>) {
-                return (List<Item>) response;
+                List<Item> items = (List<Item>) response;
+
+                com.auction.shared.models.Inventory.setAllItems(items);
+
+                return items;
             }
             return new ArrayList<>();
 
@@ -63,13 +68,13 @@ public class ItemsEventHandler {
     }
 
     public static BidStatus.bidStatus placeBid(String itemId, String userId, BigDecimal amount) {
+        //new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("127.0.0.1", 1234);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
             out.flush();
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-            // Đóng gói dữ liệu trả giá
             BidTransaction bidData = new BidTransaction(itemId, userId, amount);
 
             // Gửi request với type là PlaceBid

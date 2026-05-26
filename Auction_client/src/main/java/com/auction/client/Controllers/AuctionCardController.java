@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.application.Platform;
 
 public class AuctionCardController {
 
@@ -28,6 +29,16 @@ public class AuctionCardController {
 
         CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, item.getCurrentPrice());
         LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+
+        item.currentPriceProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> {
+                if (newVal != null) {
+                    // Tự động cập nhật lại nhãn giá trên thẻ khi có người trả giá cao hơn
+                    CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, newVal);
+                    LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+                }
+            });
+        });
     }
 
     public void mainMenuAuctionCardGoToItemDetails(ActionEvent event){
