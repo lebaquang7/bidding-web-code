@@ -34,7 +34,7 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
         itemDetailsID.setText(currentItem.getId());
         LabelHandler.setDetailedTooltip(itemDetailsID);
 
-        itemDetailsItemName.setText(currentItem.getItemName());
+        itemDetailsItemName.setText(currentItem.getName());
         LabelHandler.setDetailedTooltip(itemDetailsItemName);
 
         itemDetailsDescription.setText(currentItem.getDescription());
