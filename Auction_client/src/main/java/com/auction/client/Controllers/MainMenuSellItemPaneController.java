@@ -3,6 +3,7 @@ package com.auction.client.Controllers;
 import java.math.BigDecimal;
 
 import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.Electronics;
@@ -31,6 +32,11 @@ public class MainMenuSellItemPaneController {
             itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
             itemTypeComboBox.getSelectionModel().selectFirst();
         }
+
+        //set prompt text based on currency type. 
+        double convertedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(BigDecimal.valueOf(100000)).doubleValue();
+        String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
+        mainMenuSellItemPaneStartingPriceField.setPromptText(String.format("Input starting price.... (Minimum of %.2f %s)", convertedPrice , activeCurrency));
     }
 
     @FXML
@@ -43,7 +49,7 @@ public class MainMenuSellItemPaneController {
 
             String name = mainMenuSellItemPaneItemNameField.getText();
             String description = mainMenuSellItemPaneItemDescriptionField.getText();
-            BigDecimal startingPrice = BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText())));
+            BigDecimal startingPrice = CurrencySelectorHandler.getInstance().getVNDPrice(BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
             BigDecimal currentPrice = startingPrice;
             double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
             BigDecimal priceIncrement = startingPrice.multiply(BigDecimal.valueOf(percentage / 100.0));

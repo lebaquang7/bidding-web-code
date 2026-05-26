@@ -35,6 +35,36 @@ public class CurrencySelectorHandler {
     }
 
     /**
+     * Usage: convert price to specific currency type
+     * @param price
+     * @return
+     */
+    public BigDecimal getConvertedPrice(BigDecimal price){
+        BigDecimal convertedPrice;
+        switch (CurrencySelectorHandler.getInstance().getActiveCurrency()) {
+            case "VND" -> convertedPrice = price;
+            case "USD" -> convertedPrice = price.divide(Properties.getUSD_TO_VND_RATE(), 2,  RoundingMode.HALF_UP); //divide by rate, with 2 decimal places
+            default -> convertedPrice = price;
+        }
+        return convertedPrice;
+    }
+
+    /**
+     * Usage: convert price in specific currency type back to VND, since VND is the standard currency used in storage
+     * @param price
+     * @return
+     */
+    public BigDecimal getVNDPrice(BigDecimal price){
+        BigDecimal convertedPrice;
+        switch (CurrencySelectorHandler.getInstance().getActiveCurrency()) {
+            case "VND" -> convertedPrice = price;
+            case "USD" -> convertedPrice = price.multiply(Properties.getUSD_TO_VND_RATE());
+            default -> convertedPrice = price;
+        }
+        return convertedPrice;
+    }
+
+    /**
      * Bind labels that displays price with currency type.
      * Bind still functions after method finishes
      * @param label
@@ -45,12 +75,7 @@ public class CurrencySelectorHandler {
         label.setTooltip(tooltip);
         Runnable updateUI = () -> {
             String currencyUnit = CurrencySelectorHandler.getInstance().getActiveCurrency();
-            BigDecimal convertedPrice;
-            switch (currencyUnit) {
-                case "VND" -> convertedPrice = price;
-                case "USD" -> convertedPrice = price.divide(Properties.getUSD_TO_VND_RATE(), RoundingMode.HALF_UP);
-                default -> convertedPrice = price;
-            }
+            BigDecimal convertedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(price);
             tooltip.setText(convertedPrice.toString()+" "+currencyUnit);
             label.setText(String.format("%s %s", CurrencySelectorHandler.abbreviateCurrency(convertedPrice), currencyUnit));
             //^ custom formatting, display first variable (price) with two decimals max (abbreviated, tooltip reveals full), then second variable (currency unit)

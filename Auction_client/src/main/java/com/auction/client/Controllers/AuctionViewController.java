@@ -1,18 +1,23 @@
 package com.auction.client.Controllers;
 
-import com.auction.client.Models.*;
+import java.math.BigDecimal;
+
+import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.Models.CurrencySelectorHandler;
+import com.auction.client.Models.ItemsEventHandler;
+import com.auction.client.Models.LabelHandler;
+import com.auction.client.Models.MiscTools;
+import com.auction.client.Models.TestChartData;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.Item;
-
 import com.auction.shared.models.User;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-
-import java.math.BigDecimal;
 
 public class AuctionViewController implements SceneController.ItemLoadable{
     @FXML Label auctionViewItemName;
@@ -126,6 +131,13 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         auctionViewPriceChartXAxis.setLowerBound(0);
         auctionViewPriceChartXAxis.setUpperBound(150);
 
+
+        auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
+        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable, oldVal, newVal) -> {
+            BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
+            auctionViewPriceChartYAxis.setUpperBound(MiscTools.roundUp(currentPrice.doubleValue()));
+            auctionViewPriceChartYAxis.setTickUnit(MiscTools.roundUp(currentPrice.doubleValue()/10));
+        });
         //TODO: add observer for price. also to do this with other infos that dynamically changes.
         auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
         auctionViewPriceChartYAxis.setUpperBound(item.getCurrentPrice().doubleValue());
@@ -133,6 +145,6 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         //TODO: tick mark auto adjust based on lower and upper bound
         auctionViewPriceChartYAxis.setTickUnit(500000);
 
-        auctionViewPriceChart.setData(TestChartData.getSalesData());
+        auctionViewPriceChart.setData(TestChartData.getSalesData(item));
     }
 }
