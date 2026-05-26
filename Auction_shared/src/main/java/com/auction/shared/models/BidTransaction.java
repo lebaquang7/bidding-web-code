@@ -3,16 +3,17 @@ package com.auction.shared.models;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class BidTransaction implements Serializable{
+public class BidTransaction extends Entity implements Serializable{
     private double bidAmount;
     private LocalDateTime bidTime;
     private User bidder;
-    private Auction auction;
+    private String auctionId;
 
-    public BidTransaction(double bidAmount, LocalDateTime bidTime, User bidder, Auction auction) {
+    public BidTransaction(double bidAmount, User bidder, String auctionId) {
+        super();
         this.bidAmount = bidAmount;
-        this.bidTime = bidTime;
-        this.auction = auction;
+        this.bidTime = LocalDateTime.now();
+        this.auctionId = auctionId;
         this.bidder = bidder;
     }
 
@@ -20,9 +21,7 @@ public class BidTransaction implements Serializable{
         return bidAmount;
     }
 
-    public Auction getAuction() {
-        return auction;
-    }
+    public String getAuctionId() { return auctionId; }
 
     public User getBidder() {
         return bidder;

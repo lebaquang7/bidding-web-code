@@ -7,9 +7,9 @@ public class Bidder extends User {
 
     private static final long serialVersionUID = 1L;
 
-    public Bidder(String userName, String passWord, String shippingAddress, double balance, int reputationScore) {
-        super(userName, passWord);
-        this.balance = balance;
+    public Bidder(String userName, String passWord, String email, String shippingAddress, int reputationScore) {
+        super(userName, passWord, email);
+        this.balance = 0.0;
         this.shippingAddress = shippingAddress;
         this.reputationScore = reputationScore;
     }
@@ -26,10 +26,6 @@ public class Bidder extends User {
     }
     public void setShippingAddress(String shippingAddress){
         this.shippingAddress = shippingAddress;
-    }
-
-    public void deposit(double amount) {
-        if (amount > 0) this.balance += amount;
     }
 
     public int getReputationScore() {return reputationScore;}

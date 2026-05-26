@@ -16,7 +16,7 @@ public abstract class Item extends Entity {
         this.description = description;
     }
 
-    public String getItemName() {
+    public String getName() {
         return name;
     }
     public void setName(String name) {
@@ -26,7 +26,7 @@ public abstract class Item extends Entity {
     public String getDescription() {
         return description;
     }
-    public void setDescription() {
+    public void setDescription(String description) {
         this.description = description;
     }
 
