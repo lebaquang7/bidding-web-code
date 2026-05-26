@@ -30,6 +30,7 @@ public class CurrencySelectorHandler {
         return activeCurrency.get();
     }
     public void setActiveCurrency(String newCurrency){
+        ConfigFileHandler.setProperty("currencyType", newCurrency);
         activeCurrency.set(newCurrency);
     }
 

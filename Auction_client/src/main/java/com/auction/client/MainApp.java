@@ -2,6 +2,7 @@ package com.auction.client;
 
 import java.io.IOException;
 
+import com.auction.client.Controllers.MainMenuSettingPaneController;
 import com.auction.client.Controllers.SceneController;
 import com.auction.client.Models.ThemeHandler;
 
@@ -41,5 +42,7 @@ public class MainApp extends Application{
             event.consume(); //consume the event, so it only executes closing if user presses OK 
             SceneController.closeWithExitPrompt(primaryStage);
         });
+        
+        MainMenuSettingPaneController.loadStoredConfigs();
     }
 }

@@ -1,13 +1,9 @@
 package com.auction.client.Controllers;
 
-import com.auction.shared.models.Item;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+
 
 public class MainMenuController {
     //Path to the view this controller is affiliated with
@@ -17,8 +13,6 @@ public class MainMenuController {
     }
     
     @FXML BorderPane mainMenuMainBorderPane;
-    @FXML FlowPane mainMenuAuctionListFlowPane;
-    ObservableList<Item> itemList = FXCollections.observableArrayList();
 
     public void initialize(){
 

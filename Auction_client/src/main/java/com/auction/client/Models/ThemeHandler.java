@@ -49,6 +49,7 @@ public class ThemeHandler {
      * @param theme
     */
     public void setTheme(String theme){
+        ConfigFileHandler.setProperty("theme", theme);
         activeTheme = theme;
         //cleanup inactive scenes
         activeScenes.removeIf(scene -> scene.getWindow() == null);
