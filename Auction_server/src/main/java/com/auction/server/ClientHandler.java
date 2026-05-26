@@ -1,6 +1,7 @@
 package com.auction.server;
 
 import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
 import com.auction.shared.models.*;
 
 import java.io.IOException;
@@ -136,25 +137,39 @@ public class ClientHandler extends Thread {
                     out.flush();
 
                     if (status == BidStatus.bidStatus.SUCCESS) {
-                        // Gửi thông tin mới về giá vật phẩm hiện tại
-                        for (ClientHandler client : MainServer.clients) {
-                            client.sendNotification(bidData);
-                        }
+                        NotificationService.broadcast(bidData);
                     }
 
                 } catch (IOException e) {
                     System.err.println("Lỗi khi phản hồi đặt giá: " + e.getMessage());
                 }
             }
+
+            // Tạo một Thread luôn mở để nhận thông báo thay đổi về giá vật phẩm,etc
+            if (networkRequest.getType() == NetworkRequest.requestType.SubscribeNotification) {
+                NotificationService.addClient(this);
+                System.out.println("Một kết nối đã đăng ký nhận Real-time.");
+
+                try {
+                    while (true) {
+                        Thread.sleep(3600000);
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println("Luồng Real-time đã dừng.");
+                }
+
+                return;
+            }
         }
     }
 
-    public void sendNotification(Object msg) {
+    public void sendToClient(Object message) {
         try {
-            out.writeObject(msg);
+            out.writeObject(message);
             out.flush();
         } catch (IOException e) {
-            MainServer.clients.remove(this); // Xóa nếu client ngắt kết nối
+            NotificationService.removeClient(this);
+            System.err.println("Không thể gửi thông báo tới một client.");
         }
     }
 }
