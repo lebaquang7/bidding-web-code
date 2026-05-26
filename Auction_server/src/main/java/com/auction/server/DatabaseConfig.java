@@ -31,7 +31,6 @@ public class DatabaseConfig {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
-    //Tìm User khi đăng nhập
     // Tìm User khi đăng nhập
     public static User findUserByUsername(String username) {
         // 1. Chỉ tìm trong bảng users trước để kiểm tra tài khoản có tồn tại không
@@ -105,7 +104,6 @@ public class DatabaseConfig {
         return null;
     }
 
-    //Cần sửa lại sau khi cập nhật database, tách riêng từng loại User
     //Lưu User vào database khi đăng ký
     public static boolean saveNewUser(User user) {
         String sqlUser = "INSERT INTO users (id, username, password, role, email) VALUES (?, ?, ?, ?, ?)";
@@ -165,7 +163,7 @@ public class DatabaseConfig {
 
     //Thêm vật phẩm vào database khi bán vật phẩm
     public static boolean saveNewItem(Item item) {
-        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, sellerId) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, seller_Id, price_Increment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlSub = "";
 
         if (item instanceof Art) {
@@ -192,6 +190,7 @@ public class DatabaseConfig {
                 psItem.setBigDecimal(5, item.getStartingPrice());
                 psItem.setBigDecimal(6, item.getStartingPrice());
                 psItem.setString(7, item.getSellerId());
+                psItem.setBigDecimal(8, item.getPriceIncrement());
 
                 psItem.executeUpdate();
             }
@@ -233,6 +232,7 @@ public class DatabaseConfig {
         }
     }
 
+    // Hàm lấy tất cả vật phẩm trong DB để đưa lên giao diện
     public static List<Item> getAllItems() {
         List<Item> items = new ArrayList<>();
 
@@ -249,7 +249,8 @@ public class DatabaseConfig {
                 String description = rs.getString("description");
                 BigDecimal startingPrice = rs.getBigDecimal("starting_price");
                 BigDecimal currentPrice = rs.getBigDecimal("current_price");
-                String sellerId = rs.getString("sellerId");
+                String sellerId = rs.getString("seller_Id");
+                BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
 
                 Item item = null;
                 if ("Art".equals(type)) {
@@ -301,6 +302,8 @@ public class DatabaseConfig {
                 if (item != null) {
                     item.setId(id);
                     item.setSellerId(sellerId);
+                    item.setHighestBidderId(rs.getString("highest_Bidder_Id"));
+                    item.setPriceIncrement(priceIncrement);
                     items.add(item);
                 }
             }
@@ -308,5 +311,128 @@ public class DatabaseConfig {
             System.err.println("Lỗi lấy danh sách sản phẩm: " + e.getMessage());
         }
         return items;
+    }
+
+    // Hàm lấy 1 vật phẩm duy nhất (Dùng cho BiddingService)
+    public static Item getItemById(String itemId) {
+        String sql = "SELECT * FROM items WHERE id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, itemId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("id");
+                    String type = rs.getString("type");
+                    String name = rs.getString("name");
+                    String description = rs.getString("description");
+                    BigDecimal startingPrice = rs.getBigDecimal("starting_price");
+                    BigDecimal currentPrice = rs.getBigDecimal("current_price");
+                    String sellerId = rs.getString("seller_Id");
+                    BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
+                    String highestBidderId = rs.getString("highest_Bidder_Id");
+
+                    Item item = null;
+
+                    if ("Art".equals(type)) {
+                        String sqlArt = "SELECT * FROM artworks WHERE id = ?";
+                        try (PreparedStatement psSub = connection.prepareStatement(sqlArt)) {
+                            psSub.setString(1, id);
+                            try (ResultSet rsSub = psSub.executeQuery()) {
+                                if (rsSub.next()) {
+                                    String artistName = rsSub.getString("artistName");
+                                    int creationYear = rsSub.getInt("creationYear");
+                                    String medium = rsSub.getString("medium");
+                                    Boolean isOriginal = rsSub.getBoolean("isOriginal");
+                                    item = new Art(name, description, startingPrice, currentPrice, artistName, isOriginal ,creationYear, medium);
+                                }
+                            }
+                        }
+                    } else if ("Electronics".equals(type)) {
+                        String sqlElec = "SELECT * FROM electronic_items WHERE id = ?";
+                        try (PreparedStatement psSub = connection.prepareStatement(sqlElec)) {
+                            psSub.setString(1, id);
+                            try (ResultSet rsSub = psSub.executeQuery()) {
+                                if (rsSub.next()) {
+                                    int warrantyMonths = rsSub.getInt("warrantyMonths");
+                                    String itemCondition = rsSub.getString("itemCondition");
+                                    String brand = rsSub.getString("brand");
+                                    String model = rsSub.getString("model");
+                                    item = new Electronics(name, description, startingPrice, currentPrice, warrantyMonths, itemCondition, brand, model);
+                                }
+                            }
+                        }
+                    } else if ("Vehicle".equals(type)) {
+                        String sqlVehicle = "SELECT * FROM vehicle WHERE id = ?";
+                        try (PreparedStatement psSub = connection.prepareStatement(sqlVehicle)) {
+                            psSub.setString(1, id);
+                            try (ResultSet rsSub = psSub.executeQuery()) {
+                                if (rsSub.next()) {
+                                    String licensePlate = rsSub.getString("licensePlate");
+                                    int mileage = rsSub.getInt("mileage");
+                                    int manufacturingYear = rsSub.getInt("manufacturingYear");
+                                    item = new Vehicle(name, description, startingPrice, currentPrice, licensePlate, mileage, manufacturingYear);
+                                }
+                            }
+                        }
+                    }
+
+                    if (item != null) {
+                        item.setId(id);
+                        item.setSellerId(sellerId);
+                        item.setPriceIncrement(priceIncrement);
+                        item.setHighestBidderId(highestBidderId);
+                    }
+                    return item;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi tìm vật phẩm theo ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Hàm thực hiện yêu cầu lưu lịch sử đấu giá
+    public static boolean executeBidTransaction(String itemId, String bidderId, BigDecimal amount) {
+        String insertHistorySql = "INSERT INTO bid_history (item_id, bidder_id, bid_amount, bid_time) VALUES (?, ?, ?, NOW())";
+        String updateItemSql = "UPDATE items SET current_price = ?, highest_bidder_id = ? WHERE id = ?";
+
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Ghi vào lịch sử đấu giá
+            try (PreparedStatement psHistory = conn.prepareStatement(insertHistorySql)) {
+                psHistory.setString(1, itemId);
+                psHistory.setString(2, bidderId);
+                psHistory.setBigDecimal(3, amount);
+                psHistory.executeUpdate();
+            }
+
+            // 2. Cập nhật thông tin mới nhất cho vật phẩm
+            try (PreparedStatement psUpdate = conn.prepareStatement(updateItemSql)) {
+                psUpdate.setBigDecimal(1, amount);
+                psUpdate.setString(2, bidderId);
+                psUpdate.setString(3, itemId);
+                psUpdate.executeUpdate();
+            }
+
+            conn.commit(); // Thành công hết thì mới lưu
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) { e.printStackTrace(); }
+            }
+        }
     }
 }

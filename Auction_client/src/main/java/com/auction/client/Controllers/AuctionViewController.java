@@ -1,16 +1,18 @@
 package com.auction.client.Controllers;
 
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.LabelHandler;
-import com.auction.client.Models.TestChartData;
+import com.auction.client.Models.*;
+import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.Item;
 
+import com.auction.shared.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
+import java.math.BigDecimal;
 
 public class AuctionViewController implements SceneController.ItemLoadable{
     @FXML Label auctionViewItemName;
@@ -34,8 +36,65 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         SceneController.closeScene(event);
     }
 
+    @FXML
+    public void auctionViewPlaceBid(ActionEvent event) {
+        // 1. Xóa thông báo lỗi/thành công cũ (reset màu chữ về đỏ mặc định)
+        auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: red;");
+        auctionViewPlaceBidErrorBox.setText("");
+
+        String bidInput = auctionViewPlaceBidBox.getText();
+
+        // 2. Kiểm tra rỗng
+        if (bidInput == null || bidInput.trim().isEmpty()) {
+            auctionViewPlaceBidErrorBox.setText("Vui lòng nhập số tiền muốn trả!");
+            return;
+        }
+
+        try {
+            BigDecimal bidAmount = new BigDecimal(bidInput);
+
+            // 3. Kiểm tra logic cơ bản ở Client (Giảm tải cho Server)
+            if (bidAmount.compareTo(currentItem.getCurrentPrice()) <= 0) {
+                auctionViewPlaceBidErrorBox.setText("Giá trả phải lớn hơn giá hiện tại!");
+                return;
+            }
+
+            // 4. Lấy thông tin User hiện tại đang đăng nhập
+            User currentUser = AccountEventHandler.getCurrentUser();
+            if (currentUser == null) {
+                auctionViewPlaceBidErrorBox.setText("Lỗi: Không tìm thấy thông tin phiên đăng nhập!");
+                return;
+            }
+
+            // 5. Gửi Request lên Server thông qua Handler
+            // Trả về enum BidStatus từ Server
+            BidStatus.bidStatus result = ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
+
+            // 6. Xử lý UI dựa trên phản hồi của Server
+            if (result == BidStatus.bidStatus.SUCCESS) {
+                auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: green;");
+                auctionViewPlaceBidErrorBox.setText("Đặt giá thành công!");
+                auctionViewPlaceBidBox.clear();
+
+                // Lưu ý: Label currentBid sẽ tự nhảy số khi bạn làm xong phần Real-time Broadcast.
+                // Tạm thời chưa cần gọi update Label ở đây để tránh bị lệch dữ liệu nếu Server chưa lưu.
+
+            } else if (result == BidStatus.bidStatus.INVALID) {
+                auctionViewPlaceBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
+            } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
+                auctionViewPlaceBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
+            } else if (result == BidStatus.bidStatus.EXPIRED) {
+                auctionViewPlaceBidErrorBox.setText("Phiên đấu giá này đã kết thúc!");
+            } else {
+                auctionViewPlaceBidErrorBox.setText("Giao dịch bị từ chối, vui lòng thử lại.");
+            }
+
+        } catch (NumberFormatException e) {
+            auctionViewPlaceBidErrorBox.setText("Vui lòng nhập đúng định dạng số tiền!");
+        }
+    }
+
     //TODO: work on these
-    public void auctionViewPlaceBid(ActionEvent event){}
     public void auctionViewEnableAutoBid(ActionEvent event){}
     public void auctionViewStopAutoBid(ActionEvent event){}
 

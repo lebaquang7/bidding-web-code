@@ -8,6 +8,8 @@ public abstract class Item extends Entity {
     private final BigDecimal startingPrice;
     private BigDecimal currentPrice;
     private String sellerId;
+    private String highestBidderId;
+    private BigDecimal priceIncrement;
 
     private static final long serialVersionUID = 1L;
 
@@ -46,4 +48,10 @@ public abstract class Item extends Entity {
 
     public String getSellerId() {return sellerId;}
     public void setSellerId(String id) {this.sellerId = id;}
+
+    public String getHighestBidderId() { return highestBidderId; }
+    public void setHighestBidderId(String highestBidderId) { this.highestBidderId = highestBidderId; }
+
+    public BigDecimal getPriceIncrement() { return priceIncrement; }
+    public void setPriceIncrement(BigDecimal priceIncrement) { this.priceIncrement = priceIncrement; }
 }
