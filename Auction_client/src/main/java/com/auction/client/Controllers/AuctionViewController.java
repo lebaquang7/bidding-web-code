@@ -21,6 +21,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class AuctionViewController implements SceneController.ItemLoadable{
     @FXML Label auctionViewItemName;
     @FXML Label auctionViewStartingBid;
@@ -58,7 +61,16 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         }
 
         try {
-            BigDecimal bidAmount = new BigDecimal(bidInput);
+            BigDecimal bidAmount = new BigDecimal(auctionViewPlaceBidBox.getText());
+
+            BigDecimal incrementPercent = currentItem.getPriceIncrement();
+            BigDecimal multiplier = incrementPercent.add(new BigDecimal("100")).divide(new BigDecimal("100")).setScale(0, RoundingMode.FLOOR);
+            BigDecimal minBidRequired = currentItem.getCurrentPrice().multiply(multiplier);
+
+            if (bidAmount.compareTo(minBidRequired) < 0) {
+                auctionViewPlaceBidErrorBox.setText("Giá tối thiểu: " + minBidRequired.toPlainString());
+                return;
+            }
 
             // 3. Kiểm tra logic cơ bản ở Client (Giảm tải cho Server)
             if (bidAmount.compareTo(currentItem.getCurrentPrice()) <= 0) {
@@ -114,6 +126,10 @@ public class AuctionViewController implements SceneController.ItemLoadable{
             Platform.runLater(() -> {
                 if (newVal != null) {
                     CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
+
+                    BigDecimal nextMin = newVal.multiply(item.getPriceIncrement().add(new BigDecimal("100")).divide(new BigDecimal("100"))).setScale(0, RoundingMode.UP);
+                    auctionViewPlaceBidErrorBox.setText("Tối thiểu: " + nextMin.toPlainString());
+
                     LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
                     System.out.println("UI đã cập nhật giá mới: " + newVal);
                 }

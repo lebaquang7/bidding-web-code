@@ -163,7 +163,7 @@ public class DatabaseConfig {
 
     //Thêm vật phẩm vào database khi bán vật phẩm
     public static boolean saveNewItem(Item item) {
-        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, seller_Id, price_Increment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO items (id, type, name, description, starting_price, current_price, seller_Id, price_Increment, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlSub = "";
 
         if (item instanceof Art) {
@@ -191,6 +191,7 @@ public class DatabaseConfig {
                 psItem.setBigDecimal(6, item.getStartingPrice());
                 psItem.setString(7, item.getSellerId());
                 psItem.setBigDecimal(8, item.getPriceIncrement());
+                psItem.setString(9, item.getImagePath());
 
                 psItem.executeUpdate();
             }
@@ -251,6 +252,7 @@ public class DatabaseConfig {
                 BigDecimal currentPrice = rs.getBigDecimal("current_price");
                 String sellerId = rs.getString("seller_Id");
                 BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
+                String imagePath = rs.getString("image_path");
 
                 Item item = null;
                 if ("Art".equals(type)) {
@@ -304,6 +306,7 @@ public class DatabaseConfig {
                     item.setSellerId(sellerId);
                     item.setHighestBidderId(rs.getString("highest_Bidder_Id"));
                     item.setPriceIncrement(priceIncrement);
+                    item.setImagePath(imagePath);
                     items.add(item);
                 }
             }

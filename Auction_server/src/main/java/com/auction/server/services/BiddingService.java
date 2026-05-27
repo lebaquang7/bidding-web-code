@@ -4,6 +4,7 @@ import com.auction.server.DatabaseConfig;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.Item;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,7 +32,9 @@ public class BiddingService {
             }
 
             // Giá mới >= Giá hiện tại + Bước giá
-            BigDecimal minRequiredBid = item.getCurrentPrice().add(item.getPriceIncrement());
+            BigDecimal incrementPercent = item.getPriceIncrement();
+            BigDecimal multiplier = incrementPercent.add(new BigDecimal("100")).divide(new BigDecimal("100")).setScale(0, RoundingMode.FLOOR);
+            BigDecimal minRequiredBid = item.getCurrentPrice().multiply(multiplier);
             if (bidAmount.compareTo(minRequiredBid) < 0) {
                 System.out.println("Lỗi: Giá trả thấp hơn mức tối thiểu yêu cầu.");
                 return BidStatus.bidStatus.INVALID;

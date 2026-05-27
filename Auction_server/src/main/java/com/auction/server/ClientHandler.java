@@ -4,6 +4,8 @@ import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
 import com.auction.shared.models.*;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -103,6 +105,19 @@ public class ClientHandler extends Thread {
                 Item newItem = (Item) networkRequest.getData();
 
                 try {
+                    // Kiểm tra nếu có ảnh
+                    if (newItem.getImageBytes() != null && newItem.getImagePath() != null) {
+                        File imageDir = new File("server_storage/item_images");
+                        if (!imageDir.exists()) imageDir.mkdirs();
+
+                        String uniqueFileName = System.currentTimeMillis() + "_" + newItem.getImagePath();
+                        File fileToSave = new File(imageDir, uniqueFileName);
+
+                        Files.write(fileToSave.toPath(), newItem.getImageBytes());
+
+                        newItem.setImagePath(uniqueFileName);
+                    }
+
                     boolean success = DatabaseConfig.saveNewItem(newItem);
                     out.writeObject(success ? "success" : "fail");
                     out.flush();
@@ -119,6 +134,24 @@ public class ClientHandler extends Thread {
                     out.flush();
                 } catch (IOException e) {
                     System.err.println("Lỗi gửi danh sách Item: " + e.getMessage());
+                }
+            }
+
+            // Yêu cầu lấy dữ liệu ảnh (mảng byte) từ server_storage
+            if (networkRequest.getType() == NetworkRequest.requestType.GetItemImage) {
+                String fileName = (String) networkRequest.getData();
+                try {
+                    File imageFile = new File("server_storage/item_images", fileName);
+
+                    if (imageFile.exists()) {
+                        byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+                        out.writeObject(imageBytes);
+                    } else {
+                        out.writeObject(null);
+                    }
+                    out.flush();
+                } catch (IOException e) {
+                    System.err.println("Lỗi khi gửi dữ liệu ảnh: " + e.getMessage());
                 }
             }
 
@@ -157,7 +190,6 @@ public class ClientHandler extends Thread {
                 } catch (InterruptedException e) {
                     System.out.println("Luồng Real-time đã dừng.");
                 }
-
                 return;
             }
         }
