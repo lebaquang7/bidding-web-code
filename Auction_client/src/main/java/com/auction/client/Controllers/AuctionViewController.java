@@ -1,6 +1,7 @@
 package com.auction.client.Controllers;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.auction.client.Models.AccountEventHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
@@ -20,9 +21,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class AuctionViewController implements SceneController.ItemLoadable{
     @FXML Label auctionViewItemName;
@@ -140,7 +138,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, item.getCurrentPrice());
 
         //init labels
-        auctionViewItemName.setText(currentItem.getName());
+        auctionViewItemName.setText(currentItem.getItemName());
         LabelHandler.setDetailedTooltip(auctionViewItemName);
 
         CurrencySelectorHandler.bindPriceLabel(auctionViewStartingBid, currentItem.getStartingPrice());
@@ -151,7 +149,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
 
         //init chart
         //TODO: link chart with actual infos.
-        auctionViewPriceChart.setTitle("Auction price for Item "+item.getName());
+        auctionViewPriceChart.setTitle("Auction price for Item "+item.getItemName());
         auctionViewPriceChartXAxis.setLabel("Time");
         auctionViewPriceChartYAxis.setLabel("Price");
 

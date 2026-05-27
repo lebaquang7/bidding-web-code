@@ -1,16 +1,20 @@
 package com.auction.server;
 
-import com.auction.server.services.BiddingService;
-import com.auction.server.services.NotificationService;
-import com.auction.shared.models.*;
-
 import java.io.File;
-import java.nio.file.Files;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.List;
+
+import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -58,7 +62,7 @@ public class ClientHandler extends Thread {
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
                 User loginData = (User) networkRequest.getData();
 
-                User user = DatabaseConfig.findUserByUsername(loginData.getUsername());
+                User user = DatabaseConfig.findUserByUsername(loginData.getUserName());
 
                 try {
                     if (user == null) {
@@ -80,7 +84,7 @@ public class ClientHandler extends Thread {
 
                 try {
                     // 1. Kiểm tra xem username đã tồn tại trong database chưa
-                    User existingUser = DatabaseConfig.findUserByUsername(newUser.getUsername());
+                    User existingUser = DatabaseConfig.findUserByUsername(newUser.getUserName());
 
                     if (existingUser != null) {
                         // Nếu đã tồn tại, gửi thông báo lỗi trùng lặp về Client

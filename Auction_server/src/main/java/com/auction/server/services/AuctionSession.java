@@ -1,17 +1,17 @@
 package com.auction.server.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.List;
-import java.util.ArrayList;
-import java.math.BigDecimal;
 
 import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Item;
-import com.auction.shared.models.BidTransaction;
 
 
 public class AuctionSession {
@@ -43,7 +43,7 @@ public class AuctionSession {
             this.currentState = AuctionStatus.RUNNING;
 
             System.out.println("[Phiên " + sessionId + "]: Trạng thái OPEN -> RUNNING.");
-            System.out.println("Vật phẩm: " + auctionItem.getName() + " | Giá khởi điểm: " + auctionItem.getCurrentPrice());;
+            System.out.println("Vật phẩm: " + auctionItem.getItemName() + " | Giá khởi điểm: " + auctionItem.getCurrentPrice());;
 
             scheduler.schedule(this::finish, durationInSeconds, TimeUnit.SECONDS);
             return true;
@@ -62,7 +62,7 @@ public class AuctionSession {
 
             if(highestBidder == null){
                 this.currentState = AuctionStatus.CANCELLED;
-                System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc mà không có người thắng. Mặt hàng: " + auctionItem.getName() + " sẽ được rút khỏi đấu giá.");
+                System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc mà không có người thắng. Mặt hàng: " + auctionItem.getItemName() + " sẽ được rút khỏi đấu giá.");
                 scheduler.shutdown(); // Giải phóng luồng đếm giờ
             }
 

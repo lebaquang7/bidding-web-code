@@ -1,5 +1,7 @@
 package com.auction.client.Controllers;
 
+import java.io.ByteArrayInputStream;
+
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
@@ -10,9 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-
 import javafx.scene.image.ImageView;
-import java.io.ByteArrayInputStream;
 
 public class ItemDetailsController implements SceneController.ItemLoadable{
 
@@ -42,7 +42,7 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
         itemDetailsID.setText(currentItem.getId());
         LabelHandler.setDetailedTooltip(itemDetailsID);
 
-        itemDetailsItemName.setText(currentItem.getName());
+        itemDetailsItemName.setText(currentItem.getItemName());
         LabelHandler.setDetailedTooltip(itemDetailsItemName);
 
         itemDetailsDescription.setText(currentItem.getDescription());

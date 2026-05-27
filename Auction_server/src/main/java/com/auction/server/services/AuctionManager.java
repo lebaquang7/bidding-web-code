@@ -1,10 +1,8 @@
 package com.auction.server.services;
 
-import com.auction.shared.models.Item;
-// import com.auction.server.models.Auction; //sẽ cần tạo class này sau
-
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import com.auction.shared.models.Item;
 
 public class AuctionManager {
 
@@ -28,6 +26,6 @@ public class AuctionManager {
 
     public void startNewAuction(String auctionId, Item item) {
         // Code logic tạo phiên đấu giá và nhét vào activeAuctions
-        System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getName());
+        System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
     }
 }

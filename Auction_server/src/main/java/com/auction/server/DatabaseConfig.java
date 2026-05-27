@@ -124,7 +124,7 @@ public class DatabaseConfig {
 
             try (PreparedStatement psUser = connection.prepareStatement(sqlUser)) {
                 psUser.setString(1, user.getId());
-                psUser.setString(2, user.getUsername());
+                psUser.setString(2, user.getUserName());
                 psUser.setString(3, user.getPassword());
                 psUser.setString(4, user.getClass().getSimpleName());
                 psUser.setString(5, user.getEmail());
