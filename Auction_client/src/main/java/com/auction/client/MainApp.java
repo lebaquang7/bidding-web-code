@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.auction.client.Controllers.MainMenuSettingPaneController;
 import com.auction.client.Controllers.SceneController;
+import com.auction.client.Models.ConfigFileHandler;
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ThemeHandler;
 
 import javafx.application.Application;
@@ -43,6 +45,8 @@ public class MainApp extends Application{
             SceneController.closeWithExitPrompt(primaryStage);
         });
         
-        MainMenuSettingPaneController.loadStoredConfigs();
+        //initialize configurations
+        CurrencySelectorHandler.getInstance().setActiveCurrency(ConfigFileHandler.getProperty("currencyType", "VND"));
+        ThemeHandler.getInstance().setTheme(ConfigFileHandler.getProperty("theme", "Default"));
     }
 }

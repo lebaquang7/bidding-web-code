@@ -1,13 +1,12 @@
 package com.auction.shared.models;
 
-import java.math.BigDecimal;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import java.math.BigDecimal;
-import java.io.Serializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public abstract class Item extends Entity {
     private String name;

@@ -56,12 +56,4 @@ public class MainMenuSettingPaneController {
             ThemeHandler.getInstance().setTheme(newValue);
         });
     }
-
-    /**
-     * Used to load active configs for currency, theme, etc (if implemented) on startup
-     */
-    public static void loadStoredConfigs(){
-        CurrencySelectorHandler.getInstance().setActiveCurrency(ConfigFileHandler.getProperty("currencyType", "VND"));
-        ThemeHandler.getInstance().setTheme(ConfigFileHandler.getProperty("theme", "Default"));
-    }
 }

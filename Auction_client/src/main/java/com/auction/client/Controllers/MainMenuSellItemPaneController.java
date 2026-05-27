@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 
 import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.Electronics;
@@ -36,6 +37,11 @@ public class MainMenuSellItemPaneController {
             itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
             itemTypeComboBox.getSelectionModel().selectFirst();
         }
+
+        //set prompt text based on currency type.
+        double convertedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(BigDecimal.valueOf(100000)).doubleValue();
+        String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
+        mainMenuSellItemPaneStartingPriceField.setPromptText(String.format("Input starting price.... (Minimum of %.2f %s)", convertedPrice , activeCurrency));
     }
 
     @FXML

@@ -56,7 +56,7 @@ public class RegisterController {
         User newUser;
         switch (accountType) {
             case "Seller" -> { newUser = new Seller(username, password); }
-            default -> {newUser = new Bidder(username, password, "", 0.0, 0);}
+            default -> {newUser = new Bidder(username, password, "", null, 0);}
         }
 
         newUser.setEmail(email);

@@ -8,7 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.NetworkRequest;
 import static com.auction.shared.models.NetworkRequest.requestType.Register;
+import com.auction.shared.models.User;
 
 public class AccountEventHandler {
     //Loại bỏ accountStorage HashMap, dùng database thay thế
@@ -22,7 +25,7 @@ public class AccountEventHandler {
     public static String validateAccount(String name, String password) {
         //Sử dụng bidder tạm thời để tìm kiếm User trong database
         //Nếu tìm được người dùng sẽ tự trả về đúng kiểu
-        User loginRequestData = new Bidder(name, password, null, 0.0, 0);
+        User loginRequestData = new Bidder(name, password, null, null, 0);
 
         // new Socket("192.168.x.x", port)
         try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server

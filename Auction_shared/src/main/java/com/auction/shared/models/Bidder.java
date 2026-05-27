@@ -1,23 +1,25 @@
 package com.auction.shared.models;
 
+import java.math.BigDecimal;
+
 public class Bidder extends User {
-    private double balance;
+    private BigDecimal balance;
     private String shippingAddress;
     private int reputationScore; // đc tính sau những lần đấu giá
 
     private static final long serialVersionUID = 1L;
 
-    public Bidder(String userName, String passWord, String shippingAddress, double balance, int reputationScore) {
+    public Bidder(String userName, String passWord, String shippingAddress, BigDecimal balance, int reputationScore) {
         super(userName, passWord);
-        this.balance = balance;
+        this.balance = BigDecimal.ZERO;
         this.shippingAddress = shippingAddress;
         this.reputationScore = reputationScore;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
@@ -26,10 +28,6 @@ public class Bidder extends User {
     }
     public void setShippingAddress(String shippingAddress){
         this.shippingAddress = shippingAddress;
-    }
-
-    public void deposit(double amount) {
-        if (amount > 0) this.balance += amount;
     }
 
     public int getReputationScore() {return reputationScore;}

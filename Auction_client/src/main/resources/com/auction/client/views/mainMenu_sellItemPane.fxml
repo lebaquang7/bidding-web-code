@@ -76,7 +76,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="mainMenuSellItemPaneStartingPriceField" prefHeight="28.0" prefWidth="350.0" promptText="Input starting price.... (Minimum of 100000 VND)">
+                  <TextField fx:id="mainMenuSellItemPaneStartingPriceField" prefHeight="28.0" prefWidth="350.0" promptText="Input starting price.... (Minimum of 100000.00 VND)">
                      <HBox.margin>
                         <Insets top="1.0" />
                      </HBox.margin>

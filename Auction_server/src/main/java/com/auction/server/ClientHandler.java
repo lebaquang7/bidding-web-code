@@ -12,6 +12,14 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
+import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
+
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
     private Socket socket;
