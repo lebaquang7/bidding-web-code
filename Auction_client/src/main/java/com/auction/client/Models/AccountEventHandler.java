@@ -75,101 +75,104 @@ public class AccountEventHandler {
         }
     }
 
+    //Migrate mấy method này vào 1 class riêng
     //Sell item
-    public static String sellItem (Item newItem) {
-        //new Socket("192.168.x.x", port)
-        try (Socket socket = new Socket("127.0.0.1", 1234);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+    //tạm thời để comment đã. Khi sửa xong thì tắt comment đi.
+    
+    // public static String sellItem (Item newItem) {
+    //     //new Socket("192.168.x.x", port)
+    //     try (Socket socket = new Socket("127.0.0.1", 1234);
+    //          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+    //         out.flush();
+    //         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-            NetworkRequest request = new NetworkRequest(SellItem, newItem);
-            out.writeObject(request);
-            out.flush();
+    //         NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.SellItem, newItem);
+    //         out.writeObject(request);
+    //         out.flush();
 
-            Object response = in.readObject();
-            return (response instanceof String) ? (String) response : "fail";
+    //         Object response = in.readObject();
+    //         return (response instanceof String) ? (String) response : "fail";
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "connection_error";
-        }
-    }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return "connection_error";
+    //     }
+    // }
 
-    public static java.util.ArrayList<com.auction.shared.models.Item> getSellerItems(String sellerId) {
-        try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
-             java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
+    // public static java.util.ArrayList<com.auction.shared.models.Item> getSellerItems(String sellerId) {
+    //     try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
+    //          java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
+    //         out.flush();
+    //         java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
 
-            com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.GetSellerItems, sellerId);
-            out.writeObject(request);
-            out.flush();
+    //         com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.GetSellerItems, sellerId);
+    //         out.writeObject(request);
+    //         out.flush();
 
-            Object response = in.readObject();
-            if (response instanceof java.util.ArrayList) {
-                return (java.util.ArrayList<com.auction.shared.models.Item>) response;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new java.util.ArrayList<>();
-    }
+    //         Object response = in.readObject();
+    //         if (response instanceof java.util.ArrayList) {
+    //             return (java.util.ArrayList<com.auction.shared.models.Item>) response;
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return new java.util.ArrayList<>();
+    // }
 
-    public static String deleteItem(String itemId) {
-        try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
-             java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
+    // public static String deleteItem(String itemId) {
+    //     try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
+    //          java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
+    //         out.flush();
+    //         java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
 
-            com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.DeleteItem, itemId);
-            out.writeObject(request);
-            out.flush();
+    //         com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.DeleteItem, itemId);
+    //         out.writeObject(request);
+    //         out.flush();
 
-            Object response = in.readObject();
-            return (response instanceof String) ? (String) response : "fail";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "connection_error";
-        }
-    }
+    //         Object response = in.readObject();
+    //         return (response instanceof String) ? (String) response : "fail";
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return "connection_error";
+    //     }
+    // }
 
-    public static String updateItem(com.auction.shared.models.Item item) {
-        try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
-             java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
+    // public static String updateItem(com.auction.shared.models.Item item) {
+    //     try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
+    //          java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
+    //         out.flush();
+    //         java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
 
-            com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.UpdateItem, item);
-            out.writeObject(request);
-            out.flush();
+    //         com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.UpdateItem, item);
+    //         out.writeObject(request);
+    //         out.flush();
 
-            Object response = in.readObject();
-            return (response instanceof String) ? (String) response : "fail";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "connection_error";
-        }
-    }
+    //         Object response = in.readObject();
+    //         return (response instanceof String) ? (String) response : "fail";
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return "connection_error";
+    //     }
+    // }
 
-    public static java.util.ArrayList<com.auction.shared.models.Item> getAllItems() {
-        try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
-             java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
+    // public static java.util.ArrayList<com.auction.shared.models.Item> getAllItems() {
+    //     try (java.net.Socket socket = new java.net.Socket("127.0.0.1", 1234);
+    //          java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
+    //         out.flush();
+    //         java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
 
-            com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.GetAllItems, null);
-            out.writeObject(request);
-            out.flush();
+    //         com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(com.auction.shared.models.NetworkRequest.requestType.GetAllItems, null);
+    //         out.writeObject(request);
+    //         out.flush();
 
-            Object response = in.readObject();
-            if (response instanceof java.util.ArrayList) {
-                return (java.util.ArrayList<com.auction.shared.models.Item>) response;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new java.util.ArrayList<>();
-    }
+    //         Object response = in.readObject();
+    //         if (response instanceof java.util.ArrayList) {
+    //             return (java.util.ArrayList<com.auction.shared.models.Item>) response;
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return new java.util.ArrayList<>();
+    // }
 
 }
