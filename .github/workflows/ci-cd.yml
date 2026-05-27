@@ -1,0 +1,38 @@
+name: CI/CD Maven 
+
+# triggers on:
+on:
+  push:
+    branches: [ "main", "master", "dev" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # clone repo into vm
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    # setup jdk
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: 'maven' # caching for fast ci/cd
+
+    # compile
+    - name: Build and Compile Project Modules
+      run: mvn -B compile --file pom.xml
+
+    # exec unit tests
+    - name: Run Unit Tests
+      run: mvn -B test --file pom.xml
+
+    # package into deloyables
+    - name: Package Applications
+      if: github.ref == 'refs/heads/main' # only package if code merges into main
+      run: mvn -B package -DskipTests --file pom.xml
