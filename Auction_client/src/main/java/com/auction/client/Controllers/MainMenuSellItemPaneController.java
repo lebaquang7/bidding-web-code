@@ -38,7 +38,7 @@ public class MainMenuSellItemPaneController {
             itemTypeComboBox.getSelectionModel().selectFirst();
         }
 
-        //set prompt text based on currency type. 
+        //set prompt text based on currency type.
         double convertedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(BigDecimal.valueOf(100000)).doubleValue();
         String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
         mainMenuSellItemPaneStartingPriceField.setPromptText(String.format("Input starting price.... (Minimum of %.2f %s)", convertedPrice , activeCurrency));
@@ -57,7 +57,7 @@ public class MainMenuSellItemPaneController {
             BigDecimal startingPrice = CurrencySelectorHandler.getInstance().getVNDPrice(BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
             BigDecimal currentPrice = startingPrice;
             double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
-            BigDecimal priceIncrement = startingPrice.multiply(BigDecimal.valueOf(percentage / 100.0));
+            BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
             User currentUser = AccountEventHandler.getCurrentUser();
             if (currentUser == null) {

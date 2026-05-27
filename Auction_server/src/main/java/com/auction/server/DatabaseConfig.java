@@ -57,7 +57,7 @@ public class DatabaseConfig {
                             user = new Bidder(
                                     username, pass,
                                     rsBidder.getString("shippingAddress"),
-                                    rsBidder.getDouble("balance"),
+                                    rsBidder.getBigDecimal("balance"),
                                     rsBidder.getInt("reputationScore")
                             );
                         }
@@ -140,7 +140,7 @@ public class DatabaseConfig {
                     psSub.setString(4, admin.getInternalEmployeeId());
                 } else if (user instanceof Bidder bidder) {
                     psSub.setString(2, bidder.getShippingAddress());
-                    psSub.setDouble(3, bidder.getBalance());
+                    psSub.setBigDecimal(3, bidder.getBalance());
                     psSub.setInt(4, bidder.getReputationScore());
                 } else if (user instanceof Seller seller) {
                     //Để nếu thêm thuộc tính cho seller thì sửa
