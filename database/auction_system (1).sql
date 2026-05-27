@@ -202,9 +202,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
-('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder', ''),
-('969885f3-1093-4903-ad56-aa4e123306eb', 'Bidder2', '1234', 'Bidder', ''),
-('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller', '');
+('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder'),
+('969885f3-1093-4903-ad56-aa4e123306eb', 'Bidder2', '1234', 'Bidder'),
+('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller');
 
 -- --------------------------------------------------------
 
