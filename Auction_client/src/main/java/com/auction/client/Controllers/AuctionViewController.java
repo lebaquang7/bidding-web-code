@@ -1,7 +1,6 @@
 package com.auction.client.Controllers;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import com.auction.client.Models.AccountEventHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
@@ -133,7 +132,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
 
         //init chart
-        //TODO: link chart with actual infos.
+        //TODO: link time with actual datas
         auctionViewPriceChart.setTitle("Auction price for Item "+item.getItemName());
         auctionViewPriceChartXAxis.setLabel("Time");
         auctionViewPriceChartYAxis.setLabel("Price");
@@ -148,18 +147,31 @@ public class AuctionViewController implements SceneController.ItemLoadable{
 
 
         auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
-        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable, oldVal, newVal) -> {
-            BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
-            auctionViewPriceChartYAxis.setUpperBound(MiscTools.roundUp(currentPrice.doubleValue()));
-            auctionViewPriceChartYAxis.setTickUnit(MiscTools.roundUp(currentPrice.doubleValue()/10));
-        });
-        //TODO: add observer for price. also to do this with other infos that dynamically changes.
-        auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
-        auctionViewPriceChartYAxis.setUpperBound(item.getCurrentPrice().doubleValue());
 
-        //TODO: tick mark auto adjust based on lower and upper bound
-        auctionViewPriceChartYAxis.setTickUnit(500000);
-
+        AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
         auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+
+        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable, oldVal, newVal) -> {
+            AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
+            auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+        });
+
+        item.currentPriceProperty().addListener((obs, oldVal, newVal) -> {
+            AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
+            auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+        });
+    }
+
+    /**
+     * Usage: update Y axis's chart position based on price.
+     * @param item
+     * @param yAxis
+     */
+    public static void updatePrice(Item item, NumberAxis yAxis){
+        System.out.println(item.getCurrentPrice().doubleValue());
+        yAxis.setLowerBound(CurrencySelectorHandler.getInstance().getConvertedPrice(item.getStartingPrice()).doubleValue());
+        BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
+        yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
+        yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue())/10);
     }
 }
