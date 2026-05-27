@@ -1,12 +1,18 @@
 package com.auction.client.Controllers;
 
 import com.auction.client.Models.CurrencySelectorHandler;
+import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+
+import javafx.scene.image.ImageView;
+import java.io.ByteArrayInputStream;
 
 public class ItemDetailsController implements SceneController.ItemLoadable{
 
@@ -20,6 +26,7 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
     @FXML Label itemDetailsBidders;
     @FXML Label itemDetailsLastBid;
     @FXML Label itemDetailsViewers;
+    @FXML ImageView itemDetailsImageView;
 
     private Item currentItem;
 
@@ -31,6 +38,7 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
     @Override
     public void setItem(Item item){
         this.currentItem=item;
+
         itemDetailsID.setText(currentItem.getId());
         LabelHandler.setDetailedTooltip(itemDetailsID);
 
@@ -45,5 +53,28 @@ public class ItemDetailsController implements SceneController.ItemLoadable{
 
         CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, currentItem.getCurrentPrice());
         LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 15, 12, 10, 1);
+
+        if (currentItem.getImageBytes() != null) {
+            itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
+        } else if (currentItem.getImagePath() != null && !currentItem.getImagePath().isEmpty()) {
+            new Thread(() -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(currentItem.getImagePath());
+                if (bytes != null) {
+                    currentItem.setImageBytes(bytes);
+                    Platform.runLater(() -> {
+                        itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                    });
+                }
+            }).start();
+        }
+
+        item.currentPriceProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> {
+                if (newVal != null) {
+                    CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, newVal);
+                    LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 20, 12, 10, 1);
+                }
+            });
+        });
     }
 }

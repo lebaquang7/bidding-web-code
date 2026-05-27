@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
+import static com.auction.shared.models.NetworkRequest.requestType.GetItemImage;
 
 public class ItemsEventHandler {
     //Sell item
@@ -96,5 +97,28 @@ public class ItemsEventHandler {
             // Lỗi kết nối mạng hoặc Server không phản hồi
             return BidStatus.bidStatus.INVALID;
         }
+    }
+
+    public static byte[] downloadItemImage(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) return null;
+
+        //new Socket("192.168.x.x", port)
+        try (Socket socket = new Socket("127.0.0.1", 1234);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+            out.flush();
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.GetItemImage, imagePath);
+            out.writeObject(request);
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof byte[]) {
+                return (byte[]) response;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.auction.client.Controllers;
 
+import java.io.File;
 import java.math.BigDecimal;
 
 import com.auction.client.Models.AccountEventHandler;
@@ -13,16 +14,20 @@ import com.auction.shared.models.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
     @FXML TextField mainMenuSellItemPaneItemNameField;
     @FXML TextField mainMenuSellItemPaneItemDescriptionField;
     @FXML TextField mainMenuSellItemPaneStartingPriceField;
     @FXML TextField mainMenuSellItemPanePriceIncrementField;
+    @FXML private Button uploadImageButton;
 
     @FXML private ComboBox<String> itemTypeComboBox;
+    private File selectedImageFile; // Lưu file ảnh
 
     @FXML
     public void initialize() {
@@ -63,6 +68,12 @@ public class MainMenuSellItemPaneController {
             } else {
                 newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
             }
+
+            if (selectedImageFile != null) {
+                byte[] imageBytes = java.nio.file.Files.readAllBytes(selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
+                newItem.setImageBytes(imageBytes);
+                newItem.setImagePath(selectedImageFile.getName()); // Lưu tên file để Server biết định dạng
+            }
             newItem.setSellerId(currentUser.getId());
             newItem.setPriceIncrement(priceIncrement);
 
@@ -76,6 +87,31 @@ public class MainMenuSellItemPaneController {
             showError("Giá tiền không hợp lệ");
         } catch (Exception e) {
             showError("Có lỗi xảy ra: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUploadImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Chọn ảnh vật phẩm");
+
+        // Lọc các file ảnh
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Mở cửa sổ chọn file
+        File file = fileChooser.showOpenDialog(mainMenuSellItemPaneItemNameField.getScene().getWindow());
+
+        if (file != null) {
+            // Kiểm tra dung lượng giới hạn 10MB
+            if (file.length() > 10 * 1024 * 1024) {
+                showError("Ảnh phải có dung lượng dưới 10MB");
+                return;
+            }
+
+            this.selectedImageFile = file;
+            System.out.println("Đã chọn ảnh: " + file.getAbsolutePath());
         }
     }
 
@@ -96,5 +132,6 @@ public class MainMenuSellItemPaneController {
         mainMenuSellItemPaneItemDescriptionField.clear();
         mainMenuSellItemPaneStartingPriceField.clear();
         mainMenuSellItemPanePriceIncrementField.clear();
+        this.selectedImageFile = null;
     }
 }

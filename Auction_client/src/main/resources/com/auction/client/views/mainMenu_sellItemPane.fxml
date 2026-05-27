@@ -107,7 +107,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="122.0" text="Upload Image">
+                  <Button mnemonicParsing="false" onAction="#handleUploadImage" prefHeight="26.0" prefWidth="122.0" text="Upload Image">
                      <HBox.margin>
                         <Insets left="30.0" top="2.0" />
                      </HBox.margin>

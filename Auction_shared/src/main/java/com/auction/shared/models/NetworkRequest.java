@@ -4,7 +4,7 @@ package com.auction.shared.models;
 import java.io.Serializable;
 
 public class NetworkRequest implements Serializable {
-    public enum requestType{Login, Bid, Register, SellItem, GetAllItems, SubscribeNotification}
+    public enum requestType{Login, Bid, Register, SellItem, GetAllItems, SubscribeNotification, GetItemImage}
 
     private requestType type;
     private Object data;
