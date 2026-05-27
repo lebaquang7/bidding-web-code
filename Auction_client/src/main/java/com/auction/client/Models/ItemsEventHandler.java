@@ -1,10 +1,5 @@
 package com.auction.client.Models;
 
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -12,8 +7,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
-import static com.auction.shared.models.NetworkRequest.requestType.GetItemImage;
 
 public class ItemsEventHandler {
     //Sell item

@@ -2,8 +2,8 @@ package com.auction.client.Controllers;
 
 
 import com.auction.client.Models.AccountEventHandler; // Import model : AccountEventHandler
-
 import com.auction.client.Models.ClientNotificationListener;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -33,7 +33,6 @@ public class LoginController {
 
         String result = AccountEventHandler.validateAccount(username, password);
 
-        //TODO: actual logics for this. this is temporary.
         switch (result) { //switch (essentially mass if-else) over end cases
             case "loginSuccessful" -> { //if login successful, switch to main menu.
                 ClientNotificationListener listener = new ClientNotificationListener();
@@ -54,8 +53,6 @@ public class LoginController {
             }
         }
     }
-
-    //TODO: ^^Sửa thành sai tên đăng nhập hoặc mật khẩu
 
 
     /**

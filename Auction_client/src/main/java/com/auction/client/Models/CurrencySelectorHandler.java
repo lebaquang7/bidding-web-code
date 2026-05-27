@@ -22,7 +22,7 @@ public class CurrencySelectorHandler {
         return instance;
     }
     //SimpleObjectProperty wrap a class value so it can be observed
-    private SimpleObjectProperty<String> activeCurrency = new SimpleObjectProperty<>("VND");
+    private final SimpleObjectProperty<String> activeCurrency = new SimpleObjectProperty<>("VND");
     public SimpleObjectProperty<String> getActiveCurrencyObjectProperty(){
         return activeCurrency;
     }
@@ -82,7 +82,7 @@ public class CurrencySelectorHandler {
         };
         updateUI.run();
         //runs once upon start
-        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable) -> Platform.runLater(updateUI));;
+        CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener((observable) -> Platform.runLater(updateUI));
         //Listens to active currency object property changing and runs updateUI
     }
 

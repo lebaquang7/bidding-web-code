@@ -2,8 +2,6 @@ package com.auction.client;
 
 import java.math.BigDecimal;
 
-import javafx.stage.Screen;
-
 public class Properties {
     // Consolidated constant values used across the app
     // based on https://github.com/ZacharyDavidSaunders/InventoryManagementSystem/blob/master/src/InventoryManagementSystem/Properties.java
@@ -38,24 +36,4 @@ public class Properties {
     }
 
     //Consolidated window size config value
-    //TODO: find an use or delete this.
-
-    private static final int DEFAULT_STAGE_SIZE_X = 600;
-    private static final int DEFAULT_STAGE_SIZE_Y = 400;
-
-    public static int getDEFAULT_STAGE_SIZE_X(){
-        return DEFAULT_STAGE_SIZE_X;
-    }
-
-    public static int getDEFAULT_STAGE_SIZE_Y(){
-        return DEFAULT_STAGE_SIZE_Y;
-    }
-
-    public static int getFULL_STAGE_SIZE_X(){
-        return (int) Screen.getPrimary().getBounds().getMaxX();
-    }
-
-    public static int getFULL_STAGE_SIZE_Y(){
-        return (int) Screen.getPrimary().getBounds().getMaxY();
-    }
 }

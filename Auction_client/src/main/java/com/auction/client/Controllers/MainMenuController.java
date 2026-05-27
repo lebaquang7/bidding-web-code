@@ -40,7 +40,7 @@ public class MainMenuController {
     public void mainMenuSwitchToSettings(ActionEvent event){
         BorderPaneController.setCenter("/com/auction/client/views/mainMenu_settingsPane.fxml");
     }
-    //TODO: adminfunction only for admin users, sell item only for sellers.
+
     public void mainMenuSwitchToAdminFunctions(ActionEvent event){
         BorderPaneController.setCenter("/com/auction/client/views/mainMenu_adminPane.fxml");
     }
