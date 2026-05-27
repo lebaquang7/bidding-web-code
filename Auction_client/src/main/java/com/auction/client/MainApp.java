@@ -2,7 +2,6 @@ package com.auction.client;
 
 import java.io.IOException;
 
-import com.auction.client.Controllers.MainMenuSettingPaneController;
 import com.auction.client.Controllers.SceneController;
 import com.auction.client.Models.ConfigFileHandler;
 import com.auction.client.Models.CurrencySelectorHandler;

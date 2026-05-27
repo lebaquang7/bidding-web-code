@@ -8,8 +8,8 @@ public class Seller extends User {
 
     private static final long serialVersionUID = 1L;
 
-    public Seller(String userName, String passWord) {
-        super(userName, passWord);
+    public Seller(String username, String password) {
+        super(username, password);
         this.itemsForSale = new ArrayList<>();
     }
 

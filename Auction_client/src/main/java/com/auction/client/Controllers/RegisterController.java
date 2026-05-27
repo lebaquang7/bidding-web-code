@@ -59,8 +59,6 @@ public class RegisterController {
             default -> {newUser = new Bidder(username, password, "", null, 0);}
         }
 
-        newUser.setEmail(email);
-
         try {
             String result = AccountEventHandler.registerAccount(newUser);
 

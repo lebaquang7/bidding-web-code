@@ -194,15 +194,14 @@ CREATE TABLE `users` (
   `id` varchar(40) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(20) NOT NULL,
-  `email` varchar(100) DEFAULT NULL
+  `role` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `email`) VALUES
+INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 ('23312c96-d768-4e4f-b7ff-de57529c1e97', 'bidder', '123', 'Bidder', ''),
 ('969885f3-1093-4903-ad56-aa4e123306eb', 'Bidder2', '1234', 'Bidder', ''),
 ('ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', 'seller', '123', 'Seller', '');

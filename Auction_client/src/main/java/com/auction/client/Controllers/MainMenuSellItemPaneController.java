@@ -54,7 +54,7 @@ public class MainMenuSellItemPaneController {
 
             String name = mainMenuSellItemPaneItemNameField.getText();
             String description = mainMenuSellItemPaneItemDescriptionField.getText();
-            BigDecimal startingPrice = BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText())));
+            BigDecimal startingPrice = CurrencySelectorHandler.getInstance().getVNDPrice(BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
             BigDecimal currentPrice = startingPrice;
             double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
             BigDecimal priceIncrement = BigDecimal.valueOf(percentage);

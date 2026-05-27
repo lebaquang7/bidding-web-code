@@ -6,8 +6,8 @@ public class Admin extends User {
     private String department;
     private String internalEmployeeId;
 
-    public Admin(String userName, String password, int accessLevel, String department, String internalEmployeeId) {
-        super(userName, password);
+    public Admin(String username, String password, int accessLevel, String department, String internalEmployeeId) {
+        super(username, password);
         this.accessLevel = accessLevel;
         this.department = department;
         this.internalEmployeeId = internalEmployeeId;
