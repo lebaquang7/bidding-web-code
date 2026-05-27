@@ -57,7 +57,7 @@ public class MainMenuSellItemPaneController {
             BigDecimal startingPrice = BigDecimal.valueOf(Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText())));
             BigDecimal currentPrice = startingPrice;
             double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
-            BigDecimal priceIncrement = startingPrice.multiply(BigDecimal.valueOf(percentage / 100.0));
+            BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
             User currentUser = AccountEventHandler.getCurrentUser();
             if (currentUser == null) {

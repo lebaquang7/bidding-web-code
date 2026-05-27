@@ -33,8 +33,10 @@ public class BiddingService {
 
             // Giá mới >= Giá hiện tại + Bước giá
             BigDecimal incrementPercent = item.getPriceIncrement();
-            BigDecimal multiplier = incrementPercent.add(new BigDecimal("100")).divide(new BigDecimal("100")).setScale(0, RoundingMode.FLOOR);
-            BigDecimal minRequiredBid = item.getCurrentPrice().multiply(multiplier);
+            BigDecimal incrementAmount = item.getCurrentPrice()
+                    .multiply(incrementPercent)
+                    .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            BigDecimal minRequiredBid = item.getCurrentPrice().add(incrementAmount);
             if (bidAmount.compareTo(minRequiredBid) < 0) {
                 System.out.println("Lỗi: Giá trả thấp hơn mức tối thiểu yêu cầu.");
                 return BidStatus.bidStatus.INVALID;
