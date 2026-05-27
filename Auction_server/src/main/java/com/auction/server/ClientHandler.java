@@ -90,7 +90,7 @@ public class ClientHandler extends Thread {
                         // Nếu đã tồn tại, gửi thông báo lỗi trùng lặp về Client
                         out.writeObject("duplicate");
                     } else {
-                        // 2. Nếu chưa có, lưu vào database
+                        // Nếu chưa có, lưu vào database
                         boolean isSaved = DatabaseConfig.saveNewUser(newUser);
                         if (isSaved) {
                             out.writeObject("success");
@@ -98,7 +98,7 @@ public class ClientHandler extends Thread {
                             out.writeObject("error");
                         }
                     }
-                    out.flush(); //Đẩy kết quả về lại Client
+                    out.flush(); // Đẩy kết quả về lại Client
                 } catch (IOException e) {
                     System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
                 }

@@ -19,9 +19,9 @@ import com.auction.shared.models.User;
 import com.auction.shared.models.Vehicle;
 
 public class DatabaseConfig {
-    // Kết nối vói database
-    // Sửa localhost
-    // private static final String URL = "jdbc:mysql://192.168.x.x:3306/auction_system";
+// Kết nối với database
+// Sửa localhost
+// private static final String URL = "jdbc:mysql://192.168.x.x:3306/auction_system";
 
     private static final String URL = "jdbc:mysql://localhost:3306/auction_system";
     private static final String USER = "root";
@@ -152,12 +152,21 @@ public class DatabaseConfig {
 
         } catch (SQLException e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             System.err.println("Lỗi SQL khi đăng ký: " + e.getMessage());
             return false;
         } finally {
-            if (connection != null) try { connection.setAutoCommit(true); connection.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (connection != null) try {
+                connection.setAutoCommit(true);
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -191,11 +200,9 @@ public class DatabaseConfig {
                 psItem.setBigDecimal(6, item.getStartingPrice());
                 psItem.setString(7, item.getSellerId());
                 psItem.setBigDecimal(8, item.getPriceIncrement());
-                psItem.setString(9, item.getImagePath());
-
-                psItem.executeUpdate();
-            }
-
+                psItem.setBigDecimal(6, item.getCurrentPrice());
+                psItem.setBigDecimal(7, item.getPriceIncrement());
+                psItem.setString(8, item.getSellerId());
             // Lưu vào bảng ứng với lớp con
             try (PreparedStatement psSub = connection.prepareStatement(sqlSub)) {
                 psSub.setString(1, item.getId()); // Khóa ngoại trỏ về items(id)
@@ -222,13 +229,22 @@ public class DatabaseConfig {
         } catch (SQLException e) {
             //rollback để hủy lưu nếu có lỗi chỉ lưu được bảng 1 nhưng bảng 2 không được
             if (connection != null) {
-                try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             System.err.println("Lỗi SQL khi bán sản phẩm: " + e.getMessage());
             return false;
         } finally {
             if (connection != null) {
-                try {connection.setAutoCommit(true); connection.close();} catch (SQLException e) {e.printStackTrace();}
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
