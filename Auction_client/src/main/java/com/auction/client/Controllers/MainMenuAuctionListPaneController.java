@@ -97,8 +97,8 @@ public class MainMenuAuctionListPaneController {
                 controller.setData(item);
 
                 // Tính toán vị trí cột và dòng (2 cột, nhiều dòng)
-                int columnIndex = i % COLUMN_COUNT;
-                int rowIndex = i / COLUMN_COUNT;
+                int columnIndex = i / COLUMN_COUNT;
+                int rowIndex = i % COLUMN_COUNT;
 
                 mainMenuAuctionListGridPane.add(card, columnIndex, rowIndex);
             } catch (IOException e) {
