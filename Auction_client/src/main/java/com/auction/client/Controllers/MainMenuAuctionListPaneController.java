@@ -33,6 +33,9 @@ public class MainMenuAuctionListPaneController {
         mainMenuAuctionListPagination.currentPageIndexProperty().addListener((observable, oldIndex, newIndex) -> {
             renderItem(itemList, newIndex.intValue());
         });
+        */
+        java.util.ArrayList<Item> serverItems = com.auction.client.Models.AccountEventHandler.getAllItems();
+        itemList.setAll(serverItems);
 
         // 3. Lắng nghe thay đổi của danh sách phần tử (nếu có cập nhật danh sách)
         itemList.addListener((ListChangeListener<Item>) change -> {

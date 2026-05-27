@@ -19,6 +19,8 @@ public abstract class Item extends Entity {
     private String imagePath; // Lưu tên file ảnh
     private byte[] imageBytes; // Truyền dữ liệu ảnh qua Socket
 
+    private BigDecimal priceIncrement;
+
     private static final long serialVersionUID = 1L;
 
     public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {

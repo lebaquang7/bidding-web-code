@@ -58,6 +58,28 @@ public class ClientHandler extends Thread {
         if (request instanceof NetworkRequest) {
             NetworkRequest networkRequest = (NetworkRequest) request;
 
+            //Yêu cầu trả giá
+            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
+                BidTransaction bid = (BidTransaction) networkRequest.getData();
+                if (bid.getMaxBid() > 0) {
+                    com.auction.server.services.AuctionManager.getInstance().registerAutoBid("AUC_123", bid);
+                    return;
+                }
+
+                System.out.println("Nhận mức giá: " + bid.getBidAmount());
+
+                Auction currentAuction = bid.getAuction();
+
+                if (bid.getBidAmount() > currentAuction.getCurrentPrice()) {
+                    System.out.println(">>> Trả giá THÀNH CÔNG!");
+                    // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
+                    com.auction.server.services.AuctionManager.getInstance().runAutoBiddingEngine("AUC_123", currentAuction);
+
+                } else {
+                    System.out.println(">>> Trả giá THẤP HƠN giá hiện tại. Thất bại!");
+                }
+            }
+
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
                 User loginData = (User) networkRequest.getData();
@@ -90,7 +112,7 @@ public class ClientHandler extends Thread {
                         // Nếu đã tồn tại, gửi thông báo lỗi trùng lặp về Client
                         out.writeObject("duplicate");
                     } else {
-                        // 2. Nếu chưa có, lưu vào database
+                        // Nếu chưa có, lưu vào database
                         boolean isSaved = DatabaseConfig.saveNewUser(newUser);
                         if (isSaved) {
                             out.writeObject("success");
@@ -98,7 +120,7 @@ public class ClientHandler extends Thread {
                             out.writeObject("error");
                         }
                     }
-                    out.flush(); //Đẩy kết quả về lại Client
+                    out.flush(); // Đẩy kết quả về lại Client
                 } catch (IOException e) {
                     System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
                 }
