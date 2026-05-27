@@ -31,3 +31,6 @@ jobs:
 
     - name: Run Maven Verify Lifecycle
       run: mvn -B verify --file pom.xml
+
+    - name: Check compliance with Google Java Style Guide
+      run: mvn spotless:check --file pom.xml
