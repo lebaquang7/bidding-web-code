@@ -103,13 +103,13 @@ public class CurrencySelectorHandler {
         } else {
             DecimalFormat decimalFormatter = new DecimalFormat("#,##0.00");
             if (price.compareTo(TRILLION)>=0){
-                return decimalFormatter.format(price.divide(TRILLION, RoundingMode.HALF_UP)) + "T";
+                return decimalFormatter.format(price.divide(TRILLION, 2, RoundingMode.HALF_UP)) + "T";
             } else if (price.compareTo(BILLION)>=0){
-                return decimalFormatter.format(price.divide(BILLION, RoundingMode.HALF_UP)) + "B";
+                return decimalFormatter.format(price.divide(BILLION, 2, RoundingMode.HALF_UP)) + "B";
             } else if (price.compareTo(MILLION)>=0){
-                return decimalFormatter.format(price.divide(MILLION, RoundingMode.HALF_UP)) + "M";
+                return decimalFormatter.format(price.divide(MILLION, 2, RoundingMode.HALF_UP)) + "M";
             } else if (price.compareTo(THOUSAND)>=0){
-                return decimalFormatter.format(price.divide(THOUSAND, RoundingMode.HALF_UP)) + "K";
+                return decimalFormatter.format(price.divide(THOUSAND, 2, RoundingMode.HALF_UP)) + "K";
             } else {
                 return decimalFormatter.format(price);
             }
