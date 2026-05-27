@@ -68,7 +68,7 @@ public class AuctionSession {
 
             this.currentState = AuctionStatus.FINISHED;
             System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc.");
-            System.out.println("Người thắng: " + highestBidder.getUsername() + " với giá: " + auctionItem.getCurrentPrice());
+            System.out.println("Người thắng: " + highestBidder.getUserName() + " với giá: " + auctionItem.getCurrentPrice());
 
             scheduler.schedule(this::handledPaymentTimeout, 10, TimeUnit.MINUTES);
             return true;
@@ -119,7 +119,7 @@ public class AuctionSession {
             BidTransaction transaction = new BidTransaction( auctionItem.getId(), bidder.getId(), bidAmount, LocalDateTime.now());
             bidHistory.add(transaction);
 
-            System.out.println("[Phiên đấu giá " + sessionId + "]: Người dùng " + bidder.getUsername() + " đã đặt giá: " + bidAmount);
+            System.out.println("[Phiên đấu giá " + sessionId + "]: Người dùng " + bidder.getUserName() + " đã đặt giá: " + bidAmount);
             return true;
         }
 
@@ -145,7 +145,7 @@ public class AuctionSession {
                 return true;
             }
 
-            System.out.println(" [Phiên " + sessionId + "] Thanh toán thất bại. Người thắng " + highestBidder.getUsername() + " không đủ tiền để thanh toán.");
+            System.out.println(" [Phiên " + sessionId + "] Thanh toán thất bại. Người thắng " + highestBidder.getUserName() + " không đủ tiền để thanh toán.");
             return false;
         }
     }
@@ -158,7 +158,7 @@ public class AuctionSession {
         synchronized (lock){
             if(this.currentState == AuctionStatus.FINISHED){
                 this.currentState = AuctionStatus.CANCELLED;
-                System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc nhưng người thắng " + highestBidder.getUsername() + " không thanh toán trong thời gian quy định. Phiên đấu giá bị hủy bỏ.");
+                System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc nhưng người thắng " + highestBidder.getUserName() + " không thanh toán trong thời gian quy định. Phiên đấu giá bị hủy bỏ.");
                 scheduler.shutdown();
             }
         }

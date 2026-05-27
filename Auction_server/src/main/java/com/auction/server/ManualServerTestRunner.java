@@ -1,8 +1,13 @@
 package com.auction.server;
 
-import com.auction.server.services.AuctionManager;
-import com.auction.shared.models.*;
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.time.LocalDateTime;
+
+import com.auction.server.services.AuctionManager;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.Seller;
+import com.auction.shared.models.User;
 
 public class ManualServerTestRunner {
 
@@ -22,7 +27,7 @@ public class ManualServerTestRunner {
             User seller = new Seller("seller01", "password");
 
             // Truyền giá trị null cho Item để kiểm tra tính chịu tải của hàm khởi tạo Auction
-            Auction auction = new Auction(101, null, 500.0, seller);
+            Auction auction = new Auction(101, null, BigDecimal.valueOf(500.0), seller, LocalDateTime.now(), LocalDateTime.MAX);
 
             AuctionManager manager = null;
             try {

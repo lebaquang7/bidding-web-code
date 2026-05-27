@@ -1,20 +1,21 @@
 package com.auction.shared.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Auction implements Serializable {
     private int id;
     private Item item;
-    private double currentPrice;
-    private double startPrice;
+    private BigDecimal currentPrice;
+    private BigDecimal startPrice;
     private User seller;
     private User highestBidder;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private AuctionStatus status;
 
-    public Auction(int id, Item item, double startPrice, User seller, LocalDateTime startTime, LocalDateTime endTime) {
+    public Auction(int id, Item item, BigDecimal startPrice, User seller, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.item = item;
         this.startPrice = startPrice;
@@ -29,11 +30,11 @@ public class Auction implements Serializable {
         return id;
     }
 
-    public double getCurrentPrice() {
+    public BigDecimal getCurrentPrice() {
         return currentPrice;
     }
 
-    public void setCurrentPrice(double currentPrice) {
+    public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
     }
 

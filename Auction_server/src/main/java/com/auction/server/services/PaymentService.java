@@ -1,8 +1,8 @@
 package com.auction.server.services;
 
-import com.auction.shared.models.Bidder;
-
 import java.math.BigDecimal;
+
+import com.auction.shared.models.Bidder;
 
 public class PaymentService {
     private static PaymentService instance;
@@ -24,7 +24,7 @@ public class PaymentService {
     // Trả tiền cho Item được đấu giá thành công
 
     public synchronized boolean processPayment(Bidder buyer, BigDecimal amountToPay) {
-        System.out.println(" Đang xử lý giao dịch thanh toán cho User: [" + buyer.getUsername() + "]");
+        System.out.println(" Đang xử lý giao dịch thanh toán cho User: [" + buyer.getUserName() + "]");
 
         // Lấy số dư hiện tại
         BigDecimal currentBalance = buyer.getBalance();
@@ -63,7 +63,7 @@ public class PaymentService {
         // TODO: Gọi Database (DAO) để cập nhật số dư
         // userDAO.updateBalance(buyer.getId(), newBalance);
 
-        System.out.println(" Đã nạp thành công " + amount + " vào tài khoản [" + buyer.getUsername() + "]. Số dư mới: " + newBalance);
+        System.out.println(" Đã nạp thành công " + amount + " vào tài khoản [" + buyer.getUserName() + "]. Số dư mới: " + newBalance);
         return true;
     }
 
@@ -86,7 +86,7 @@ public class PaymentService {
 
         // TODO: Gọi Database (DAO) để cập nhật số dư xuống DB
 
-        System.out.println(" Đã rút thành công " + amount + " từ tài khoản [" + buyer.getUsername() + "]. Số dư mới: " + newBalance);
+        System.out.println(" Đã rút thành công " + amount + " từ tài khoản [" + buyer.getUserName() + "]. Số dư mới: " + newBalance);
         return true;
     }
 

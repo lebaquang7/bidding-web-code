@@ -1,5 +1,6 @@
 package com.auction.server.services;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import com.auction.shared.models.Item;
@@ -41,7 +42,7 @@ public class AuctionManager {
         if (bots == null || bots.isEmpty()) return;
 
         boolean priceChanged;
-        double currentPrice = 5000;
+        BigDecimal currentPrice = BigDecimal.valueOf(5000);
         String currentHighestUser = "";
 
         if (auctionObj instanceof com.auction.shared.models.Auction) {

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
+import com.auction.shared.models.Auction;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
@@ -70,7 +71,7 @@ public class ClientHandler extends Thread {
 
                 Auction currentAuction = bid.getAuction();
 
-                if (bid.getBidAmount() > currentAuction.getCurrentPrice()) {
+                if (bid.getBidAmount().compareTo(currentAuction.getCurrentPrice())>0) {
                     System.out.println(">>> Trả giá THÀNH CÔNG!");
                     // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
                     com.auction.server.services.AuctionManager.getInstance().runAutoBiddingEngine("AUC_123", currentAuction);
