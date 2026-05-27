@@ -21,6 +21,8 @@ public abstract class Item extends Entity {
 
     private BigDecimal priceIncrement;
 
+    private BigDecimal priceIncrement;
+
     private static final long serialVersionUID = 1L;
 
     public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {

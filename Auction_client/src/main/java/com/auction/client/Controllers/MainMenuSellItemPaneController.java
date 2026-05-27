@@ -26,12 +26,25 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.ArrayList;
+
 public class MainMenuSellItemPaneController {
     @FXML TextField mainMenuSellItemPaneItemNameField;
     @FXML TextField mainMenuSellItemPaneItemDescriptionField;
     @FXML TextField mainMenuSellItemPaneStartingPriceField;
     @FXML TextField mainMenuSellItemPanePriceIncrementField;
     @FXML private Button uploadImageButton;
+
+    @FXML private TableView<com.auction.shared.models.Item> sellerItemsTable;
+    @FXML private TableColumn<com.auction.shared.models.Item, String> colName;
+    @FXML private TableColumn<com.auction.shared.models.Item, String> colType;
+    @FXML private TableColumn<com.auction.shared.models.Item, java.math.BigDecimal> colStartPrice;
+    @FXML private TableColumn<com.auction.shared.models.Item, java.math.BigDecimal> colIncrement;
+    private String editingItemId = null;
 
     @FXML private TableView<com.auction.shared.models.Item> sellerItemsTable;
     @FXML private TableColumn<com.auction.shared.models.Item, String> colName;
