@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.AdminCardController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="240.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" styleClass="custom-border" width="200.0" />
+      <HBox layoutX="10.0" layoutY="164.0" prefHeight="26.0" prefWidth="180.0" spacing="5.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#mainMenuAdminAuctionCardGoToItemDetails" prefHeight="26.0" prefWidth="85.0" text="Item Details">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#mainMenuAdminAuctionCardDenyAuction" prefHeight="26.0" prefWidth="90.0" text="Deny Auction" textOverrun="CLIP">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <VBox layoutX="3.0" layoutY="3.0" prefHeight="154.0" prefWidth="194.0" spacing="3.0" styleClass="border-custom">
+         <children>
+            <Label fx:id="mainMenuAdminAuctionCardNameLabel" prefHeight="30.0" prefWidth="190.0" text="Label" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="mainMenuAdminAuctionCardPriceLabel" prefHeight="30.0" prefWidth="190.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <ImageView fx:id="mainMenuAdminAuctionCardImageView" fitHeight="81.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets left="2.0" />
+               </VBox.margin>
+            </ImageView>
+         </children>
+         <padding>
+            <Insets left="5.0" right="5.0" top="3.0" />
+         </padding>
+      </VBox>
+      <HBox layoutX="10.0" layoutY="199.0" prefHeight="26.0" prefWidth="180.0" spacing="5.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#mainMenuAdminAuctionCardInitializeAuction" prefHeight="26.0" prefWidth="185.0" text="Initialize Auction" textOverrun="CLIP">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</AnchorPane>
