@@ -106,7 +106,7 @@ public class DatabaseConfig {
 
     //Lưu User vào database khi đăng ký
     public static boolean saveNewUser(User user) {
-        String sqlUser = "INSERT INTO users (id, username, password, role, email) VALUES (?, ?, ?, ?, ?)";
+        String sqlUser = "INSERT INTO users (id, username, password, role) VALUES (?, ?, ?, ?)";
         String sqlSub = "";
 
         if (user instanceof Admin) {
@@ -127,7 +127,6 @@ public class DatabaseConfig {
                 psUser.setString(2, user.getUserName());
                 psUser.setString(3, user.getPassword());
                 psUser.setString(4, user.getClass().getSimpleName());
-                psUser.setString(5, user.getEmail());
                 psUser.executeUpdate();
             }
 

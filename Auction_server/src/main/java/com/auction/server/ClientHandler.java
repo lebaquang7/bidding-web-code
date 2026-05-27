@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
-import com.auction.shared.models.Auction;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
@@ -59,27 +58,28 @@ public class ClientHandler extends Thread {
         if (request instanceof NetworkRequest) {
             NetworkRequest networkRequest = (NetworkRequest) request;
 
-            //Yêu cầu trả giá
-            if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
-                BidTransaction bid = (BidTransaction) networkRequest.getData();
-                if (bid.getMaxBid() > 0) {
-                    com.auction.server.services.AuctionManager.getInstance().registerAutoBid("AUC_123", bid);
-                    return;
-                }
+            // TODO: subject for removal?
+            // //Yêu cầu trả giá
+            // if (networkRequest.getType() == NetworkRequest.requestType.Bid) {
+            //     BidTransaction bid = (BidTransaction) networkRequest.getData();
+            //     if (bid.getMaxBid() > 0) {
+            //         com.auction.server.services.AuctionManager.getInstance().registerAutoBid("AUC_123", bid);
+            //         return;
+            //     }
 
-                System.out.println("Nhận mức giá: " + bid.getBidAmount());
+            //     System.out.println("Nhận mức giá: " + bid.getBidAmount());
 
-                Auction currentAuction = bid.getAuction();
+            //     Auction currentAuction = bid.getAuction();
 
-                if (bid.getBidAmount().compareTo(currentAuction.getCurrentPrice())>0) {
-                    System.out.println(">>> Trả giá THÀNH CÔNG!");
-                    // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
-                    com.auction.server.services.AuctionManager.getInstance().runAutoBiddingEngine("AUC_123", currentAuction);
+            //     if (bid.getBidAmount().compareTo(currentAuction.getCurrentPrice())>0) {
+            //         System.out.println(">>> Trả giá THÀNH CÔNG!");
+            //         // Sau này sẽ thêm code cập nhật giá vào danh sách chung ở đây
+            //         com.auction.server.services.AuctionManager.getInstance().runAutoBiddingEngine("AUC_123", currentAuction);
 
-                } else {
-                    System.out.println(">>> Trả giá THẤP HƠN giá hiện tại. Thất bại!");
-                }
-            }
+            //     } else {
+            //         System.out.println(">>> Trả giá THẤP HƠN giá hiện tại. Thất bại!");
+            //     }
+            // }
 
             //Yêu cầu đăng nhập
             if (networkRequest.getType() == NetworkRequest.requestType.Login) {
