@@ -438,6 +438,11 @@ public class DatabaseConfig {
                 psUpdate.executeUpdate();
             }
 
+            Item currentItem = getItemById(itemId);
+            if (amount.compareTo(currentItem.getCurrentPrice()) <= 0) {
+                return false;
+            }
+
             conn.commit(); // Thành công hết thì mới lưu
             return true;
         } catch (SQLException e) {

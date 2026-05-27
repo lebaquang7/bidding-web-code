@@ -60,19 +60,12 @@ public class AuctionViewController implements SceneController.ItemLoadable{
 
         try {
             BigDecimal bidAmount = new BigDecimal(auctionViewPlaceBidBox.getText());
-
+            BigDecimal currentPrice = currentItem.getCurrentPrice();
             BigDecimal incrementPercent = currentItem.getPriceIncrement();
-            BigDecimal multiplier = incrementPercent.add(new BigDecimal("100")).divide(new BigDecimal("100")).setScale(0, RoundingMode.FLOOR);
-            BigDecimal minBidRequired = currentItem.getCurrentPrice().multiply(multiplier);
+            BigDecimal minBidRequired = currentPrice.add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
 
             if (bidAmount.compareTo(minBidRequired) < 0) {
-                auctionViewPlaceBidErrorBox.setText("Giá tối thiểu: " + minBidRequired.toPlainString());
-                return;
-            }
-
-            // 3. Kiểm tra logic cơ bản ở Client (Giảm tải cho Server)
-            if (bidAmount.compareTo(currentItem.getCurrentPrice()) <= 0) {
-                auctionViewPlaceBidErrorBox.setText("Giá trả phải lớn hơn giá hiện tại!");
+                auctionViewPlaceBidErrorBox.setText("Tối thiểu: " + minBidRequired.toPlainString());
                 return;
             }
 
@@ -83,7 +76,6 @@ public class AuctionViewController implements SceneController.ItemLoadable{
                 return;
             }
 
-            // 5. Gửi Request lên Server thông qua Handler
             // Trả về enum BidStatus từ Server
             BidStatus.bidStatus result = ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
 
@@ -92,10 +84,6 @@ public class AuctionViewController implements SceneController.ItemLoadable{
                 auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: green;");
                 auctionViewPlaceBidErrorBox.setText("Đặt giá thành công!");
                 auctionViewPlaceBidBox.clear();
-
-                // Lưu ý: Label currentBid sẽ tự nhảy số khi bạn làm xong phần Real-time Broadcast.
-                // Tạm thời chưa cần gọi update Label ở đây để tránh bị lệch dữ liệu nếu Server chưa lưu.
-
             } else if (result == BidStatus.bidStatus.INVALID) {
                 auctionViewPlaceBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
             } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
@@ -123,10 +111,7 @@ public class AuctionViewController implements SceneController.ItemLoadable{
         this.currentItem.currentPriceProperty().addListener((obs, oldVal, newVal) -> {
             Platform.runLater(() -> {
                 if (newVal != null) {
-                    CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
-
-                    BigDecimal nextMin = newVal.multiply(item.getPriceIncrement().add(new BigDecimal("100")).divide(new BigDecimal("100"))).setScale(0, RoundingMode.UP);
-                    auctionViewPlaceBidErrorBox.setText("Tối thiểu: " + nextMin.toPlainString());
+                    CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);;
 
                     LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
                     System.out.println("UI đã cập nhật giá mới: " + newVal);
