@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.AuctionViewController">
    <children>
-      <VBox prefHeight="600.0" prefWidth="200.0">
+      <VBox prefHeight="173.0" prefWidth="200.0">
          <children>
             <Label alignment="CENTER" prefHeight="42.0" prefWidth="200.0" text="Auction">
                <font>
@@ -87,6 +87,18 @@
                   <Insets left="10.0" />
                </padding>
             </HBox>
+         </children>
+      </VBox>
+      <LineChart fx:id="auctionViewPriceChart" layoutX="200.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0">
+        <xAxis>
+          <NumberAxis fx:id="auctionViewPriceChartXAxis" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="auctionViewPriceChartYAxis" side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <VBox fx:id="auctionViewBidderFeatureBox" layoutY="174.0" prefHeight="426.0" prefWidth="200.0">
+         <children>
             <Label alignment="CENTER" prefHeight="37.0" prefWidth="170.0" text="Place a bid!">
                <font>
                   <Font size="33.0" />
@@ -153,13 +165,5 @@
             </Button>
          </children>
       </VBox>
-      <LineChart fx:id="auctionViewPriceChart" layoutX="200.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0">
-        <xAxis>
-          <NumberAxis fx:id="auctionViewPriceChartXAxis" side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis fx:id="auctionViewPriceChartYAxis" side="LEFT" />
-        </yAxis>
-      </LineChart>
    </children>
 </AnchorPane>

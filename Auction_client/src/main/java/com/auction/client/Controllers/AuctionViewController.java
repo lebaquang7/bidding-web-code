@@ -1,5 +1,7 @@
 package com.auction.client.Controllers;
 
+import java.math.BigDecimal;
+
 import com.auction.client.Models.AccountEventHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
@@ -7,10 +9,11 @@ import com.auction.client.Models.LabelHandler;
 import com.auction.client.Models.MiscTools;
 import com.auction.client.Models.TestChartData;
 import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-import java.math.BigDecimal;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,24 +21,46 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 public class AuctionViewController implements SceneController.ItemLoadable {
-  @FXML Label auctionViewItemName;
-  @FXML Label auctionViewStartingBid;
-  @FXML Label auctionViewCurrentBid;
-  @FXML Label auctionViewRemainingTime;
-  @FXML Label auctionViewPlaceBidErrorBox;
-  @FXML Label auctionViewAutoBidderErrorBox;
 
-  @FXML TextField auctionViewPlaceBidBox;
-  @FXML TextField auctionViewAutoBidderMaxBidBox;
-  @FXML TextField auctionViewAutoBidderBidIncrementBox;
+  @FXML
+  VBox auctionViewBidderFeatureBox;
+  @FXML
+  Label auctionViewItemName;
+  @FXML
+  Label auctionViewStartingBid;
+  @FXML
+  Label auctionViewCurrentBid;
+  @FXML
+  Label auctionViewRemainingTime;
+  @FXML
+  Label auctionViewPlaceBidErrorBox;
+  @FXML
+  Label auctionViewAutoBidderErrorBox;
 
-  @FXML LineChart<Number, Number> auctionViewPriceChart;
-  @FXML NumberAxis auctionViewPriceChartXAxis;
-  @FXML NumberAxis auctionViewPriceChartYAxis;
+  @FXML
+  TextField auctionViewPlaceBidBox;
+  @FXML
+  TextField auctionViewAutoBidderMaxBidBox;
+  @FXML
+  TextField auctionViewAutoBidderBidIncrementBox;
+
+  @FXML
+  LineChart<Number, Number> auctionViewPriceChart;
+  @FXML
+  NumberAxis auctionViewPriceChartXAxis;
+  @FXML
+  NumberAxis auctionViewPriceChartYAxis;
 
   private Item currentItem;
+
+  public void initialize() {
+    if (!(AccountEventHandler.getCurrentUser() instanceof Bidder)) {
+      SceneController.disableElement(auctionViewBidderFeatureBox);
+    }
+  }
 
   public void auctionViewGoBackToList(ActionEvent event) {
     SceneController.closeScene(event);
@@ -59,8 +84,8 @@ public class AuctionViewController implements SceneController.ItemLoadable {
       BigDecimal bidAmount = new BigDecimal(auctionViewPlaceBidBox.getText());
       BigDecimal currentPrice = currentItem.getCurrentPrice();
       BigDecimal incrementPercent = currentItem.getPriceIncrement();
-      BigDecimal minBidRequired =
-          currentPrice.add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
+      BigDecimal minBidRequired = currentPrice
+          .add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
 
       if (bidAmount.compareTo(minBidRequired) < 0) {
         auctionViewPlaceBidErrorBox.setText("Tối thiểu: " + minBidRequired.toPlainString());
@@ -75,8 +100,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
       }
 
       // Trả về enum BidStatus từ Server
-      BidStatus.bidStatus result =
-          ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
+      BidStatus.bidStatus result = ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
 
       // 6. Xử lý UI dựa trên phản hồi của Server
       if (result == BidStatus.bidStatus.SUCCESS) {
@@ -99,14 +123,17 @@ public class AuctionViewController implements SceneController.ItemLoadable {
   }
 
   // TODO: work on these
-  public void auctionViewEnableAutoBid(ActionEvent event) {}
+  public void auctionViewEnableAutoBid(ActionEvent event) {
+  }
 
-  public void auctionViewStopAutoBid(ActionEvent event) {}
+  public void auctionViewStopAutoBid(ActionEvent event) {
+  }
 
   @Override
   public void setItem(Item item) {
     this.currentItem = Inventory.getItemById(item.getId());
-    if (this.currentItem == null) this.currentItem = item; // Phòng hờ nếu Inventory rỗng
+    if (this.currentItem == null)
+      this.currentItem = item; // Phòng hờ nếu Inventory rỗng
 
     this.currentItem
         .currentPriceProperty()
@@ -186,8 +213,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
         CurrencySelectorHandler.getInstance()
             .getConvertedPrice(item.getStartingPrice())
             .doubleValue());
-    BigDecimal updatedPrice =
-        CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
+    BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
     yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
     yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
   }

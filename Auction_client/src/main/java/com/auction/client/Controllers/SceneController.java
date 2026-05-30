@@ -1,10 +1,12 @@
 package com.auction.client.Controllers;
 
+import java.io.IOException;
+import java.net.URL;
+
 import com.auction.client.Models.ThemeHandler;
 import com.auction.client.Properties;
 import com.auction.shared.models.Item;
-import java.io.IOException;
-import java.net.URL;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -40,7 +42,8 @@ public class SceneController {
   }
 
   /**
-   * Makes node 1 visible, while hiding node 2 via managed and visible Do use bidirectional binding
+   * Makes node 1 visible, while hiding node 2 via managed and visible Do use
+   * bidirectional binding
    * if value of node 1 and 2 need to be tied Usage: pwd hide/show checkbox, etc
    *
    * @param node1
@@ -51,6 +54,16 @@ public class SceneController {
     node1.setVisible(true);
     node2.setManaged(false);
     node2.setVisible(false);
+  }
+
+  /**
+   * usage: make node invisible and non managed.
+   * 
+   * @param node
+   */
+  public static void disableElement(Node node) {
+    node.setVisible(false);
+    node.setManaged(false);
   }
 
   // Interface for controllers that "loads" an item in, rn covers itemdetails and
