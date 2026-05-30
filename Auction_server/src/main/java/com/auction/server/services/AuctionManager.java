@@ -98,16 +98,16 @@ public class AuctionManager {
       long triggerZone = 30 * 1000;
       long extensionTime = 60 * 1000;
 
-      long endTimeMillis = item.getEndTime()
-              .atZone(java.time.ZoneId.systemDefault())
-              .toInstant()
-              .toEpochMilli();
+      long endTimeMillis =
+          item.getEndTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
       long timeRemaining = endTimeMillis - now;
 
       if (timeRemaining > 0 && timeRemaining <= triggerZone) {
         long newEndTimeMillis = endTimeMillis + extensionTime;
 
-        java.time.LocalDateTime newEndTime = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
+        java.time.LocalDateTime newEndTime =
+            java.time.LocalDateTime.ofInstant(
+                java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
         item.setEndTime(newEndTime);
 
         System.out.println("[Anti-Sniping] Gia hạn 1 phút cho: " + itemId);

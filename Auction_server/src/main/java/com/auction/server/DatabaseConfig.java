@@ -526,11 +526,12 @@ public class DatabaseConfig {
       }
     }
   }
-  public static boolean updateItemEndTime(
-          String itemId, java.time.LocalDateTime newEndTime) {
+
+  public static boolean updateItemEndTime(String itemId, java.time.LocalDateTime newEndTime) {
     String sql = "UPDATE items SET end_time = ? WHERE id = ?";
 
-    try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    try (Connection conn = getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
       pstmt.setTimestamp(1, java.sql.Timestamp.valueOf(newEndTime));
       pstmt.setString(2, itemId);
