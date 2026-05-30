@@ -1,12 +1,10 @@
 package com.auction.client.Controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,30 +15,18 @@ import javafx.scene.image.ImageView;
 
 public class ItemDetailsController implements SceneController.ItemLoadable {
 
-  @FXML
-  Label itemDetailsID;
-  @FXML
-  Label itemDetailsItemName;
-  @FXML
-  Label itemDetailsDescription;
-  @FXML
-  Label itemDetailsInitialPrice;
-  @FXML
-  Label itemDetailsCurrentPrice;
-  @FXML
-  Label itemDetailsBidsMade;
-  @FXML
-  Label itemDetailsBidders;
-  @FXML
-  Label itemDetailsLastBid;
-  @FXML
-  Label itemDetailsTimeRemaining;
-  @FXML
-  Label auctionWonLabel;
-  @FXML
-  Button auctionWonButton;
-  @FXML
-  ImageView itemDetailsImageView;
+  @FXML Label itemDetailsID;
+  @FXML Label itemDetailsItemName;
+  @FXML Label itemDetailsDescription;
+  @FXML Label itemDetailsInitialPrice;
+  @FXML Label itemDetailsCurrentPrice;
+  @FXML Label itemDetailsBidsMade;
+  @FXML Label itemDetailsBidders;
+  @FXML Label itemDetailsLastBid;
+  @FXML Label itemDetailsTimeRemaining;
+  @FXML Label auctionWonLabel;
+  @FXML Button auctionWonButton;
+  @FXML ImageView itemDetailsImageView;
 
   private Item currentItem;
 
@@ -88,16 +74,16 @@ public class ItemDetailsController implements SceneController.ItemLoadable {
           new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
     } else if (currentItem.getImagePath() != null && !currentItem.getImagePath().isEmpty()) {
       new Thread(
-          () -> {
-            byte[] bytes = ItemsEventHandler.downloadItemImage(currentItem.getImagePath());
-            if (bytes != null) {
-              currentItem.setImageBytes(bytes);
-              Platform.runLater(
-                  () -> {
-                    itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-                  });
-            }
-          })
+              () -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(currentItem.getImagePath());
+                if (bytes != null) {
+                  currentItem.setImageBytes(bytes);
+                  Platform.runLater(
+                      () -> {
+                        itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                      });
+                }
+              })
           .start();
     }
 

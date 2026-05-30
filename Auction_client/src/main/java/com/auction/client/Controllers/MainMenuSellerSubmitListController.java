@@ -1,11 +1,9 @@
 package com.auction.client.Controllers;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.shared.models.Item;
-
+import java.io.IOException;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,10 +16,8 @@ import javafx.scene.layout.GridPane;
 public class MainMenuSellerSubmitListController {
   // mostly similar to auctionview controller but for sellers to manage published
   // auctions
-  @FXML
-  GridPane mainMenuSellerSubmitListGridPane;
-  @FXML
-  Pagination mainMenuSellerSubmitListPagination;
+  @FXML GridPane mainMenuSellerSubmitListGridPane;
+  @FXML Pagination mainMenuSellerSubmitListPagination;
 
   private ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -39,10 +35,11 @@ public class MainMenuSellerSubmitListController {
             });
 
     itemList.addListener(
-        (ListChangeListener<Item>) change -> {
-          updatePagination();
-          renderItem(itemList, mainMenuSellerSubmitListPagination.getCurrentPageIndex());
-        });
+        (ListChangeListener<Item>)
+            change -> {
+              updatePagination();
+              renderItem(itemList, mainMenuSellerSubmitListPagination.getCurrentPageIndex());
+            });
   }
 
   public void refreshItems() {
@@ -66,22 +63,21 @@ public class MainMenuSellerSubmitListController {
   public void renderItem(List<Item> list, int paginationIndex) {
     mainMenuSellerSubmitListGridPane.getChildren().clear();
 
-    if (list.isEmpty())
-      return;
+    if (list.isEmpty()) return;
 
     int startIndex = paginationIndex * ITEMS_PER_PAGE;
     int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, list.size());
 
-    if (startIndex >= list.size())
-      return;
+    if (startIndex >= list.size()) return;
 
     List<Item> itemListSublist = list.subList(startIndex, endIndex);
 
     for (int i = 0; i < itemListSublist.size(); i++) {
       try {
         Item item = itemListSublist.get(i);
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/com/auction/client/views/mainMenu_sellerSubmitCard.fxml"));
+        FXMLLoader loader =
+            new FXMLLoader(
+                getClass().getResource("/com/auction/client/views/mainMenu_sellerSubmitCard.fxml"));
 
         Parent card = loader.load();
 

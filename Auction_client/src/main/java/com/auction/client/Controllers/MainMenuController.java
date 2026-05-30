@@ -13,12 +13,9 @@ public class MainMenuController {
     return PATH_TO_VIEW;
   }
 
-  @FXML
-  BorderPane mainMenuMainBorderPane;
-  @FXML
-  Button mainMenuSellItemButton;
-  @FXML
-  Button mainMenuAdminAuctionButton;
+  @FXML BorderPane mainMenuMainBorderPane;
+  @FXML Button mainMenuSellItemButton;
+  @FXML Button mainMenuAdminAuctionButton;
 
   public void initialize() {
     BorderPaneController.setMainLayout(mainMenuMainBorderPane);

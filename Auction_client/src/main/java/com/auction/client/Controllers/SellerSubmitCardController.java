@@ -1,12 +1,10 @@
 package com.auction.client.Controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,12 +14,9 @@ import javafx.scene.image.ImageView;
 
 public class SellerSubmitCardController {
   // mostly copied from auctioncard controller
-  @FXML
-  Label mainMenuSellerSubmitCardNameLabel;
-  @FXML
-  Label mainMenuSellerSubmitCardPriceLabel;
-  @FXML
-  ImageView mainMenuSellerSubmitCardImageView;
+  @FXML Label mainMenuSellerSubmitCardNameLabel;
+  @FXML Label mainMenuSellerSubmitCardPriceLabel;
+  @FXML ImageView mainMenuSellerSubmitCardImageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -32,7 +27,8 @@ public class SellerSubmitCardController {
     mainMenuSellerSubmitCardNameLabel.setText(item.getItemName());
     LabelHandler.setDetailedTooltip(mainMenuSellerSubmitCardNameLabel);
 
-    CurrencySelectorHandler.bindPriceLabel(mainMenuSellerSubmitCardPriceLabel, item.getCurrentPrice());
+    CurrencySelectorHandler.bindPriceLabel(
+        mainMenuSellerSubmitCardPriceLabel, item.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(mainMenuSellerSubmitCardPriceLabel, 20, 12, 10, 1);
 
     // Tải hình ảnh lên
@@ -41,17 +37,17 @@ public class SellerSubmitCardController {
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
-          () -> {
-            byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
-            if (bytes != null) {
-              item.setImageBytes(bytes);
-              Platform.runLater(
-                  () -> {
-                    mainMenuSellerSubmitCardImageView.setImage(
-                        new Image(new ByteArrayInputStream(bytes)));
-                  });
-            }
-          })
+              () -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
+                if (bytes != null) {
+                  item.setImageBytes(bytes);
+                  Platform.runLater(
+                      () -> {
+                        mainMenuSellerSubmitCardImageView.setImage(
+                            new Image(new ByteArrayInputStream(bytes)));
+                      });
+                }
+              })
           .start();
     }
 
@@ -62,8 +58,10 @@ public class SellerSubmitCardController {
               Platform.runLater(
                   () -> {
                     if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(mainMenuSellerSubmitCardPriceLabel, newVal);
-                      LabelHandler.scaleFontSizeToFit(mainMenuSellerSubmitCardPriceLabel, 20, 12, 10, 1);
+                      CurrencySelectorHandler.bindPriceLabel(
+                          mainMenuSellerSubmitCardPriceLabel, newVal);
+                      LabelHandler.scaleFontSizeToFit(
+                          mainMenuSellerSubmitCardPriceLabel, 20, 12, 10, 1);
                     }
                   });
             });
@@ -75,6 +73,5 @@ public class SellerSubmitCardController {
   }
 
   // TODO: logic for recalling auction
-  public void mainMenuSellerSubmitCardRecallAuction(ActionEvent event) {
-  }
+  public void mainMenuSellerSubmitCardRecallAuction(ActionEvent event) {}
 }
