@@ -1,9 +1,11 @@
 package com.auction.client.Models;
 
-import com.auction.client.Properties;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+
+import com.auction.client.Properties;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Label;
@@ -13,8 +15,8 @@ public class CurrencySelectorHandler {
   // Singleton stuffs, since this only needs one instance
   private static CurrencySelectorHandler instance = null;
 
-  private CurrencySelectorHandler() {}
-  ;
+  private CurrencySelectorHandler() {
+  };
 
   public static synchronized CurrencySelectorHandler getInstance() {
     if (instance == null) {
@@ -50,18 +52,18 @@ public class CurrencySelectorHandler {
     switch (CurrencySelectorHandler.getInstance().getActiveCurrency()) {
       case "VND" -> convertedPrice = price;
       case "USD" ->
-          convertedPrice =
-              price.divide(
-                  Properties.getUSD_TO_VND_RATE(),
-                  2,
-                  RoundingMode.HALF_UP); // divide by rate, with 2 decimal places
+        convertedPrice = price.divide(
+            Properties.getUSD_TO_VND_RATE(),
+            2,
+            RoundingMode.HALF_UP); // divide by rate, with 2 decimal places
       default -> convertedPrice = price;
     }
     return convertedPrice;
   }
 
   /**
-   * Usage: convert price in specific currency type back to VND, since VND is the standard currency
+   * Usage: convert price in specific currency type back to VND, since VND is the
+   * standard currency
    * used in storage
    *
    * @param price
@@ -78,7 +80,8 @@ public class CurrencySelectorHandler {
   }
 
   /**
-   * Bind labels that displays price with currency type. Bind still functions after method finishes
+   * Bind labels that displays price with currency type. Bind still functions
+   * after method finishes
    *
    * @param label
    * @param price
@@ -86,19 +89,18 @@ public class CurrencySelectorHandler {
   public static void bindPriceLabel(Label label, BigDecimal price) {
     Tooltip tooltip = new Tooltip();
     label.setTooltip(tooltip);
-    Runnable updateUI =
-        () -> {
-          String currencyUnit = CurrencySelectorHandler.getInstance().getActiveCurrency();
-          BigDecimal convertedPrice =
-              CurrencySelectorHandler.getInstance().getConvertedPrice(price);
-          tooltip.setText(convertedPrice.toString() + " " + currencyUnit);
-          label.setText(
-              String.format(
-                  "%s %s",
-                  CurrencySelectorHandler.abbreviateCurrency(convertedPrice), currencyUnit));
-          // ^ custom formatting, display first variable (price) with two decimals max (abbreviated,
-          // tooltip reveals full), then second variable (currency unit)
-        };
+    Runnable updateUI = () -> {
+      String currencyUnit = CurrencySelectorHandler.getInstance().getActiveCurrency();
+      BigDecimal convertedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(price);
+      tooltip.setText(convertedPrice.toString() + " " + currencyUnit);
+      label.setText(
+          String.format(
+              "%s %s",
+              CurrencySelectorHandler.abbreviateCurrency(convertedPrice), currencyUnit));
+      // ^ custom formatting, display first variable (price) with two decimals max
+      // (abbreviated,
+      // tooltip reveals full), then second variable (currency unit)
+    };
     updateUI.run();
     // runs once upon start
     CurrencySelectorHandler.getInstance()

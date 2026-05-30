@@ -20,8 +20,6 @@ public class AuctionCardController {
   @FXML
   Label mainMenuAuctionCardPriceLabel;
   @FXML
-  Label mainMenuAuctionCardTimeLabel;
-  @FXML
   ImageView mainMenuAuctionCardImageView;
 
   // each auction card holds the current item

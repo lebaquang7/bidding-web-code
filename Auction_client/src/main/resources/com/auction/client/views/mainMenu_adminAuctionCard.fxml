@@ -36,12 +36,7 @@
             </Label>
             <HBox prefHeight="30.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="mainMenuAdminAuctionCardPriceLabel" prefHeight="30.0" prefWidth="95.0" text="Label" textAlignment="CENTER">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="mainMenuAdminAuctionCardTimeLabel" prefHeight="30.0" prefWidth="95.0" text="Label" textAlignment="CENTER">
+                  <Label fx:id="mainMenuAdminAuctionCardPriceLabel" prefHeight="30.0" prefWidth="209.0" text="Label" textAlignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>

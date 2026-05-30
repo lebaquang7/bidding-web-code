@@ -21,8 +21,6 @@ public class AdminCardController {
   @FXML
   Label mainMenuAdminAuctionCardPriceLabel;
   @FXML
-  Label mainMenuAdminAuctionCardTimeLabel;
-  @FXML
   ImageView mainMenuAdminAuctionCardImageView;
 
   // each auction card holds the current item
