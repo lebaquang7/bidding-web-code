@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import java.time.LocalDateTime;
 
 public abstract class Item extends Entity {
   private String name;
@@ -17,6 +18,16 @@ public abstract class Item extends Entity {
   private BigDecimal priceIncrement;
   private String imagePath; // Lưu tên file ảnh
   private byte[] imageBytes; // Truyền dữ liệu ảnh qua Socket
+
+  private LocalDateTime endTime;
+
+  public LocalDateTime getEndTime() {
+    return endTime;
+  }
+
+  public void setEndTime(LocalDateTime endTime) {
+    this.endTime = endTime;
+  }
 
   private static final long serialVersionUID = 1L;
 

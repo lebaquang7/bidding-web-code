@@ -87,4 +87,36 @@ public class AuctionManager {
   //     System.out.println(" AUTO-BID KẾT THÚC. NGƯỜI DẪN ĐẦU: [" + currentHighestUser + "] VỚI
   // GIÁ: " + currentPrice + " VND");
   // }
+  public void applyAntiSniping(String itemId) {
+    try {
+      com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
+      if (item == null || item.getEndTime() == null) {
+        return;
+      }
+
+      long now = System.currentTimeMillis();
+      long triggerZone = 30 * 1000;
+      long extensionTime = 60 * 1000;
+
+      long endTimeMillis = item.getEndTime()
+              .atZone(java.time.ZoneId.systemDefault())
+              .toInstant()
+              .toEpochMilli();
+      long timeRemaining = endTimeMillis - now;
+
+      if (timeRemaining > 0 && timeRemaining <= triggerZone) {
+        long newEndTimeMillis = endTimeMillis + extensionTime;
+
+        java.time.LocalDateTime newEndTime = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
+        item.setEndTime(newEndTime);
+
+        System.out.println("[Anti-Sniping] Gia hạn 1 phút cho: " + itemId);
+
+        com.auction.server.DatabaseConfig.updateItemEndTime(itemId, newEndTime);
+        com.auction.server.services.NotificationService.broadcast(item);
+      }
+    } catch (Exception e) {
+      System.err.println("Lỗi chạy Anti-sniping: " + e.getMessage());
+    }
+  }
 }
