@@ -54,6 +54,7 @@ public class BiddingService {
 
       if (isSuccess) {
         System.out.println("Trả giá thành công cho Item: " + itemId);
+        AuctionManager.getInstance().applyAntiSniping(itemId);
         return BidStatus.bidStatus.SUCCESS;
       } else {
         return BidStatus.bidStatus.INVALID;
