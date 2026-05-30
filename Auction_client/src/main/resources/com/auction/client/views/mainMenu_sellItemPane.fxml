@@ -17,7 +17,7 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <Button layoutX="233.0" layoutY="374.0" mnemonicParsing="false" onAction="#handleSubmitItem" prefHeight="40.0" prefWidth="234.0" text="Submit item for auction">
+      <Button layoutX="233.0" layoutY="401.0" mnemonicParsing="false" onAction="#handleSubmitItem" prefHeight="40.0" prefWidth="234.0" text="Submit item for auction">
          <font>
             <Font size="18.0" />
          </font>
@@ -98,6 +98,20 @@
                         <Insets top="1.0" />
                      </HBox.margin>
                   </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0" spacing="30.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="174.0" text="Auction Duration">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="itemAuctionDuration" prefHeight="26.0" prefWidth="152.0">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                  </ComboBox>
                </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="200.0">

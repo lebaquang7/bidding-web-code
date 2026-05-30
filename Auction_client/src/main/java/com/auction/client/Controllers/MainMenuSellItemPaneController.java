@@ -1,5 +1,8 @@
 package com.auction.client.Controllers;
 
+import java.io.File;
+import java.math.BigDecimal;
+
 import com.auction.client.Models.AccountEventHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
@@ -8,8 +11,7 @@ import com.auction.shared.models.Electronics;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
 import com.auction.shared.models.Vehicle;
-import java.io.File;
-import java.math.BigDecimal;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,13 +21,22 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
-  @FXML TextField mainMenuSellItemPaneItemNameField;
-  @FXML TextField mainMenuSellItemPaneItemDescriptionField;
-  @FXML TextField mainMenuSellItemPaneStartingPriceField;
-  @FXML TextField mainMenuSellItemPanePriceIncrementField;
-  @FXML private Button uploadImageButton;
+  @FXML
+  TextField mainMenuSellItemPaneItemNameField;
+  @FXML
+  TextField mainMenuSellItemPaneItemDescriptionField;
+  @FXML
+  TextField mainMenuSellItemPaneStartingPriceField;
+  @FXML
+  TextField mainMenuSellItemPanePriceIncrementField;
+  @FXML
+  private Button uploadImageButton;
 
-  @FXML private ComboBox<String> itemTypeComboBox;
+  @FXML
+  private ComboBox<String> itemTypeComboBox;
+  // TODO: options for auction duration
+  @FXML
+  private ComboBox<String> itemAuctionDuration;
   private File selectedImageFile; // Lưu file ảnh
 
   @FXML
@@ -37,10 +48,9 @@ public class MainMenuSellItemPaneController {
     }
 
     // set prompt text based on currency type.
-    double convertedPrice =
-        CurrencySelectorHandler.getInstance()
-            .getConvertedPrice(BigDecimal.valueOf(100000))
-            .doubleValue();
+    double convertedPrice = CurrencySelectorHandler.getInstance()
+        .getConvertedPrice(BigDecimal.valueOf(100000))
+        .doubleValue();
     String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
     mainMenuSellItemPaneStartingPriceField.setPromptText(
         String.format(
@@ -57,11 +67,10 @@ public class MainMenuSellItemPaneController {
 
       String name = mainMenuSellItemPaneItemNameField.getText();
       String description = mainMenuSellItemPaneItemDescriptionField.getText();
-      BigDecimal startingPrice =
-          CurrencySelectorHandler.getInstance()
-              .getVNDPrice(
-                  BigDecimal.valueOf(
-                      Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
+      BigDecimal startingPrice = CurrencySelectorHandler.getInstance()
+          .getVNDPrice(
+              BigDecimal.valueOf(
+                  Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
       BigDecimal currentPrice = startingPrice;
       double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
@@ -83,9 +92,8 @@ public class MainMenuSellItemPaneController {
       }
 
       if (selectedImageFile != null) {
-        byte[] imageBytes =
-            java.nio.file.Files.readAllBytes(
-                selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
+        byte[] imageBytes = java.nio.file.Files.readAllBytes(
+            selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
         newItem.setImageBytes(imageBytes);
         newItem.setImagePath(selectedImageFile.getName()); // Lưu tên file để Server biết định dạng
       }
@@ -118,8 +126,7 @@ public class MainMenuSellItemPaneController {
         .addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
     // Mở cửa sổ chọn file
-    File file =
-        fileChooser.showOpenDialog(mainMenuSellItemPaneItemNameField.getScene().getWindow());
+    File file = fileChooser.showOpenDialog(mainMenuSellItemPaneItemNameField.getScene().getWindow());
 
     if (file != null) {
       // Kiểm tra dung lượng giới hạn 10MB
