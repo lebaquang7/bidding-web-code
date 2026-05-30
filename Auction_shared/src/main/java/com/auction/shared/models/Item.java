@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import java.time.LocalDateTime;
 
 public abstract class Item extends Entity {
   private String name;
