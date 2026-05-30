@@ -24,6 +24,11 @@
                   <Font size="20.0" />
                </font>
             </Button>
+            <Button fx:id="mainMenuSellerListButton" mnemonicParsing="false" onAction="#mainMenuSwitchToSellerList" prefHeight="50.0" prefWidth="170.0" text="Manage Submission">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
             <Button fx:id="mainMenuAdminAuctionButton" mnemonicParsing="false" onAction="#mainMenuSwitchToAdminFunctions" prefHeight="50.0" prefWidth="170.0" text="Admin - Auctions">
                <font>
                   <Font size="18.0" />
@@ -34,7 +39,7 @@
                   <Font size="20.0" />
                </font>
                <VBox.margin>
-                  <Insets top="260.0" />
+                  <Insets top="190.0" />
                </VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#mainMenuLogOut" prefHeight="50.0" prefWidth="170.0" text="Log Out">

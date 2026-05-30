@@ -13,26 +13,32 @@ public class MainMenuController {
     return PATH_TO_VIEW;
   }
 
-  @FXML BorderPane mainMenuMainBorderPane;
-  @FXML Button mainMenuSellItemButton;
-  @FXML Button mainMenuAdminAuctionButton;
+  @FXML
+  BorderPane mainMenuMainBorderPane;
+  @FXML
+  Button mainMenuSellItemButton;
+  @FXML
+  Button mainMenuAdminAuctionButton;
 
   public void initialize() {
     BorderPaneController.setMainLayout(mainMenuMainBorderPane);
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
 
-    // TODO: currently left as comments for easier testing, but remove comments when its done
+    // TODO: currently left as comments for easier testing,
+    // but remove comments when its done
     // //hides buttons depending on user type
     // if (!(AccountEventHandler.getCurrentUser() instanceof Seller ||
     // AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    //     mainMenuSellItemButton.setVisible(false);
+    // mainMenuSellItemButton.setVisible(false);
+    // mainMenuSellerListButton.setVisible(false);
     // }
     // if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    //     mainMenuAdminAuctionButton.setVisible(false);
+    // mainMenuAdminAuctionButton.setVisible(false);
     // }
   }
 
-  // Size of center pane: 700 W, 600 H (full pane + side pane is 900 W, 600 H) (for reference when
+  // Size of center pane: 700 W, 600 H (full pane + side pane is 900 W, 600 H)
+  // (for reference when
   // creating side panes)
   public void mainMenuSwitchToAuctionList(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
@@ -40,6 +46,10 @@ public class MainMenuController {
 
   public void mainMenuSwitchToSellItem(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellItemPane.fxml");
+  }
+
+  public void mainMenuSwitchToSellerList(ActionEvent event) {
+    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellerSubmitListPane.fxml");
   }
 
   public void mainMenuSwitchToSettings(ActionEvent event) {
