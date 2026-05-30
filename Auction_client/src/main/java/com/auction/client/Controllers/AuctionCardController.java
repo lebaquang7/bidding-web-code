@@ -1,10 +1,12 @@
 package com.auction.client.Controllers;
 
+import java.io.ByteArrayInputStream;
+
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
-import java.io.ByteArrayInputStream;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,9 +15,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class AuctionCardController {
-  @FXML Label mainMenuAuctionCardNameLabel;
-  @FXML Label mainMenuAuctionCardPriceLabel;
-  @FXML ImageView mainMenuAuctionCardImageView;
+  @FXML
+  Label mainMenuAuctionCardNameLabel;
+  @FXML
+  Label mainMenuAuctionCardPriceLabel;
+  @FXML
+  Label mainMenuAuctionCardTimeLabel;
+  @FXML
+  ImageView mainMenuAuctionCardImageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -35,17 +42,17 @@ public class AuctionCardController {
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
-              () -> {
-                byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
-                if (bytes != null) {
-                  item.setImageBytes(bytes);
-                  Platform.runLater(
-                      () -> {
-                        mainMenuAuctionCardImageView.setImage(
-                            new Image(new ByteArrayInputStream(bytes)));
-                      });
-                }
-              })
+          () -> {
+            byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
+            if (bytes != null) {
+              item.setImageBytes(bytes);
+              Platform.runLater(
+                  () -> {
+                    mainMenuAuctionCardImageView.setImage(
+                        new Image(new ByteArrayInputStream(bytes)));
+                  });
+            }
+          })
           .start();
     }
 
