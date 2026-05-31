@@ -31,62 +31,73 @@ public class AuctionManager {
   private java.util.Map<String, java.util.Map<String, com.auction.shared.models.BidTransaction>>
       autoBidRegistry = new java.util.concurrent.ConcurrentHashMap<>();
 
-  // TODO: proper auto bidding. subject for removal?
-  // public void registerAutoBid(String auctionId, com.auction.shared.models.BidTransaction config)
-  // {
-  //     autoBidRegistry.putIfAbsent(auctionId, new java.util.concurrent.ConcurrentHashMap<>());
-  //     autoBidRegistry.get(auctionId).put(config.getTempUsername(), config);
-  //     System.out.println(" [Server] Đã bật Auto-Bid cho User: " + config.getTempUsername());
-  // }
+  public static class AutoBidConfig {
+    public String itemId;
+    public String bidderId;
+    public java.math.BigDecimal maxBid;
+    public java.math.BigDecimal increment;
 
-  // public void runAutoBiddingEngine(String auctionId, Object auctionObj) {
-  //     java.util.Map<String, com.auction.shared.models.BidTransaction> bots =
-  // autoBidRegistry.get(auctionId);
-  //     if (bots == null || bots.isEmpty()) return;
+    public AutoBidConfig(
+        String itemId,
+        String bidderId,
+        java.math.BigDecimal maxBid,
+        java.math.BigDecimal increment) {
+      this.itemId = itemId;
+      this.bidderId = bidderId;
+      this.maxBid = maxBid;
+      this.increment = increment;
+    }
+  }
 
-  //     boolean priceChanged;
-  //     BigDecimal currentPrice = BigDecimal.valueOf(5000);
-  //     String currentHighestUser = "";
+  private final java.util.Map<String, java.util.List<AutoBidConfig>> activeAutoBids =
+      new java.util.concurrent.ConcurrentHashMap<>();
 
-  //     if (auctionObj instanceof com.auction.shared.models.Auction) {
-  //         currentPrice = ((com.auction.shared.models.Auction) auctionObj).getCurrentPrice();
-  //     }
+  public void registerAutoBid(
+      String itemId, String bidderId, java.math.BigDecimal maxBid, java.math.BigDecimal increment) {
+    activeAutoBids
+        .computeIfAbsent(itemId, k -> new java.util.concurrent.CopyOnWriteArrayList<>())
+        .add(new AutoBidConfig(itemId, bidderId, maxBid, increment));
+    System.out.println(
+        "[Hệ thống] Đã cài đặt Bot Auto-Bid cho user:" + bidderId + " | Item: " + itemId);
+  }
 
-  //     System.out.println(" KÍCH HOẠT TỰ ĐỘNG ĐÈ GIÁ ");
-  //     do {
-  //         priceChanged = false;
+  // Engine tự động quét và đấu giá đè nhau
+  public void triggerAutoBid(String itemId) {
+    java.util.List<AutoBidConfig> configs = activeAutoBids.get(itemId);
+    if (configs == null || configs.isEmpty()) return;
 
-  //         // Duyệt qua tất cả Client đăng ký Auto-Bid cho món đồ này
-  //         for (com.auction.shared.models.BidTransaction bot : bots.values()) {
-  //             String botUsername = bot.getTempUsername();
-  //             if (botUsername == null) continue;
+    boolean priceChanged;
+    do {
+      priceChanged = false;
+      // Lấy dữ liệu mới nhất từ DB
+      com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
+      if (item == null) return;
 
-  //             // Nếu bot này chưa phải là người giữ giá cao nhất hiện tại
-  //             if (!botUsername.equals(currentHighestUser)) {
-  //                 double nextPossibleBid = currentPrice + bot.getIncrement();
+      for (AutoBidConfig bot : configs) {
+        // Tránh việc Bot tự trả giá đè lên chính mình
+        if (bot.bidderId.equals(item.getHighestBidderId())) continue;
+        java.math.BigDecimal nextBid = item.getCurrentPrice().add(bot.increment);
 
-  //                 // Nếu mức giá nhảy tiếp theo vẫn nằm trong ngân sách (maxBid) của Bot
-  //                 if (nextPossibleBid <= bot.getMaxBid()) {
-  //                     currentPrice = nextPossibleBid;
-  //                     currentHighestUser = botUsername;
-  //                     priceChanged = true;
+        if (nextBid.compareTo(bot.maxBid) <= 0) {
+          com.auction.shared.models.BidStatus.bidStatus status =
+              com.auction.server.services.BiddingService.placeBid(itemId, bot.bidderId, nextBid);
 
-  //                     System.out.println(" [Hệ thống] Bot [" + botUsername + "] tự động nâng giá
-  // lên: " + currentPrice + " VND");
+          if (status == com.auction.shared.models.BidStatus.bidStatus.SUCCESS) {
+            priceChanged = true;
+            System.out.println(
+                "[Auto-Bid] Bot [" + bot.bidderId + "] tự động nâng giá lên: " + nextBid);
 
-  //                     if (auctionObj instanceof com.auction.shared.models.Auction) {
-  //                         ((com.auction.shared.models.Auction)
-  // auctionObj).setCurrentPrice(currentPrice);
-  //                     }
-  //                 }
-  //             }
-  //         }
-  //     } while (priceChanged); // Vòng lặp chạy liên tục cho đến khi không còn Bot nào đủ điều
-  // kiện đè giá nữa
+            com.auction.shared.models.BidTransaction botBidNotification =
+                new com.auction.shared.models.BidTransaction(itemId, bot.bidderId, nextBid);
+            com.auction.server.services.NotificationService.broadcast(botBidNotification);
 
-  //     System.out.println(" AUTO-BID KẾT THÚC. NGƯỜI DẪN ĐẦU: [" + currentHighestUser + "] VỚI
-  // GIÁ: " + currentPrice + " VND");
-  // }
+            break;
+          }
+        }
+      }
+    } while (priceChanged); // Lặp lại cho đến khi không còn Bot nào trả giá nữa
+  }
+
   public void applyAntiSniping(String itemId) {
     try {
       com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
