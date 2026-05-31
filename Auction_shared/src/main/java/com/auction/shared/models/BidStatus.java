@@ -6,6 +6,7 @@ public class BidStatus {
     WINNER,
     INVALID,
     ALREADY_HIGHEST,
-    EXPIRED
+    EXPIRED,
+    NOT_STARTED
   }
 }

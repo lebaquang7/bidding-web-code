@@ -1,12 +1,11 @@
 package com.auction.server;
 
+import com.auction.server.services.AuctionManager;
+import com.auction.server.services.AuctionSession;
 import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.User;
+import com.auction.shared.models.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -122,7 +121,17 @@ public class ClientHandler extends Thread {
           }
 
           boolean success = DatabaseConfig.saveNewItem(newItem);
-          out.writeObject(success ? "success" : "fail");
+
+          if (success) {
+            Auction newAuction = new Auction(0, newItem, newItem.getStartingPrice(), null, null, null); // Khởi tạo đối tượng Auction
+            newAuction.setStatus(AuctionStatus.PENDING_APPROVAL);
+
+            AuctionSession session = new AuctionSession(String.valueOf(newItem.getId()),newItem,newAuction,3600);
+            AuctionManager.getInstance().registerSession(String.valueOf(newItem.getId()), session);
+
+            out.writeObject("success");
+          } else { out.writeObject("fail"); }
+
           out.flush();
         } catch (IOException e) {
           System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
@@ -192,6 +201,42 @@ public class ClientHandler extends Thread {
           System.out.println("Luồng Real-time đã dừng.");
         }
         return;
+      }
+
+      // Yêu cầu khởi tạo Auction từ admin
+      if (networkRequest.getType() == NetworkRequest.requestType.InitializeAuction) {
+        String itemId = (String) networkRequest.getData();
+
+        try {
+          // Tìm AuctionSession tương ứng thông qua AuctionManager
+          AuctionSession session = AuctionManager.getInstance().getAuctionSession(itemId);
+
+          if (session == null) {
+            Item item = DatabaseConfig.getItemById(itemId);
+            if (item != null) {
+              // Tạo đối tượng Auction mới (giữ nguyên các tham số cũ)
+              Auction auctionDetails = new com.auction.shared.models.Auction(
+                      0,
+                      item,
+                      item.getStartingPrice(),
+                      null,
+                      null,
+                      null
+              );
+              auctionDetails.setStatus(com.auction.shared.models.AuctionStatus.PENDING_APPROVAL);
+
+              // Tạo Session mới và đăng ký vào Manager
+              session = new AuctionSession(itemId, item, auctionDetails, 3600); // 3600 giây mặc định
+              AuctionManager.getInstance().registerSession(itemId, session);
+            }
+          }
+
+          boolean success = (session != null && session.start());
+          out.writeObject(success ? "success" : "fail");
+          out.flush();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }

@@ -11,7 +11,8 @@ public class NetworkRequest implements Serializable {
     SellItem,
     GetAllItems,
     SubscribeNotification,
-    GetItemImage
+    GetItemImage,
+    InitializeAuction
   }
 
   private requestType type;

@@ -1,5 +1,7 @@
 package com.auction.client.Controllers;
 
+import java.io.ByteArrayInputStream;
+
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
@@ -73,7 +75,15 @@ public class AdminCardController {
   }
 
   // TODO: make this button push an auction to the actual auction list
-  public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {}
+  @FXML
+  public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {
+      boolean success = ItemsEventHandler.initializeAuction(currentItem.getId());
+      if (success) {
+          System.out.println("Vật phẩm " + currentItem.getItemName() + " đã được mở bán!");
+      } else {
+          System.err.println("Lỗi khi duyệt vật phẩm.");
+      }
+  }
 
   // TODO: make this button denies a published auction from coming to the actual
   // auction list

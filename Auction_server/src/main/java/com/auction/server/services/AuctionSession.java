@@ -1,9 +1,8 @@
 package com.auction.server.services;
 
-import com.auction.shared.models.AuctionStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Bidder;
-import com.auction.shared.models.Item;
+import com.auction.server.DatabaseConfig;
+import com.auction.shared.models.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ public class AuctionSession {
   private final String sessionId;
   private final Item auctionItem;
   private Bidder highestBidder;
+  private Auction auctionDetails;
 
   private AuctionStatus currentState;
   private final List<BidTransaction> bidHistory;
@@ -26,34 +26,42 @@ public class AuctionSession {
       Executors
           .newSingleThreadScheduledExecutor(); // Dùng để quản lý thời gian của phiên đấu giá và
 
+  public void setCurrentState(AuctionStatus currentState) {
+    this.currentState = currentState;
+  }
   // thời gian chờ thanh toán
 
-  public AuctionSession(String sessionId, Item auctionItem, long durationInSeconds) {
+  public AuctionSession(String sessionId, Item auctionItem, Auction auctionDetails, long durationInSeconds) {
     this.sessionId = sessionId;
     this.auctionItem = auctionItem;
+    this.auctionDetails = auctionDetails;
     this.durationInSeconds = durationInSeconds;
     this.bidHistory = new ArrayList<>();
-    this.currentState = AuctionStatus.OPEN;
+    this.currentState = AuctionStatus.PENDING_APPROVAL;
   }
 
   public boolean start() {
     synchronized (lock) {
-      if (currentState != AuctionStatus.OPEN) {
-        System.out.println("phiên đấu giá chưa đến giờ bắt đầu");
+      if (currentState != AuctionStatus.PENDING_APPROVAL) {
         return false;
       }
-      this.currentState = AuctionStatus.RUNNING;
 
-      System.out.println("[Phiên " + sessionId + "]: Trạng thái OPEN -> RUNNING.");
-      System.out.println(
-          "Vật phẩm: "
-              + auctionItem.getItemName()
-              + " | Giá khởi điểm: "
-              + auctionItem.getCurrentPrice());
-      ;
+      boolean dbUpdated = DatabaseConfig.updateAuctionStatus(this.sessionId, AuctionStatus.RUNNING);
 
-      scheduler.schedule(this::finish, durationInSeconds, TimeUnit.SECONDS);
-      return true;
+      if (dbUpdated) {
+        this.currentState = AuctionStatus.RUNNING;
+        if (auctionDetails != null) {
+          auctionDetails.setStatus(AuctionStatus.RUNNING);
+        }
+
+        scheduler.schedule(this::finish, durationInSeconds, TimeUnit.SECONDS);
+
+        System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
+        return true;
+      } else {
+        System.err.println("[Lỗi] Không tìm thấy Item ID: " + sessionId + " trong DB.");
+        return false;
+      }
     }
   }
 

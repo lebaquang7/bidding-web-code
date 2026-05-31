@@ -1,6 +1,8 @@
 package com.auction.server.services;
 
 import com.auction.server.DatabaseConfig;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.Item;
 import java.math.BigDecimal;
@@ -15,12 +17,28 @@ public class BiddingService {
       new ConcurrentHashMap<>();
 
   public static BidStatus.bidStatus placeBid(String itemId, String bidderId, BigDecimal bidAmount) {
-    // Lấy hoặc tạo mới ổ khóa cho vật phẩm này
     ReentrantLock lock = itemLocks.computeIfAbsent(itemId, k -> new ReentrantLock());
 
-    lock.lock(); // Bắt đầu khóa để xử lý độc quyền cho itemId này
+    lock.lock();
     try {
       Item item = DatabaseConfig.getItemById(itemId);
+      AuctionSession session = AuctionManager.getInstance().getAuctionSession(itemId);
+
+      // session == null || session.getCurrentState() != AuctionStatus.RUNNING
+      if (session == null && item != null && DatabaseConfig.isAuctionRunningInDB(itemId)) {
+        Auction auctionDetails = new Auction(0, item, item.getStartingPrice(), null, null, null);
+
+        session = new AuctionSession(itemId, item, auctionDetails, 3600); // Set lại bộ đếm giờ nếu cần
+        session.setCurrentState(AuctionStatus.RUNNING);
+
+        AuctionManager.getInstance().registerSession(itemId, session);
+        System.out.println("[Recovery] Đã khôi phục AuctionSession cho item: " + itemId);
+      }
+
+      if (session == null || session.getCurrentState() != AuctionStatus.RUNNING) {
+        System.out.println("Lỗi: Phiên đấu giá chưa bắt đầu hoặc chưa được duyệt.");
+        return BidStatus.bidStatus.NOT_STARTED;
+      }
 
       if (item == null) {
         return BidStatus.bidStatus.INVALID;
@@ -39,7 +57,7 @@ public class BiddingService {
               .multiply(incrementPercent)
               .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
       BigDecimal minRequiredBid = item.getCurrentPrice().add(incrementAmount);
-      if (bidAmount.compareTo(minRequiredBid) < 0) {
+      if (bidAmount.compareTo(minRequiredBid) <= 0) {
         System.out.println("Lỗi: Giá trả thấp hơn mức tối thiểu yêu cầu.");
         return BidStatus.bidStatus.INVALID;
       }
@@ -57,11 +75,12 @@ public class BiddingService {
         AuctionManager.getInstance().applyAntiSniping(itemId);
         return BidStatus.bidStatus.SUCCESS;
       } else {
+        System.out.println("Từ chối giao dịch vì: Lỗi update DB");
         return BidStatus.bidStatus.INVALID;
       }
 
     } finally {
-      lock.unlock(); // Luôn giải phóng khóa trong khối finally
+      lock.unlock();
     }
   }
 

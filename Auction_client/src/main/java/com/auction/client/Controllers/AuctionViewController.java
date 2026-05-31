@@ -100,7 +100,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
       } else if (result == BidStatus.bidStatus.EXPIRED) {
         auctionViewPlaceBidErrorBox.setText("Phiên đấu giá này đã kết thúc!");
       } else {
-        auctionViewPlaceBidErrorBox.setText("Giao dịch bị từ chối, vui lòng thử lại.");
+        auctionViewPlaceBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
       }
 
     } catch (NumberFormatException e) {

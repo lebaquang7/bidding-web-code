@@ -29,7 +29,7 @@ public class Auction implements Serializable {
     this.seller = seller;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.status = AuctionStatus.OPEN;
+    this.status = AuctionStatus.PENDING_APPROVAL;
   }
 
   public int getId() {
@@ -74,5 +74,13 @@ public class Auction implements Serializable {
 
   public void setStatus(AuctionStatus status) {
     this.status = status;
+  }
+
+  public void setStartTime(LocalDateTime startTime) {
+    this.startTime = startTime;
+  }
+
+  public void setEndTime(LocalDateTime endTime) {
+    this.endTime = endTime;
   }
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class AuctionManager {
 
-  private Map<String, Object> activeAuctions;
+  private Map<String, AuctionSession> activeAuctions = new java.util.concurrent.ConcurrentHashMap<>();
   private static volatile AuctionManager instance;
 
   private AuctionManager() {}
@@ -21,6 +21,14 @@ public class AuctionManager {
       }
     }
     return result;
+  }
+
+  public AuctionSession getAuctionSession(String itemId) {
+    return activeAuctions.get(itemId);
+  }
+
+  public void registerSession(String itemId, AuctionSession session) {
+    activeAuctions.put(itemId, session);
   }
 
   public void startNewAuction(String auctionId, Item item) {

@@ -42,7 +42,6 @@ public abstract class Item extends Entity {
   public String getImagePath() {
     return imagePath;
   }
-
   public void setImagePath(String imagePath) {
     this.imagePath = imagePath;
   }
@@ -50,7 +49,6 @@ public abstract class Item extends Entity {
   public byte[] getImageBytes() {
     return imageBytes;
   }
-
   public void setImageBytes(byte[] imageBytes) {
     this.imageBytes = imageBytes;
   }
@@ -58,7 +56,6 @@ public abstract class Item extends Entity {
   public String getItemName() {
     return name;
   }
-
   public void setName(String name) {
     this.name = name;
   }
@@ -66,7 +63,6 @@ public abstract class Item extends Entity {
   public String getDescription() {
     return description;
   }
-
   public void setDescription(String description) {
     this.description = description;
   }
@@ -84,7 +80,6 @@ public abstract class Item extends Entity {
   public BigDecimal getCurrentPrice() {
     return currentPrice.get();
   }
-
   public void setCurrentPrice(BigDecimal price) {
     this.currentPrice.set(price);
   }
@@ -92,7 +87,6 @@ public abstract class Item extends Entity {
   public String getSellerId() {
     return sellerId;
   }
-
   public void setSellerId(String id) {
     this.sellerId = id;
   }

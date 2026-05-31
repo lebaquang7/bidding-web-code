@@ -1,19 +1,14 @@
 package com.auction.server;
 
-import com.auction.shared.models.Admin;
-import com.auction.shared.models.Art;
-import com.auction.shared.models.Bidder;
-import com.auction.shared.models.Electronics;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.Seller;
-import com.auction.shared.models.User;
-import com.auction.shared.models.Vehicle;
+import com.auction.shared.models.*;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -527,7 +522,7 @@ public class DatabaseConfig {
     }
   }
 
-  public static boolean updateItemEndTime(String itemId, java.time.LocalDateTime newEndTime) {
+  public static boolean updateItemEndTime(String itemId, LocalDateTime newEndTime) {
     String sql = "UPDATE items SET end_time = ? WHERE id = ?";
 
     try (Connection conn = getConnection();
@@ -541,5 +536,39 @@ public class DatabaseConfig {
       System.err.println("Lỗi cập nhật thời gian: " + e.getMessage());
       return false;
     }
+  }
+
+  // Cập nhật trạng thái phiên đấu giá
+  public static boolean updateAuctionStatus(String itemId, AuctionStatus status) {
+    String sql = "UPDATE items SET status = ? WHERE id = ?";
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      pstmt.setString(1, status.toString());
+      pstmt.setString(2, itemId);
+
+      int affectedRows = pstmt.executeUpdate();
+      return affectedRows > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  // Hàm kiểm tra trực tiếp trạng thái trong DB
+  public static boolean isAuctionRunningInDB(String itemId) {
+    String sql = "SELECT status FROM items WHERE id = ?";
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, itemId);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return "RUNNING".equals(rs.getString("status"));
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Lỗi khi check status DB: " + e.getMessage());
+    }
+    return false;
   }
 }
