@@ -4,8 +4,11 @@ import com.auction.server.services.AuctionManager;
 import com.auction.server.services.AuctionSession;
 import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
-import com.auction.shared.models.*;
-
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -78,10 +81,10 @@ public class ClientHandler extends Thread {
 
       // Yêu cầu đăng ký
       if (networkRequest.getType() == NetworkRequest.requestType.Register) {
-        User newUser = (User) networkRequest.getData(); //
+        User newUser = (User) networkRequest.getData();
 
         try {
-          // 1. Kiểm tra xem username đã tồn tại trong database chưa
+          // Kiểm tra xem username đã tồn tại trong database chưa
           User existingUser = DatabaseConfig.findUserByUsername(newUser.getUserName());
 
           if (existingUser != null) {
@@ -236,6 +239,25 @@ public class ClientHandler extends Thread {
           out.flush();
         } catch (IOException e) {
           e.printStackTrace();
+        }
+      }
+
+      if (networkRequest.getType() == NetworkRequest.requestType.Bid
+          && networkRequest.getData() instanceof java.util.Map) {
+        try {
+          java.util.Map<String, Object> map =
+              (java.util.Map<String, Object>) networkRequest.getData();
+          String itemId = (String) map.get("itemId");
+          String bidderId = (String) map.get("bidderId");
+          java.math.BigDecimal maxBid = (java.math.BigDecimal) map.get("maxBid");
+          java.math.BigDecimal increment = (java.math.BigDecimal) map.get("increment");
+
+          com.auction.server.services.AuctionManager.getInstance()
+              .registerAutoBid(itemId, bidderId, maxBid, increment);
+          out.writeObject(BidStatus.bidStatus.SUCCESS);
+          out.flush();
+        } catch (IOException e) {
+          System.err.println("Lỗi cài đặt Auto-Bid: " + e.getMessage());
         }
       }
     }
