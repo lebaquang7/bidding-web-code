@@ -55,10 +55,10 @@ public class ManualClientTestRunner {
   public static void testViewsAvailability() {
 
     String[] fxmlPaths = {
-        "/com/auction/client/views/login_view.fxml",
-        "/com/auction/client/views/register_view.fxml",
-        "/com/auction/client/views/mainMenu_view.fxml",
-        "/com/auction/client/views/auction_view.fxml"
+      "/com/auction/client/views/login_view.fxml",
+      "/com/auction/client/views/register_view.fxml",
+      "/com/auction/client/views/mainMenu_view.fxml",
+      "/com/auction/client/views/auction_view.fxml"
     };
 
     int checkedCount = 0;

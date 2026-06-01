@@ -1,11 +1,9 @@
 package com.auction.client.controllers;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.shared.models.Item;
-
+import java.io.IOException;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,10 +16,8 @@ import javafx.scene.layout.GridPane;
 public class MainMenuAdminPaneController {
   // mostly similar to auctionview controller but for admins to initialize
   // auctions
-  @FXML
-  GridPane gridPane;
-  @FXML
-  Pagination pagination;
+  @FXML GridPane gridPane;
+  @FXML Pagination pagination;
 
   private ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -39,10 +35,11 @@ public class MainMenuAdminPaneController {
             });
 
     itemList.addListener(
-        (ListChangeListener<Item>) change -> {
-          updatePagination();
-          renderItem(itemList, pagination.getCurrentPageIndex());
-        });
+        (ListChangeListener<Item>)
+            change -> {
+              updatePagination();
+              renderItem(itemList, pagination.getCurrentPageIndex());
+            });
   }
 
   public void refreshItems() {
@@ -66,22 +63,21 @@ public class MainMenuAdminPaneController {
   public void renderItem(List<Item> list, int paginationIndex) {
     gridPane.getChildren().clear();
 
-    if (list.isEmpty())
-      return;
+    if (list.isEmpty()) return;
 
     int startIndex = paginationIndex * ITEMS_PER_PAGE;
     int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, list.size());
 
-    if (startIndex >= list.size())
-      return;
+    if (startIndex >= list.size()) return;
 
     List<Item> itemListSublist = list.subList(startIndex, endIndex);
 
     for (int i = 0; i < itemListSublist.size(); i++) {
       try {
         Item item = itemListSublist.get(i);
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/com/auction/client/views/mainMenu_adminAuctionCard.fxml"));
+        FXMLLoader loader =
+            new FXMLLoader(
+                getClass().getResource("/com/auction/client/views/mainMenu_adminAuctionCard.fxml"));
 
         Parent card = loader.load();
 

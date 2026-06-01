@@ -1,7 +1,6 @@
 package com.auction.client.controllers;
 
 import com.auction.client.services.SceneHandler;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,12 +14,9 @@ public class MainMenuController {
     return PATH_TO_VIEW;
   }
 
-  @FXML
-  BorderPane mainBorderPane;
-  @FXML
-  Button sellItemButton;
-  @FXML
-  Button adminAuctionButton;
+  @FXML BorderPane mainBorderPane;
+  @FXML Button sellItemButton;
+  @FXML Button adminAuctionButton;
 
   public void initialize() {
     BorderPaneController.setMainLayout(mainBorderPane);

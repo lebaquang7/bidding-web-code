@@ -5,7 +5,6 @@ import com.auction.server.services.AuctionSession;
 import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
 import com.auction.shared.models.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -195,7 +194,9 @@ public class ClientHandler extends Thread {
           while (in.read() != -1) {}
         } catch (IOException e) {
           System.out.println("Kết nối Real-time đã bị ngắt bởi Client.");
-        } finally {NotificationService.removeClient(this);}
+        } finally {
+          NotificationService.removeClient(this);
+        }
         return;
       }
 
@@ -219,14 +220,9 @@ public class ClientHandler extends Thread {
               java.time.LocalDateTime startTime = java.time.LocalDateTime.now();
               java.time.LocalDateTime endTime = startTime.plusMinutes(item.getDurationTime());
 
-              Auction auctionDetails = new com.auction.shared.models.Auction(
-                      0,
-                      item,
-                      item.getStartingPrice(),
-                      null,
-                      null,
-                      null
-              );
+              Auction auctionDetails =
+                  new com.auction.shared.models.Auction(
+                      0, item, item.getStartingPrice(), null, null, null);
               auctionDetails.setStatus(com.auction.shared.models.AuctionStatus.PENDING_APPROVAL);
 
               long durationInSeconds = (long) item.getDurationTime() * 60;

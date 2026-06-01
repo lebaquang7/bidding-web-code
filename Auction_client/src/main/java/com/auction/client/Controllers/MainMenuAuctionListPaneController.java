@@ -1,11 +1,9 @@
 package com.auction.client.controllers;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.shared.models.Item;
-
+import java.io.IOException;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -16,10 +14,8 @@ import javafx.scene.control.Pagination;
 import javafx.scene.layout.GridPane;
 
 public class MainMenuAuctionListPaneController {
-  @FXML
-  GridPane gridPane;
-  @FXML
-  Pagination pagination;
+  @FXML GridPane gridPane;
+  @FXML Pagination pagination;
 
   private final ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -44,10 +40,11 @@ public class MainMenuAuctionListPaneController {
 
     // 3. Lắng nghe thay đổi của danh sách phần tử (nếu có cập nhật danh sách)
     itemList.addListener(
-        (ListChangeListener<Item>) change -> {
-          updatePagination();
-          renderItem(itemList, pagination.getCurrentPageIndex());
-        });
+        (ListChangeListener<Item>)
+            change -> {
+              updatePagination();
+              renderItem(itemList, pagination.getCurrentPageIndex());
+            });
   }
 
   /** Gọi Server để lấy danh sách vật phẩm mới nhất và cập nhật UI */
@@ -76,23 +73,22 @@ public class MainMenuAuctionListPaneController {
     // Xóa các card cũ trên giao diện
     gridPane.getChildren().clear();
 
-    if (list.isEmpty())
-      return;
+    if (list.isEmpty()) return;
 
     // Tính toán khoảng vật phẩm cần hiển thị cho trang hiện tại
     int startIndex = paginationIndex * ITEMS_PER_PAGE;
     int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, list.size());
 
-    if (startIndex >= list.size())
-      return;
+    if (startIndex >= list.size()) return;
 
     List<Item> itemListSublist = list.subList(startIndex, endIndex);
 
     for (int i = 0; i < itemListSublist.size(); i++) {
       try {
         Item item = itemListSublist.get(i);
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/com/auction/client/views/mainMenu_auctionCard.fxml"));
+        FXMLLoader loader =
+            new FXMLLoader(
+                getClass().getResource("/com/auction/client/views/mainMenu_auctionCard.fxml"));
 
         Parent card = loader.load();
 

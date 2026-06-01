@@ -1,15 +1,13 @@
 package com.auction.client.controllers;
 
-import java.io.File;
-import java.math.BigDecimal;
-
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ItemFactory;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-
+import java.io.File;
+import java.math.BigDecimal;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,21 +16,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
-  @FXML
-  TextField itemNameField;
-  @FXML
-  TextField itemDescriptionField;
-  @FXML
-  TextField startingPriceField;
-  @FXML
-  TextField priceIncrementField;
-  @FXML
-  private Button uploadImageButton;
+  @FXML TextField itemNameField;
+  @FXML TextField itemDescriptionField;
+  @FXML TextField startingPriceField;
+  @FXML TextField priceIncrementField;
+  @FXML private Button uploadImageButton;
 
-  @FXML
-  private ComboBox<String> itemTypeComboBox;
-  @FXML
-  private ComboBox<String> itemAuctionDuration;
+  @FXML private ComboBox<String> itemTypeComboBox;
+  @FXML private ComboBox<String> itemAuctionDuration;
   private File selectedImageFile; // Lưu file ảnh
 
   @FXML
@@ -49,9 +40,10 @@ public class MainMenuSellItemPaneController {
     }
 
     // set prompt text based on currency type.
-    double convertedPrice = CurrencySelectorHandler.getInstance()
-        .getConvertedPrice(BigDecimal.valueOf(100000))
-        .doubleValue();
+    double convertedPrice =
+        CurrencySelectorHandler.getInstance()
+            .getConvertedPrice(BigDecimal.valueOf(100000))
+            .doubleValue();
     String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
     startingPriceField.setPromptText(
         String.format(
@@ -79,10 +71,9 @@ public class MainMenuSellItemPaneController {
       // TODO: add errors for edge values
       String name = itemNameField.getText();
       String description = itemDescriptionField.getText();
-      BigDecimal startingPrice = CurrencySelectorHandler.getInstance()
-          .getVNDPrice(
-              BigDecimal.valueOf(
-                  Double.valueOf((startingPriceField.getText()))));
+      BigDecimal startingPrice =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(BigDecimal.valueOf(Double.valueOf((startingPriceField.getText()))));
       double percentage = Double.parseDouble(priceIncrementField.getText());
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
@@ -96,8 +87,9 @@ public class MainMenuSellItemPaneController {
       Item newItem = ItemFactory.createItem(typeOfItem, name, description, startingPrice);
 
       if (selectedImageFile != null) {
-        byte[] imageBytes = java.nio.file.Files.readAllBytes(
-            selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
+        byte[] imageBytes =
+            java.nio.file.Files.readAllBytes(
+                selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
         newItem.setImageBytes(imageBytes);
         newItem.setImagePath(selectedImageFile.getName()); // Lưu tên file để Server biết định dạng
       }
@@ -107,7 +99,8 @@ public class MainMenuSellItemPaneController {
 
       String result = ItemsEventHandler.sellItem(newItem);
       if ("success".equals(result)) {
-        AlertMessageController.showInfo("Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
+        AlertMessageController.showInfo(
+            "Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
         clearFields();
       } else {
         AlertMessageController.showError("Lỗi", "", "Đăng bán thất bại");

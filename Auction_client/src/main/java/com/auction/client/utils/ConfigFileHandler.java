@@ -22,8 +22,7 @@ public class ConfigFileHandler {
   }
 
   /**
-   * Usage: store a properties key, value pair, for storing persistent
-   * configurations
+   * Usage: store a properties key, value pair, for storing persistent configurations
    *
    * @param key
    * @param value

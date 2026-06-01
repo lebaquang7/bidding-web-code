@@ -3,8 +3,7 @@ package com.auction.client.utils;
 public class MiscTools {
   // round up numbers to nearest rounded of 1-2-5 series
   public static double roundUp(double number) {
-    if (number <= 0)
-      return 0;
+    if (number <= 0) return 0;
 
     // find order of magnitude with logarithm
     double magnitude = Math.pow(10, Math.floor(Math.log10(number)));
@@ -26,9 +25,7 @@ public class MiscTools {
     return roundedNormalized * magnitude;
   }
 
-  /**
-   * Usage: format time in second, to minutes
-   */
+  /** Usage: format time in second, to minutes */
   public static String formatSecondsToMinutes(int totalSeconds) {
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;

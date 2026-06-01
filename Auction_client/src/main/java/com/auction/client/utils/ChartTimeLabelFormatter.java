@@ -23,7 +23,8 @@ public class ChartTimeLabelFormatter extends StringConverter<Number> {
     long epochSecond = object.longValue();
     // instant is not bound to timezone.
     // TODO: use instant across all time variables
-    LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.systemDefault());
+    LocalDateTime time =
+        LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.systemDefault());
 
     double lowerBound = xAxis.getLowerBound();
     double upperBound = xAxis.getUpperBound();

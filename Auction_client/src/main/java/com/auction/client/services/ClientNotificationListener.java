@@ -1,16 +1,14 @@
 package com.auction.client.services;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-
 import com.auction.client.controllers.AuctionViewController;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.NetworkRequest;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javafx.application.Platform;
 
 public class ClientNotificationListener extends Thread {
@@ -36,7 +34,8 @@ public class ClientNotificationListener extends Thread {
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
       // Gửi tín hiệu "đăng ký đường dây nóng"
-      NetworkRequest subReq = new NetworkRequest(NetworkRequest.requestType.SubscribeNotification, null);
+      NetworkRequest subReq =
+          new NetworkRequest(NetworkRequest.requestType.SubscribeNotification, null);
       out.writeObject(subReq);
       out.flush();
 

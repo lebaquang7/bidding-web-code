@@ -1,13 +1,11 @@
 package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,12 +15,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
-  @FXML
-  Label nameLabel;
-  @FXML
-  Label priceLabel;
-  @FXML
-  ImageView imageView;
+  @FXML Label nameLabel;
+  @FXML Label priceLabel;
+  @FXML ImageView imageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -38,21 +33,19 @@ public class AuctionCardController {
 
     // Tải hình ảnh lên
     if (item.getImageBytes() != null) {
-      imageView.setImage(
-          new Image(new ByteArrayInputStream(item.getImageBytes())));
+      imageView.setImage(new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
-          () -> {
-            byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
-            if (bytes != null) {
-              item.setImageBytes(bytes);
-              Platform.runLater(
-                  () -> {
-                    imageView.setImage(
-                        new Image(new ByteArrayInputStream(bytes)));
-                  });
-            }
-          })
+              () -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
+                if (bytes != null) {
+                  item.setImageBytes(bytes);
+                  Platform.runLater(
+                      () -> {
+                        imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                      });
+                }
+              })
           .start();
     }
 
@@ -86,8 +79,7 @@ public class AuctionCardController {
         "/com/auction/client/views/auction_view.fxml", event, currentItem);
   }
 
-  @FXML
-  private Circle statusCircle;
+  @FXML private Circle statusCircle;
 
   public void updateColorByAuctionState(String auctionState) {
     String targetColor;

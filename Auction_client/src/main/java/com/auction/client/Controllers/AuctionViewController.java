@@ -1,7 +1,5 @@
 package com.auction.client.controllers;
 
-import java.math.BigDecimal;
-
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
@@ -18,7 +16,7 @@ import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-
+import java.math.BigDecimal;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,34 +28,21 @@ import javafx.scene.layout.VBox;
 
 public class AuctionViewController implements SceneHandler.ItemLoadable {
 
-  @FXML
-  VBox bidderFeatureBox;
-  @FXML
-  Label itemNameLabel;
-  @FXML
-  Label startingBidLabel;
-  @FXML
-  Label currentBidLabel;
-  @FXML
-  Label remainingTimeLabel;
-  @FXML
-  Label placeBidErrorBox;
-  @FXML
-  Label autoBidderErrorBox;
+  @FXML VBox bidderFeatureBox;
+  @FXML Label itemNameLabel;
+  @FXML Label startingBidLabel;
+  @FXML Label currentBidLabel;
+  @FXML Label remainingTimeLabel;
+  @FXML Label placeBidErrorBox;
+  @FXML Label autoBidderErrorBox;
 
-  @FXML
-  TextField placeBidBox;
-  @FXML
-  TextField autoBidderMaxBidBox;
-  @FXML
-  TextField autoBidderBidIncrementBox;
+  @FXML TextField placeBidBox;
+  @FXML TextField autoBidderMaxBidBox;
+  @FXML TextField autoBidderBidIncrementBox;
 
-  @FXML
-  LineChart<Number, Number> priceChart;
-  @FXML
-  NumberAxis priceChartXAxis;
-  @FXML
-  NumberAxis priceChartYAxis;
+  @FXML LineChart<Number, Number> priceChart;
+  @FXML NumberAxis priceChartXAxis;
+  @FXML NumberAxis priceChartYAxis;
 
   private Item currentItem;
 
@@ -94,8 +79,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
       BigDecimal bidAmount = new BigDecimal(placeBidBox.getText());
       BigDecimal currentPrice = currentItem.getCurrentPrice();
       BigDecimal incrementPercent = currentItem.getPriceIncrement();
-      BigDecimal minBidRequired = currentPrice
-          .add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
+      BigDecimal minBidRequired =
+          currentPrice.add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
 
       if (bidAmount.compareTo(minBidRequired) < 0) {
         placeBidErrorBox.setText("Tối thiểu: " + minBidRequired.toPlainString());
@@ -110,7 +95,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
       }
 
       // Trả về enum BidStatus từ Server
-      BidStatus.bidStatus result = ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
+      BidStatus.bidStatus result =
+          ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
       updateUiFromBidStatus(result);
 
       // 6. Xử lý UI dựa trên phản hồi của Server
@@ -164,19 +150,19 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     // listener for currency type changes
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
-        .addListener(
-            (observable, oldVal, newVal) -> updateChartBounds());
+        .addListener((observable, oldVal, newVal) -> updateChartBounds());
 
     // Cập nhật currentPrice realtime
     item.currentPriceProperty()
         .addListener(
             (obs, oldVal, newVal) -> {
-              Platform.runLater(() -> {
-                CurrencySelectorHandler.bindPriceLabel(currentBidLabel, newVal);
-                LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
-                AuctionViewController.updateChartPrice(item, priceChartYAxis);
-                updateChartBounds();
-              });
+              Platform.runLater(
+                  () -> {
+                    CurrencySelectorHandler.bindPriceLabel(currentBidLabel, newVal);
+                    LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
+                    AuctionViewController.updateChartPrice(item, priceChartYAxis);
+                    updateChartBounds();
+                  });
             });
   }
 
@@ -188,23 +174,21 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
    */
   public static void updateChartPrice(Item item, NumberAxis yAxis) {
     yAxis.setLowerBound(0);
-    BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
+    BigDecimal updatedPrice =
+        CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
     yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
     yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
   }
 
-  /**
-   * Usage: pass on msg to auction bidding service to process
-   */
+  /** Usage: pass on msg to auction bidding service to process */
   public void handleNotification(Object message) {
-    Platform.runLater(() -> {
-      AuctionBiddingService.processIncomingNotification(message, currentItem, this);
-    });
+    Platform.runLater(
+        () -> {
+          AuctionBiddingService.processIncomingNotification(message, currentItem, this);
+        });
   }
 
-  /**
-   * Usage: update remaining time label
-   */
+  /** Usage: update remaining time label */
   public void updateRemainingTime(int totalSeconds) {
     remainingTimeLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
     if (totalSeconds <= 10) {
@@ -214,18 +198,14 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     }
   }
 
-  /**
-   * Usage: disable feature box, print winner on auction win
-   */
+  /** Usage: disable feature box, print winner on auction win */
   public void handleAuctionEndEvent(String winnerName) {
     bidderFeatureBox.setDisable(true);
     remainingTimeLabel.setText("00:00");
     placeBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
   }
 
-  /**
-   * Usage: initialize chart layout
-   */
+  /** Usage: initialize chart layout */
   private void setupChartLayout(Item item) {
     priceChart.setTitle("Auction price for Item " + item.getItemName());
     priceChartXAxis.setLabel("Time");
@@ -238,22 +218,18 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     updateChartBounds();
   }
 
-  /**
-   * Usage: update chart bounds to fit price
-   */
+  /** Usage: update chart bounds to fit price */
   private void updateChartBounds() {
-    if (currentItem == null)
-      return;
+    if (currentItem == null) return;
     priceChartYAxis.setLowerBound(0);
-    BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
+    BigDecimal updatedPrice =
+        CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
     double uproundedMaxPrice = MiscTools.roundUp(updatedPrice.doubleValue());
     priceChartYAxis.setUpperBound(uproundedMaxPrice);
     priceChartYAxis.setTickUnit(uproundedMaxPrice / 10);
   }
 
-  /**
-   * Usage: update UI when new bid is pushed
-   */
+  /** Usage: update UI when new bid is pushed */
   private void updateUiFromBidStatus(BidStatus.bidStatus status) {
     switch (status) {
       case SUCCESS -> {
@@ -269,10 +245,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   // TODO: work on these
   @FXML
-  public void enableAutoBid(ActionEvent event) {
-  }
+  public void enableAutoBid(ActionEvent event) {}
 
   @FXML
-  public void stopAutoBid(ActionEvent event) {
-  }
+  public void stopAutoBid(ActionEvent event) {}
 }

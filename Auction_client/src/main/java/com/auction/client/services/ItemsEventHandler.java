@@ -1,5 +1,12 @@
 package com.auction.client.services;
 
+import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
+
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -8,13 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
-import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
-import com.auction.shared.models.User;
 
 public class ItemsEventHandler {
   // Sell item
@@ -101,8 +101,7 @@ public class ItemsEventHandler {
   }
 
   public static byte[] downloadItemImage(String imagePath) {
-    if (imagePath == null || imagePath.isEmpty())
-      return null;
+    if (imagePath == null || imagePath.isEmpty()) return null;
 
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -110,7 +109,8 @@ public class ItemsEventHandler {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.GetItemImage, imagePath);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.GetItemImage, imagePath);
       out.writeObject(request);
       out.flush();
 
@@ -135,7 +135,8 @@ public class ItemsEventHandler {
       requestData.put("itemId", itemId);
       requestData.put("requester", currentUser);
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.InitializeAuction, requestData);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.InitializeAuction, requestData);
       out.writeObject(request);
       out.flush();
 

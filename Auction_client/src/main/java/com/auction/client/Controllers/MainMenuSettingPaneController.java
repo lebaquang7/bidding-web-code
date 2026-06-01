@@ -10,10 +10,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 
 public class MainMenuSettingPaneController {
-  @FXML
-  ChoiceBox<String> currencyUnitSettingBox;
-  @FXML
-  ChoiceBox<String> themeSettingBox;
+  @FXML ChoiceBox<String> currencyUnitSettingBox;
+  @FXML ChoiceBox<String> themeSettingBox;
 
   public void initialize() {
     // Currency unit setting handling
@@ -45,8 +43,7 @@ public class MainMenuSettingPaneController {
           }
         });
     currencyUnitSettingBox.setItems(currencyUnitSetting);
-    currencyUnitSettingBox.setValue(
-        ConfigFileHandler.getProperty("currencyType", "VND"));
+    currencyUnitSettingBox.setValue(ConfigFileHandler.getProperty("currencyType", "VND"));
     // listener for choice box
     currencyUnitSettingBox
         .getSelectionModel()
@@ -57,7 +54,8 @@ public class MainMenuSettingPaneController {
             });
 
     // Custom theme handling
-    ObservableList<String> themeSetting = FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
+    ObservableList<String> themeSetting =
+        FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
     themeSettingBox.setItems(themeSetting);
     themeSettingBox.setValue(ConfigFileHandler.getProperty("theme", "Default"));
     themeSettingBox

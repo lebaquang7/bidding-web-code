@@ -63,21 +63,29 @@ public class AuctionSession {
           auctionDetails.setStatus(currentState);
         }
 
-        countdownTask = scheduler.scheduleAtFixedRate(() -> {
-          if (remainingSeconds > 0) {
-            remainingSeconds--;
+        countdownTask =
+            scheduler.scheduleAtFixedRate(
+                () -> {
+                  if (remainingSeconds > 0) {
+                    remainingSeconds--;
 
-            Map<String, Object> timeData = new HashMap<>();
-            timeData.put("type", "TIME_UPDATE");
-            timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
-            timeData.put("value", remainingSeconds);
-            NotificationService.broadcast(timeData);
-            System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
-          } else {
-            if (countdownTask != null) {countdownTask.cancel(false);}
-            endAuction();
-          }
-        }, 1, 1, TimeUnit.SECONDS);
+                    Map<String, Object> timeData = new HashMap<>();
+                    timeData.put("type", "TIME_UPDATE");
+                    timeData.put(
+                        "sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
+                    timeData.put("value", remainingSeconds);
+                    NotificationService.broadcast(timeData);
+                    System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
+                  } else {
+                    if (countdownTask != null) {
+                      countdownTask.cancel(false);
+                    }
+                    endAuction();
+                  }
+                },
+                1,
+                1,
+                TimeUnit.SECONDS);
         System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");
 
         System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
