@@ -1,16 +1,15 @@
 package com.auction.server.services;
 
-import java.util.Map;
-
 import com.auction.shared.models.Item;
+import java.util.Map;
 
 public class AuctionManager {
 
-  private Map<String, AuctionSession> activeAuctions = new java.util.concurrent.ConcurrentHashMap<>();
+  private Map<String, AuctionSession> activeAuctions =
+      new java.util.concurrent.ConcurrentHashMap<>();
   private static volatile AuctionManager instance;
 
-  private AuctionManager() {
-  }
+  private AuctionManager() {}
 
   public static AuctionManager getInstance() {
     AuctionManager result = instance;
@@ -38,7 +37,8 @@ public class AuctionManager {
     System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
   }
 
-  private java.util.Map<String, java.util.Map<String, com.auction.shared.models.BidTransaction>> autoBidRegistry = new java.util.concurrent.ConcurrentHashMap<>();
+  private java.util.Map<String, java.util.Map<String, com.auction.shared.models.BidTransaction>>
+      autoBidRegistry = new java.util.concurrent.ConcurrentHashMap<>();
 
   public static class AutoBidConfig {
     public String itemId;
@@ -58,7 +58,8 @@ public class AuctionManager {
     }
   }
 
-  private final java.util.Map<String, java.util.List<AutoBidConfig>> activeAutoBids = new java.util.concurrent.ConcurrentHashMap<>();
+  private final java.util.Map<String, java.util.List<AutoBidConfig>> activeAutoBids =
+      new java.util.concurrent.ConcurrentHashMap<>();
 
   public void registerAutoBid(
       String itemId, String bidderId, java.math.BigDecimal maxBid, java.math.BigDecimal increment) {
@@ -72,34 +73,31 @@ public class AuctionManager {
   // Engine tự động quét và đấu giá đè nhau
   public void triggerAutoBid(String itemId) {
     java.util.List<AutoBidConfig> configs = activeAutoBids.get(itemId);
-    if (configs == null || configs.isEmpty())
-      return;
+    if (configs == null || configs.isEmpty()) return;
 
     boolean priceChanged;
     do {
       priceChanged = false;
       // Lấy dữ liệu mới nhất từ DB
       com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
-      if (item == null)
-        return;
+      if (item == null) return;
 
       for (AutoBidConfig bot : configs) {
         // Tránh việc Bot tự trả giá đè lên chính mình
-        if (bot.bidderId.equals(item.getHighestBidderId()))
-          continue;
+        if (bot.bidderId.equals(item.getHighestBidderId())) continue;
         java.math.BigDecimal nextBid = item.getCurrentPrice().add(bot.increment);
 
         if (nextBid.compareTo(bot.maxBid) <= 0) {
-          com.auction.shared.models.BidStatus.bidStatus status = com.auction.server.services.BiddingService
-              .placeBid(itemId, bot.bidderId, nextBid);
+          com.auction.shared.models.BidStatus.bidStatus status =
+              com.auction.server.services.BiddingService.placeBid(itemId, bot.bidderId, nextBid);
 
           if (status == com.auction.shared.models.BidStatus.bidStatus.SUCCESS) {
             priceChanged = true;
             System.out.println(
                 "[Auto-Bid] Bot [" + bot.bidderId + "] tự động nâng giá lên: " + nextBid);
 
-            com.auction.shared.models.BidTransaction botBidNotification = new com.auction.shared.models.BidTransaction(
-                itemId, bot.bidderId, nextBid);
+            com.auction.shared.models.BidTransaction botBidNotification =
+                new com.auction.shared.models.BidTransaction(itemId, bot.bidderId, nextBid);
             com.auction.server.services.NotificationService.broadcast(botBidNotification);
 
             break;
@@ -120,14 +118,16 @@ public class AuctionManager {
       long triggerZone = 30 * 1000;
       long extensionTime = 60 * 1000;
 
-      long endTimeMillis = item.getEndTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+      long endTimeMillis =
+          item.getEndTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
       long timeRemaining = endTimeMillis - now;
 
       if (timeRemaining > 0 && timeRemaining <= triggerZone) {
         long newEndTimeMillis = endTimeMillis + extensionTime;
 
-        java.time.LocalDateTime newEndTime = java.time.LocalDateTime.ofInstant(
-            java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
+        java.time.LocalDateTime newEndTime =
+            java.time.LocalDateTime.ofInstant(
+                java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
         item.setEndTime(newEndTime);
 
         System.out.println("[Anti-Sniping] Gia hạn 1 phút cho: " + itemId);

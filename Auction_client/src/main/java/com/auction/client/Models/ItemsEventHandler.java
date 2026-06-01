@@ -124,11 +124,12 @@ public class ItemsEventHandler {
   public static boolean initializeAuction(String itemId) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
-         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.InitializeAuction, itemId);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.InitializeAuction, itemId);
       out.writeObject(request);
       out.flush();
 

@@ -1,6 +1,6 @@
 package com.auction.shared.models;
 
-public enum   AuctionStatus {
+public enum AuctionStatus {
   PENDING_APPROVAL,
   OPEN,
   RUNNING,
