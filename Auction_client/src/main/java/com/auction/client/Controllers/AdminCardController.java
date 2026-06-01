@@ -19,9 +19,12 @@ import javafx.scene.image.ImageView;
 
 public class AdminCardController {
   // mostly copied from auctionCardController
-  @FXML Label mainMenuAdminAuctionCardNameLabel;
-  @FXML Label mainMenuAdminAuctionCardPriceLabel;
-  @FXML ImageView mainMenuAdminAuctionCardImageView;
+  @FXML
+  Label mainMenuAdminAuctionCardNameLabel;
+  @FXML
+  Label mainMenuAdminAuctionCardPriceLabel;
+  @FXML
+  ImageView mainMenuAdminAuctionCardImageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -42,17 +45,17 @@ public class AdminCardController {
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
-              () -> {
-                byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
-                if (bytes != null) {
-                  item.setImageBytes(bytes);
-                  Platform.runLater(
-                      () -> {
-                        mainMenuAdminAuctionCardImageView.setImage(
-                            new Image(new ByteArrayInputStream(bytes)));
-                      });
-                }
-              })
+          () -> {
+            byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
+            if (bytes != null) {
+              item.setImageBytes(bytes);
+              Platform.runLater(
+                  () -> {
+                    mainMenuAdminAuctionCardImageView.setImage(
+                        new Image(new ByteArrayInputStream(bytes)));
+                  });
+            }
+          })
           .start();
     }
 
@@ -80,35 +83,20 @@ public class AdminCardController {
   // TODO: make this button push an auction to the actual auction list
   @FXML
   public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {
-      User currentUser = AccountEventHandler.getCurrentUser();
-      String result = ItemsEventHandler.initializeAuction(currentItem.getId(), currentUser);
+    User currentUser = AccountEventHandler.getCurrentUser();
+    String result = ItemsEventHandler.initializeAuction(currentItem.getId(), currentUser);
 
-      if (result.equals("success")) {
-          showInfo("Thành công", currentItem.getItemName() + " đã được đấu giá.");
-      } else if (result.equals("unauthorized")) {
-          showError("Lỗi", "Bạn không phải Admin.");
-      } else {
-          showError("Lỗi", "Không thể khởi tạo phiên đấu giá.");
-      }
+    if (result.equals("success")) {
+      AlertMessageController.showInfo("Thành công", "", currentItem.getItemName() + " đã được đấu giá.");
+    } else if (result.equals("unauthorized")) {
+      AlertMessageController.showError("Lỗi", "", "Bạn không phải Admin.");
+    } else {
+      AlertMessageController.showError("Lỗi", "", "Không thể khởi tạo phiên đấu giá.");
+    }
   }
 
   // TODO: make this button denies a published auction from coming to the actual
   // auction list
-  public void mainMenuAdminAuctionCardDenyAuction(ActionEvent event) {}
-
-    private void showError(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    private void showInfo(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
+  public void mainMenuAdminAuctionCardDenyAuction(ActionEvent event) {
+  }
 }
