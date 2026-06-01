@@ -1,15 +1,17 @@
 package com.auction.server.services;
 
-import com.auction.server.DatabaseConfig;
-import com.auction.shared.models.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.auction.server.DatabaseConfig;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Item;
 
 public class AuctionSession {
   private final String sessionId;
@@ -22,9 +24,8 @@ public class AuctionSession {
   private final long durationInSeconds;
 
   private final Object lock = new Object();
-  private final ScheduledExecutorService scheduler =
-      Executors
-          .newSingleThreadScheduledExecutor(); // Dùng để quản lý thời gian của phiên đấu giá và
+  private final ScheduledExecutorService scheduler = Executors
+      .newSingleThreadScheduledExecutor(); // Dùng để quản lý thời gian của phiên đấu giá và
 
   public void setCurrentState(AuctionStatus currentState) {
     this.currentState = currentState;
@@ -66,8 +67,10 @@ public class AuctionSession {
   }
 
   /**
-   * Khi hết thời gian đấu giá, nếu có người thắng thì sẽ chuyển trạng thái sang FINISHED và thông
-   * báo cho tất cả người tham gia. Nếu không có người thắng nào, thì sẽ chuyển trạng thái sang
+   * Khi hết thời gian đấu giá, nếu có người thắng thì sẽ chuyển trạng thái sang
+   * FINISHED và thông
+   * báo cho tất cả người tham gia. Nếu không có người thắng nào, thì sẽ chuyển
+   * trạng thái sang
    * CANCELLED và thông báo cho tất cả người tham gia.
    */
   public boolean finish() {
@@ -101,8 +104,10 @@ public class AuctionSession {
   }
 
   /**
-   * Nếu người thắng không thanh toán trong thời gian quy định, hoặc nếu phiên đấu giá bị hủy bỏ bởi
-   * admin, thì sẽ chuyển trạng thái sang CANCELLED và thông báo cho tất cả người tham gia.
+   * Nếu người thắng không thanh toán trong thời gian quy định, hoặc nếu phiên đấu
+   * giá bị hủy bỏ bởi
+   * admin, thì sẽ chuyển trạng thái sang CANCELLED và thông báo cho tất cả người
+   * tham gia.
    */
   public boolean cancle() {
     synchronized (lock) {
@@ -119,9 +124,12 @@ public class AuctionSession {
   }
 
   /**
-   * Sau khi phiên đấu giá kết thúc, người thắng sẽ có một khoảng thời gian nhất định (10 phút) để
-   * thực hiện thanh toán. Nếu người thắng thanh toán thành công, thì sẽ chuyển trạng thái sang PAID
-   * và thông báo cho tất cả người tham gia. Nếu người thắng không thanh toán trong thời gian quy
+   * Sau khi phiên đấu giá kết thúc, người thắng sẽ có một khoảng thời gian nhất
+   * định (10 phút) để
+   * thực hiện thanh toán. Nếu người thắng thanh toán thành công, thì sẽ chuyển
+   * trạng thái sang PAID
+   * và thông báo cho tất cả người tham gia. Nếu người thắng không thanh toán
+   * trong thời gian quy
    * định, thì sẽ hủy bỏ phiên đấu giá và thông báo cho tất cả người tham gia.
    */
   public boolean markAsPaid() {
@@ -131,8 +139,7 @@ public class AuctionSession {
       }
 
       PaymentService paymentService = PaymentService.getInstance();
-      boolean isSuccess =
-          paymentService.processPayment(highestBidder, auctionItem.getCurrentPrice());
+      boolean isSuccess = paymentService.processPayment(highestBidder, auctionItem.getCurrentPrice());
 
       if (isSuccess) {
         this.currentState = AuctionStatus.PAID;
@@ -152,8 +159,10 @@ public class AuctionSession {
   }
 
   /**
-   * Hàm này sẽ được gọi khi hết thời gian chờ thanh toán sau khi phiên đấu giá kết thúc. Nếu người
-   * thắng không thanh toán, thì sẽ hủy bỏ phiên đấu giá và thông báo cho tất cả người tham gia.
+   * Hàm này sẽ được gọi khi hết thời gian chờ thanh toán sau khi phiên đấu giá
+   * kết thúc. Nếu người
+   * thắng không thanh toán, thì sẽ hủy bỏ phiên đấu giá và thông báo cho tất cả
+   * người tham gia.
    */
   public void handledPaymentTimeout() {
     synchronized (lock) {

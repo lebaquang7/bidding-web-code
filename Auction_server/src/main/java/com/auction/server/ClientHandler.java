@@ -1,14 +1,5 @@
 package com.auction.server;
 
-import com.auction.server.services.AuctionManager;
-import com.auction.server.services.AuctionSession;
-import com.auction.server.services.BiddingService;
-import com.auction.server.services.NotificationService;
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.User;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,6 +7,18 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.List;
+
+import com.auction.server.services.AuctionManager;
+import com.auction.server.services.AuctionSession;
+import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -38,7 +41,8 @@ public class ClientHandler extends Thread {
       // Tạo vòng lặp đợi xử lý yêu cầu
       while (true) {
         Object request = in.readObject();
-        if (request == null) break;
+        if (request == null)
+          break;
         handleRequest(request);
       }
 
@@ -113,7 +117,8 @@ public class ClientHandler extends Thread {
           // Kiểm tra nếu có ảnh
           if (newItem.getImageBytes() != null && newItem.getImagePath() != null) {
             File imageDir = new File("server_storage/item_images");
-            if (!imageDir.exists()) imageDir.mkdirs();
+            if (!imageDir.exists())
+              imageDir.mkdirs();
 
             String uniqueFileName = System.currentTimeMillis() + "_" + newItem.getImagePath();
             File fileToSave = new File(imageDir, uniqueFileName);
@@ -126,14 +131,17 @@ public class ClientHandler extends Thread {
           boolean success = DatabaseConfig.saveNewItem(newItem);
 
           if (success) {
-            Auction newAuction = new Auction(0, newItem, newItem.getStartingPrice(), null, null, null); // Khởi tạo đối tượng Auction
+            Auction newAuction = new Auction(0, newItem, newItem.getStartingPrice(), null, null, null); // Khởi tạo đối
+                                                                                                        // tượng Auction
             newAuction.setStatus(AuctionStatus.PENDING_APPROVAL);
 
-            AuctionSession session = new AuctionSession(String.valueOf(newItem.getId()),newItem,newAuction,3600);
+            AuctionSession session = new AuctionSession(String.valueOf(newItem.getId()), newItem, newAuction, 3600);
             AuctionManager.getInstance().registerSession(String.valueOf(newItem.getId()), session);
 
             out.writeObject("success");
-          } else { out.writeObject("fail"); }
+          } else {
+            out.writeObject("fail");
+          }
 
           out.flush();
         } catch (IOException e) {
@@ -175,9 +183,8 @@ public class ClientHandler extends Thread {
         BidTransaction bidData = (BidTransaction) networkRequest.getData();
 
         try {
-          BidStatus.bidStatus status =
-              BiddingService.placeBid(
-                  bidData.getItemId(), bidData.getBidderId(), bidData.getBidAmount());
+          BidStatus.bidStatus status = BiddingService.placeBid(
+              bidData.getItemId(), bidData.getBidderId(), bidData.getBidAmount());
 
           out.writeObject(status);
           out.flush();
@@ -219,13 +226,12 @@ public class ClientHandler extends Thread {
             if (item != null) {
               // Tạo đối tượng Auction mới (giữ nguyên các tham số cũ)
               Auction auctionDetails = new com.auction.shared.models.Auction(
-                      0,
-                      item,
-                      item.getStartingPrice(),
-                      null,
-                      null,
-                      null
-              );
+                  0,
+                  item,
+                  item.getStartingPrice(),
+                  null,
+                  null,
+                  null);
               auctionDetails.setStatus(com.auction.shared.models.AuctionStatus.PENDING_APPROVAL);
 
               // Tạo Session mới và đăng ký vào Manager
@@ -245,8 +251,7 @@ public class ClientHandler extends Thread {
       if (networkRequest.getType() == NetworkRequest.requestType.Bid
           && networkRequest.getData() instanceof java.util.Map) {
         try {
-          java.util.Map<String, Object> map =
-              (java.util.Map<String, Object>) networkRequest.getData();
+          java.util.Map<String, Object> map = (java.util.Map<String, Object>) networkRequest.getData();
           String itemId = (String) map.get("itemId");
           String bidderId = (String) map.get("bidderId");
           java.math.BigDecimal maxBid = (java.math.BigDecimal) map.get("maxBid");

@@ -6,4 +6,5 @@ module Auction_server {
   requires mysql.connector.j;
 
   exports com.auction.server;
+  exports com.auction.server.services;
 }
