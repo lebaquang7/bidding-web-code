@@ -1,6 +1,7 @@
 package com.auction.client.controllers;
 
 import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.SceneHandler;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
@@ -90,6 +91,6 @@ public class RegisterController {
   }
 
   public void registerWindowSwitchToLogin(ActionEvent event) {
-    SceneController.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
+    SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
   }
 }

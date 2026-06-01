@@ -2,6 +2,8 @@ package com.auction.client.controllers;
 
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ClientNotificationListener;
+import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.UIElementHandler;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,7 +46,7 @@ public class LoginController {
         System.out.println("Path: " + MainMenuController.getPATH_TO_VIEW());
         System.out.println(
             "Resource: " + getClass().getResource(MainMenuController.getPATH_TO_VIEW()));
-        SceneController.switchToScene(
+        SceneHandler.switchToScene(
             getClass().getResource(MainMenuController.getPATH_TO_VIEW()), event);
       }
       case "invalidPassword" -> {
@@ -65,7 +67,7 @@ public class LoginController {
    * @param event
    */
   public void loginWindowSwitchToRegister(ActionEvent event) {
-    SceneController.switchToScene(
+    SceneHandler.switchToScene(
         getClass().getResource("/com/auction/client/views/register_view.fxml"), event);
   }
 
@@ -80,10 +82,10 @@ public class LoginController {
 
     if (loginWindowShowPwdCheckbox.isSelected() == true) {
       // make pwd shown
-      SceneController.switchElement(loginWindowShownPwdTextField, loginWindowPasswordField);
+      UIElementHandler.switchElement(loginWindowShownPwdTextField, loginWindowPasswordField);
     } else {
       // reverse
-      SceneController.switchElement(loginWindowPasswordField, loginWindowShownPwdTextField);
+      UIElementHandler.switchElement(loginWindowPasswordField, loginWindowShownPwdTextField);
     }
   }
 }

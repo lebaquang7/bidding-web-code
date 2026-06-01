@@ -10,7 +10,6 @@ import static com.auction.shared.models.NetworkRequest.requestType.Register;
 import com.auction.shared.models.User;
 
 public class AccountEventHandler {
-  // Loại bỏ accountStorage HashMap, dùng database thay thế
 
   private static User currentUser;
 
@@ -79,5 +78,4 @@ public class AccountEventHandler {
       return "connection_error";
     }
   }
-
 }

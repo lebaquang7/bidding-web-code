@@ -2,8 +2,8 @@ package com.auction.client.controllers;
 
 import java.io.ByteArrayInputStream;
 
-import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
@@ -75,12 +75,12 @@ public class AuctionCardController {
   }
 
   public void mainMenuAuctionCardGoToItemDetails(ActionEvent event) {
-    SceneController.switchToItemView(
+    SceneHandler.switchToItemView(
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 
   public void mainMenuAuctionCardGoToAuction(ActionEvent event) {
-    SceneController.switchToItemView(
+    SceneHandler.switchToItemView(
         "/com/auction/client/views/auction_view.fxml", event, currentItem);
   }
 
@@ -107,60 +107,5 @@ public class AuctionCardController {
         targetColor = "#7f8c8d";
     }
     mainMenuAuctionCardStatusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
-  }
-
-  public void handleAutoBidSetup(ActionEvent event) {
-    if (currentItem == null)
-      return;
-
-    // Hiện bảng hỏi giá trần
-    javafx.scene.control.TextInputDialog maxBidDialog = new javafx.scene.control.TextInputDialog("1000000");
-    maxBidDialog.setTitle("Cài đặt Auto-Bid");
-    maxBidDialog.setHeaderText("Cài đặt trả giá tự động cho" + currentItem.getItemName());
-    maxBidDialog.setContentText("Nhập giá tối đa bạn muốn trả:");
-
-    java.util.Optional<String> maxBidResult = maxBidDialog.showAndWait();
-    if (maxBidResult.isPresent()) {
-
-      // Hiện bảng hỏi bước giá tự động
-      javafx.scene.control.TextInputDialog incrementDialog = new javafx.scene.control.TextInputDialog(
-          currentItem.getPriceIncrement().toString());
-      incrementDialog.setTitle("Cài đặt bước giá");
-      incrementDialog.setHeaderText("Bước giá mỗi lần hệ thống thay bạn đè lên đối thủ");
-      incrementDialog.setContentText("Nhập bước giá:");
-
-      java.util.Optional<String> incResult = incrementDialog.showAndWait();
-      if (incResult.isPresent()) {
-        try {
-          java.math.BigDecimal maxBid = new java.math.BigDecimal(maxBidResult.get());
-          java.math.BigDecimal increment = new java.math.BigDecimal(incResult.get());
-
-          java.util.Map<String, Object> autoBidMap = new java.util.HashMap<>();
-          autoBidMap.put("itemId", currentItem.getId());
-
-          String myBidderId = AccountEventHandler.getCurrentUser().getId();
-          autoBidMap.put("bidderId", myBidderId);
-
-          autoBidMap.put("maxBid", maxBid);
-          autoBidMap.put("increment", increment);
-
-          com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(
-              com.auction.shared.models.NetworkRequest.requestType.Bid, autoBidMap);
-
-          // Gửi cấu hình Bot lên Server
-          try (java.net.Socket socket = new java.net.Socket("localhost", 1234);
-              java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            out.writeObject(request);
-            System.out.println("Đã gửi cấu hình Bot Auto-Bid lên Server thành công");
-          } catch (Exception e) {
-            System.err.println("Lỗi kết nối khi gửi Auto-Bid" + e.getMessage());
-          }
-
-        } catch (Exception e) {
-          System.out.println("Nhập đúng định dạng số:" + e.getMessage());
-        }
-      }
-    }
   }
 }

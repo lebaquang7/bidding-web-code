@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
@@ -75,7 +76,7 @@ public class AdminCardController {
   }
 
   public void mainMenuAdminAuctionCardGoToItemDetails(ActionEvent event) {
-    SceneController.switchToItemView(
+    SceneHandler.switchToItemView(
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 

@@ -4,13 +4,11 @@ import java.io.File;
 import java.math.BigDecimal;
 
 import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ItemFactory;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
-import com.auction.shared.models.Art;
-import com.auction.shared.models.Electronics;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-import com.auction.shared.models.Vehicle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +31,6 @@ public class MainMenuSellItemPaneController {
 
   @FXML
   private ComboBox<String> itemTypeComboBox;
-  // TODO: options for auction duration
   @FXML
   private ComboBox<String> itemAuctionDuration;
   private File selectedImageFile; // Lưu file ảnh
@@ -85,7 +82,6 @@ public class MainMenuSellItemPaneController {
           .getVNDPrice(
               BigDecimal.valueOf(
                   Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
-      BigDecimal currentPrice = startingPrice;
       double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
@@ -95,15 +91,8 @@ public class MainMenuSellItemPaneController {
         return;
       }
 
-      Item newItem = null;
       String typeOfItem = itemTypeComboBox.getValue();
-      if ("Artwork".equals(typeOfItem)) {
-        newItem = new Art(name, description, startingPrice, currentPrice, "", true, 0, "");
-      } else if ("Electronics".equals(typeOfItem)) {
-        newItem = new Electronics(name, description, startingPrice, currentPrice, 24, "", "", "");
-      } else {
-        newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
-      }
+      Item newItem = ItemFactory.createItem(typeOfItem, name, description, startingPrice);
 
       if (selectedImageFile != null) {
         byte[] imageBytes = java.nio.file.Files.readAllBytes(
@@ -117,7 +106,7 @@ public class MainMenuSellItemPaneController {
 
       String result = ItemsEventHandler.sellItem(newItem);
       if ("success".equals(result)) {
-        AlertMessageController.showError("Lỗi", "", "Đưa vật phẩm lên sàn đấu giá thành công");
+        AlertMessageController.showInfo("Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
         clearFields();
       } else {
         AlertMessageController.showError("Lỗi", "", "Đăng bán thất bại");

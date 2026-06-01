@@ -2,7 +2,7 @@ package com.auction.client;
 
 import java.io.IOException;
 
-import com.auction.client.controllers.SceneController;
+import com.auction.client.services.ClientExitHandler;
 import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.utils.ConfigFileHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
@@ -57,7 +57,7 @@ public class MainApp extends Application {
     primaryStage.setOnCloseRequest(
         event -> {
           event.consume(); // consume the event, so it only executes closing if user presses OK
-          SceneController.closeWithExitPrompt(primaryStage);
+          ClientExitHandler.closeWithExitPrompt(primaryStage);
         });
 
     // initialize configurations

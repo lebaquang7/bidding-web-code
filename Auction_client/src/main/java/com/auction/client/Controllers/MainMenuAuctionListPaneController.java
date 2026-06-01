@@ -21,7 +21,7 @@ public class MainMenuAuctionListPaneController {
   @FXML
   Pagination mainMenuAuctionListPagination;
 
-  private ObservableList<Item> itemList = FXCollections.observableArrayList();
+  private final ObservableList<Item> itemList = FXCollections.observableArrayList();
 
   // Số lượng vật phẩm hiển thị trên mỗi trang và số cột của lưới
   private static final int ITEMS_PER_PAGE = 6;

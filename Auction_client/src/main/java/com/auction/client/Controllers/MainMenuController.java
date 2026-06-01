@@ -1,5 +1,7 @@
 package com.auction.client.controllers;
 
+import com.auction.client.services.SceneHandler;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -61,6 +63,6 @@ public class MainMenuController {
   }
 
   public void mainMenuLogOut(ActionEvent event) {
-    SceneController.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
+    SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
   }
 }
