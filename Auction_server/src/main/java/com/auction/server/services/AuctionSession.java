@@ -1,10 +1,11 @@
 package com.auction.server.services;
 
 import com.auction.server.DatabaseConfig;
-import com.auction.shared.models.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +34,11 @@ public class AuctionSession {
   public void setCurrentState(AuctionStatus currentState) {
     this.currentState = currentState;
   }
+
   // thời gian chờ thanh toán
 
-  public AuctionSession(String sessionId, Item auctionItem, Auction auctionDetails, long durationInSeconds) {
+  public AuctionSession(
+      String sessionId, Item auctionItem, Auction auctionDetails, long durationInSeconds) {
     this.sessionId = sessionId;
     this.auctionItem = auctionItem;
     this.auctionDetails = auctionDetails;

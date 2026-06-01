@@ -71,7 +71,6 @@ public class ClientHandler extends Thread {
           } else if (!user.getPassword().equals(loginData.getPassword())) {
             out.writeObject("invalidPassword");
           } else {
-            this.currentUser = user;
             out.writeObject(user);
           }
           out.flush();

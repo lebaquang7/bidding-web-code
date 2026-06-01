@@ -1,7 +1,6 @@
 package com.auction.server;
 
 import com.auction.shared.models.*;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -544,7 +543,7 @@ public class DatabaseConfig {
   public static boolean updateAuctionStatus(String itemId, AuctionStatus status) {
     String sql = "UPDATE items SET status = ? WHERE id = ?";
     try (Connection conn = getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
       pstmt.setString(1, status.toString());
       pstmt.setString(2, itemId);
@@ -561,7 +560,7 @@ public class DatabaseConfig {
   public static boolean isAuctionRunningInDB(String itemId) {
     String sql = "SELECT status FROM items WHERE id = ?";
     try (Connection conn = getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, itemId);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {

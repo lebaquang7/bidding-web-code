@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AuctionManager {
 
-  private Map<String, AuctionSession> activeAuctions = new java.util.concurrent.ConcurrentHashMap<>();
+  private Map<String, AuctionSession> activeAuctions =
+      new java.util.concurrent.ConcurrentHashMap<>();
   private static volatile AuctionManager instance;
 
   private AuctionManager() {}

@@ -145,11 +145,15 @@ public class AuctionViewController implements SceneController.ItemLoadable {
     auctionViewPriceChartXAxis.setAutoRanging(false);
     auctionViewPriceChartYAxis.setAutoRanging(false);
 
-    // TODO: track based on time
-    auctionViewPriceChartXAxis.setLowerBound(0);
-    auctionViewPriceChartXAxis.setUpperBound(150);
+    // TODO: track based on time. HALF COMPLETED, NEED FETCHIN TIME LINKED WITH ITEM
+    // X label format based on time
+    auctionViewPriceChartXAxis.setTickLabelFormatter(
+        new ChartTimeLabelFormatter(auctionViewPriceChartXAxis));
 
-    auctionViewPriceChartYAxis.setLowerBound(item.getStartingPrice().doubleValue());
+    AuctionViewController.updateChartPrice(item, auctionViewPriceChartYAxis);
+    // TODO: UNCOMMENT WHEN ACTUAL CHART DATA IS MADE
+    // auctionViewPriceChart.setData(ChartDataHandler
+    // .setChartDisplay(AuctionManager.getInstance().getAuctionSession(item.getId()).getBidHistory()));
 
     AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
     auctionViewPriceChart.setData(TestChartData.getSalesData(item));
@@ -158,8 +162,9 @@ public class AuctionViewController implements SceneController.ItemLoadable {
         .getActiveCurrencyObjectProperty()
         .addListener(
             (observable, oldVal, newVal) -> {
-              AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
-              auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+              AuctionViewController.updateChartPrice(item, auctionViewPriceChartYAxis);
+              // auctionViewPriceChart.setData(ChartDataHandler
+              // .setChartDisplay(AuctionManager.getInstance().getAuctionSession(item.getId()).getBidHistory()));
             });
 
     // Cập nhật currentPrice realtime
@@ -239,12 +244,8 @@ public class AuctionViewController implements SceneController.ItemLoadable {
    * @param item
    * @param yAxis
    */
-  public static void updatePrice(Item item, NumberAxis yAxis) {
-    System.out.println(item.getCurrentPrice().doubleValue());
-    yAxis.setLowerBound(
-        CurrencySelectorHandler.getInstance()
-            .getConvertedPrice(item.getStartingPrice())
-            .doubleValue());
+  public static void updateChartPrice(Item item, NumberAxis yAxis) {
+    yAxis.setLowerBound(0);
     BigDecimal updatedPrice =
         CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
     yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));

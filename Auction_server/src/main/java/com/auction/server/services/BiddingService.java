@@ -28,7 +28,8 @@ public class BiddingService {
       if (session == null && item != null && DatabaseConfig.isAuctionRunningInDB(itemId)) {
         Auction auctionDetails = new Auction(0, item, item.getStartingPrice(), null, null, null);
 
-        session = new AuctionSession(itemId, item, auctionDetails, 3600); // Set lại bộ đếm giờ nếu cần
+        session =
+            new AuctionSession(itemId, item, auctionDetails, 3600); // Set lại bộ đếm giờ nếu cần
         session.setCurrentState(AuctionStatus.RUNNING);
 
         AuctionManager.getInstance().registerSession(itemId, session);

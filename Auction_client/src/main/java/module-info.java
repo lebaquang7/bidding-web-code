@@ -2,6 +2,7 @@ module Auction_client {
   requires javafx.controls;
   requires javafx.fxml;
   requires Auction_shared;
+  requires Auction_server;
   requires java.desktop;
 
   opens com.auction.client to
