@@ -17,9 +17,9 @@ import javafx.scene.layout.GridPane;
 
 public class MainMenuAuctionListPaneController {
   @FXML
-  GridPane mainMenuAuctionListGridPane;
+  GridPane gridPane;
   @FXML
-  Pagination mainMenuAuctionListPagination;
+  Pagination pagination;
 
   private final ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -32,7 +32,7 @@ public class MainMenuAuctionListPaneController {
     refreshItems();
 
     // 2. Lắng nghe thay đổi của trang hiện tại trên Pagination
-    mainMenuAuctionListPagination
+    pagination
         .currentPageIndexProperty()
         .addListener(
             (observable, oldIndex, newIndex) -> {
@@ -46,7 +46,7 @@ public class MainMenuAuctionListPaneController {
     itemList.addListener(
         (ListChangeListener<Item>) change -> {
           updatePagination();
-          renderItem(itemList, mainMenuAuctionListPagination.getCurrentPageIndex());
+          renderItem(itemList, pagination.getCurrentPageIndex());
         });
   }
 
@@ -68,13 +68,13 @@ public class MainMenuAuctionListPaneController {
   private void updatePagination() {
     // Sử dụng (double) để tránh lỗi chia số nguyên (Integer Division)
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
-    mainMenuAuctionListPagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+    pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
   /** Hiển thị danh sách vật phẩm lên GridPane dựa trên chỉ mục trang */
   public void renderItem(List<Item> list, int paginationIndex) {
     // Xóa các card cũ trên giao diện
-    mainMenuAuctionListGridPane.getChildren().clear();
+    gridPane.getChildren().clear();
 
     if (list.isEmpty())
       return;
@@ -104,7 +104,7 @@ public class MainMenuAuctionListPaneController {
         int columnIndex = i / COLUMN_COUNT;
         int rowIndex = i % COLUMN_COUNT;
 
-        mainMenuAuctionListGridPane.add(card, columnIndex, rowIndex);
+        gridPane.add(card, columnIndex, rowIndex);
       } catch (IOException e) {
         e.printStackTrace();
       }

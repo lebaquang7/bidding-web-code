@@ -18,11 +18,11 @@ import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
   @FXML
-  Label mainMenuAuctionCardNameLabel;
+  Label nameLabel;
   @FXML
-  Label mainMenuAuctionCardPriceLabel;
+  Label priceLabel;
   @FXML
-  ImageView mainMenuAuctionCardImageView;
+  ImageView imageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -30,15 +30,15 @@ public class AuctionCardController {
   public void setData(Item item) {
     currentItem = item;
 
-    mainMenuAuctionCardNameLabel.setText(item.getItemName());
-    LabelHandler.setDetailedTooltip(mainMenuAuctionCardNameLabel);
+    nameLabel.setText(item.getItemName());
+    LabelHandler.setDetailedTooltip(nameLabel);
 
-    CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, item.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(priceLabel, item.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
 
     // Tải hình ảnh lên
     if (item.getImageBytes() != null) {
-      mainMenuAuctionCardImageView.setImage(
+      imageView.setImage(
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
@@ -48,7 +48,7 @@ public class AuctionCardController {
               item.setImageBytes(bytes);
               Platform.runLater(
                   () -> {
-                    mainMenuAuctionCardImageView.setImage(
+                    imageView.setImage(
                         new Image(new ByteArrayInputStream(bytes)));
                   });
             }
@@ -63,8 +63,8 @@ public class AuctionCardController {
               Platform.runLater(
                   () -> {
                     if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, newVal);
-                      LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+                      CurrencySelectorHandler.bindPriceLabel(priceLabel, newVal);
+                      LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
                     }
                   });
             });
@@ -74,18 +74,20 @@ public class AuctionCardController {
     // in real time
   }
 
-  public void mainMenuAuctionCardGoToItemDetails(ActionEvent event) {
+  @FXML
+  public void goToItemDetails(ActionEvent event) {
     SceneHandler.switchToItemView(
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 
-  public void mainMenuAuctionCardGoToAuction(ActionEvent event) {
+  @FXML
+  public void goToAuction(ActionEvent event) {
     SceneHandler.switchToItemView(
         "/com/auction/client/views/auction_view.fxml", event, currentItem);
   }
 
   @FXML
-  private Circle mainMenuAuctionCardStatusCircle;
+  private Circle statusCircle;
 
   public void updateColorByAuctionState(String auctionState) {
     String targetColor;
@@ -106,6 +108,6 @@ public class AuctionCardController {
       default:
         targetColor = "#7f8c8d";
     }
-    mainMenuAuctionCardStatusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
+    statusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
   }
 }

@@ -19,9 +19,9 @@ public class MainMenuSellerSubmitListController {
   // mostly similar to auctionview controller but for sellers to manage published
   // auctions
   @FXML
-  GridPane mainMenuSellerSubmitListGridPane;
+  GridPane gridPane;
   @FXML
-  Pagination mainMenuSellerSubmitListPagination;
+  Pagination pagination;
 
   private ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -31,7 +31,7 @@ public class MainMenuSellerSubmitListController {
   public void initialize() {
     refreshItems();
 
-    mainMenuSellerSubmitListPagination
+    pagination
         .currentPageIndexProperty()
         .addListener(
             (observable, oldIndex, newIndex) -> {
@@ -41,7 +41,7 @@ public class MainMenuSellerSubmitListController {
     itemList.addListener(
         (ListChangeListener<Item>) change -> {
           updatePagination();
-          renderItem(itemList, mainMenuSellerSubmitListPagination.getCurrentPageIndex());
+          renderItem(itemList, pagination.getCurrentPageIndex());
         });
   }
 
@@ -60,11 +60,11 @@ public class MainMenuSellerSubmitListController {
 
   private void updatePagination() {
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
-    mainMenuSellerSubmitListPagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+    pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
   public void renderItem(List<Item> list, int paginationIndex) {
-    mainMenuSellerSubmitListGridPane.getChildren().clear();
+    gridPane.getChildren().clear();
 
     if (list.isEmpty())
       return;
@@ -91,7 +91,7 @@ public class MainMenuSellerSubmitListController {
         int columnIndex = i / COLUMN_COUNT;
         int rowIndex = i % COLUMN_COUNT;
 
-        mainMenuSellerSubmitListGridPane.add(card, columnIndex, rowIndex);
+        gridPane.add(card, columnIndex, rowIndex);
       } catch (IOException e) {
         e.printStackTrace();
       }

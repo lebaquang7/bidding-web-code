@@ -12,12 +12,12 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.ItemDetailsController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="238.0" layoutX="339.0" layoutY="66.0" stroke="BLACK" strokeType="INSIDE" width="243.0" />
-      <Button layoutX="73.0" layoutY="329.0" mnemonicParsing="false" onAction="#itemDetailsGoBackToList" text="Go back to Item List">
+      <Button layoutX="73.0" layoutY="329.0" mnemonicParsing="false" onAction="#goBackToList" text="Go back to Item List">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <ImageView fx:id="itemDetailsImageView" fitHeight="238.0" fitWidth="243.0" layoutX="339.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageView" fitHeight="238.0" fitWidth="243.0" layoutX="339.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true" />
       <Label alignment="CENTER" layoutX="338.0" layoutY="14.0" prefHeight="41.0" prefWidth="243.0" text="Item Image">
          <font>
             <Font size="27.0" />
@@ -70,37 +70,37 @@
             <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
          </padding>
          <children>
-            <Label fx:id="itemDetailsID" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="idLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsItemName" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="itemNameLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsDescription" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="descriptionLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsInitialPrice" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="initialPriceLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsCurrentPrice" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="currentPriceLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsTimeRemaining" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="timeRemainingLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsWinner" prefHeight="25.0" prefWidth="175.0" text="----">
+            <Label fx:id="winnerLabel" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>

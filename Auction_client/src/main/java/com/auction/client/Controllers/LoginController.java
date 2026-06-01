@@ -21,20 +21,21 @@ public class LoginController {
   }
 
   @FXML
-  TextField loginWindowUsernameField; // load fxml UI elements
+  TextField usernameField; // load fxml UI elements
   @FXML
-  PasswordField loginWindowPasswordField;
+  PasswordField passwordField;
   @FXML
-  TextField loginWindowShownPwdTextField;
+  TextField shownPwdTextField;
   @FXML
-  CheckBox loginWindowShowPwdCheckbox;
+  CheckBox showPwdCheckbox;
   @FXML
-  Label loginWindowErrorPrompt;
+  Label errorPrompt;
 
   /** Usage: called when user presses the login button. */
-  public void loginWindowLoginAction(ActionEvent event) {
-    String username = loginWindowUsernameField.getText();
-    String password = loginWindowPasswordField.getText();
+  @FXML
+  public void loginAction(ActionEvent event) {
+    String username = usernameField.getText();
+    String password = passwordField.getText();
 
     String result = AccountEventHandler.validateAccount(username, password);
 
@@ -50,13 +51,13 @@ public class LoginController {
             getClass().getResource(MainMenuController.getPATH_TO_VIEW()), event);
       }
       case "invalidPassword" -> {
-        loginWindowErrorPrompt.setText("Invalid password.");
+        errorPrompt.setText("Invalid password.");
       }
       case "accountDoesntExist" -> {
-        loginWindowErrorPrompt.setText("This account does not exist.");
+        errorPrompt.setText("This account does not exist.");
       }
       default -> {
-        loginWindowErrorPrompt.setText("Unexpected error occurred: " + result);
+        errorPrompt.setText("Unexpected error occurred: " + result);
       }
     }
   }
@@ -66,7 +67,8 @@ public class LoginController {
    *
    * @param event
    */
-  public void loginWindowSwitchToRegister(ActionEvent event) {
+  @FXML
+  public void switchToRegister(ActionEvent event) {
     SceneHandler.switchToScene(
         getClass().getResource("/com/auction/client/views/register_view.fxml"), event);
   }
@@ -74,18 +76,19 @@ public class LoginController {
   /**
    * @param event Usage: Called when user presses the show password checkbox.
    */
-  public void loginWindowShowPwd(ActionEvent event) {
-    loginWindowShownPwdTextField
+  @FXML
+  public void showPwd(ActionEvent event) {
+    shownPwdTextField
         .textProperty()
         .bindBidirectional(
-            loginWindowPasswordField.textProperty()); // bidirectional binding with pwd field text
+            passwordField.textProperty()); // bidirectional binding with pwd field text
 
-    if (loginWindowShowPwdCheckbox.isSelected() == true) {
+    if (showPwdCheckbox.isSelected() == true) {
       // make pwd shown
-      UIElementHandler.switchElement(loginWindowShownPwdTextField, loginWindowPasswordField);
+      UIElementHandler.switchElement(shownPwdTextField, passwordField);
     } else {
       // reverse
-      UIElementHandler.switchElement(loginWindowPasswordField, loginWindowShownPwdTextField);
+      UIElementHandler.switchElement(passwordField, shownPwdTextField);
     }
   }
 }

@@ -7,34 +7,34 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainMenuMainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.MainMenuController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.MainMenuController">
    <left>
       <VBox prefHeight="600.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="25.0" left="15.0" right="15.0" top="25.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#mainMenuSwitchToAuctionList" prefHeight="50.0" prefWidth="170.0" text="Auction List">
+            <Button mnemonicParsing="false" onAction="#switchToAuctionList" prefHeight="50.0" prefWidth="170.0" text="Auction List">
                <font>
                   <Font size="20.0" />
                </font>
             </Button>
-            <Button fx:id="mainMenuSellItemButton" mnemonicParsing="false" onAction="#mainMenuSwitchToSellItem" prefHeight="50.0" prefWidth="170.0" text="Sell Items">
+            <Button fx:id="sellItemButton" mnemonicParsing="false" onAction="#switchToSellItem" prefHeight="50.0" prefWidth="170.0" text="Sell Items">
                <font>
                   <Font size="20.0" />
                </font>
             </Button>
-            <Button fx:id="mainMenuSellerListButton" mnemonicParsing="false" onAction="#mainMenuSwitchToSellerList" prefHeight="50.0" prefWidth="170.0" text="Manage Submission">
+            <Button fx:id="sellerListButton" mnemonicParsing="false" onAction="#switchToSellerList" prefHeight="50.0" prefWidth="170.0" text="Manage Submission">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="mainMenuAdminAuctionButton" mnemonicParsing="false" onAction="#mainMenuSwitchToAdminFunctions" prefHeight="50.0" prefWidth="170.0" text="Admin - Auctions">
+            <Button fx:id="adminAuctionButton" mnemonicParsing="false" onAction="#switchToAdminFunctions" prefHeight="50.0" prefWidth="170.0" text="Admin - Auctions">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#mainMenuSwitchToSettings" prefHeight="50.0" prefWidth="170.0" text="Settings">
+            <Button mnemonicParsing="false" onAction="#switchToSettings" prefHeight="50.0" prefWidth="170.0" text="Settings">
                <font>
                   <Font size="20.0" />
                </font>
@@ -42,7 +42,7 @@
                   <Insets top="190.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#mainMenuLogOut" prefHeight="50.0" prefWidth="170.0" text="Log Out">
+            <Button mnemonicParsing="false" onAction="#logOut" prefHeight="50.0" prefWidth="170.0" text="Log Out">
                <font>
                   <Font size="20.0" />
                </font>

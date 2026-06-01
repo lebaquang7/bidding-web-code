@@ -22,41 +22,41 @@ public class RegisterController {
   }
 
   @FXML
-  TextField registerWindowUsernameField;
+  TextField usernameField;
   @FXML
-  TextField registerWindowEmailField;
+  TextField emailField;
   @FXML
-  ChoiceBox<String> registerWindowAccountTypeChoiceBox;
+  ChoiceBox<String> accountTypeChoiceBox;
   @FXML
-  PasswordField registerWindowPasswordField;
+  PasswordField passwordField;
   @FXML
-  PasswordField registerWindowPasswordConfirmationField;
+  PasswordField passwordConfirmationField;
   @FXML
-  Label registerWindowErrorPrompt;
+  Label errorPrompt;
 
   @FXML
   public void initialize() {
-    if (registerWindowAccountTypeChoiceBox != null) {
-      registerWindowAccountTypeChoiceBox.getItems().addAll("Bidder", "Seller");
-      registerWindowAccountTypeChoiceBox.setValue("Bidder");
+    if (accountTypeChoiceBox != null) {
+      accountTypeChoiceBox.getItems().addAll("Bidder", "Seller");
+      accountTypeChoiceBox.setValue("Bidder");
     }
   }
 
   @FXML
-  void registerWindowRegisterAction(ActionEvent event) {
-    String username = registerWindowUsernameField.getText();
-    String email = registerWindowEmailField.getText();
-    String password = registerWindowPasswordField.getText();
-    String confirmPassword = registerWindowPasswordConfirmationField.getText();
-    String accountType = registerWindowAccountTypeChoiceBox.getValue();
+  void registerAction(ActionEvent event) {
+    String username = usernameField.getText();
+    String email = emailField.getText();
+    String password = passwordField.getText();
+    String confirmPassword = passwordConfirmationField.getText();
+    String accountType = accountTypeChoiceBox.getValue();
 
     if (username.isEmpty() || password.isEmpty()) {
-      registerWindowErrorPrompt.setText("Vui lòng điền đầy đủ Username và Password");
+      errorPrompt.setText("Vui lòng điền đầy đủ Username và Password");
       return;
     }
 
     if (!password.equals(confirmPassword)) {
-      registerWindowErrorPrompt.setText("Mật khẩu xác nhận không khớp");
+      errorPrompt.setText("Mật khẩu xác nhận không khớp");
       return;
     }
 
@@ -73,24 +73,29 @@ public class RegisterController {
     try {
       String result = AccountEventHandler.registerAccount(newUser);
 
-      if ("success".equals(result)) {
-        registerWindowErrorPrompt.setText("Đăng ký thành công. Quay lại đăng nhập");
-        registerWindowErrorPrompt.setStyle("-fx-text-fill: green;");
-      } else if ("duplicate".equals(result)) {
-        registerWindowErrorPrompt.setText("Tên đăng nhập đã tồn tại!");
-        registerWindowErrorPrompt.setStyle("-fx-text-fill: red;");
-      } else {
-        registerWindowErrorPrompt.setText("Lỗi: " + result);
-        registerWindowErrorPrompt.setStyle("-fx-text-fill: red;");
+      switch (result) {
+        case "success":
+          errorPrompt.setText("Đăng ký thành công. Quay lại đăng nhập");
+          errorPrompt.setStyle("-fx-text-fill: green;");
+          break;
+        case "duplicate":
+          errorPrompt.setText("Tên đăng nhập đã tồn tại!");
+          errorPrompt.setStyle("-fx-text-fill: red;");
+          break;
+        default:
+          errorPrompt.setText("Lỗi: " + result);
+          errorPrompt.setStyle("-fx-text-fill: red;");
+          break;
       }
 
     } catch (Exception e) {
       e.printStackTrace();
-      registerWindowErrorPrompt.setText("Không thể kết nối Server!");
+      errorPrompt.setText("Không thể kết nối Server!");
     }
   }
 
-  public void registerWindowSwitchToLogin(ActionEvent event) {
+  @FXML
+  public void switchToLogin(ActionEvent event) {
     SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
   }
 }

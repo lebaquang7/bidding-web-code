@@ -19,9 +19,9 @@ public class MainMenuAdminPaneController {
   // mostly similar to auctionview controller but for admins to initialize
   // auctions
   @FXML
-  GridPane mainMenuAdminPaneGridPane;
+  GridPane gridPane;
   @FXML
-  Pagination mainMenuAdminPanePagination;
+  Pagination pagination;
 
   private ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -31,7 +31,7 @@ public class MainMenuAdminPaneController {
   public void initialize() {
     refreshItems();
 
-    mainMenuAdminPanePagination
+    pagination
         .currentPageIndexProperty()
         .addListener(
             (observable, oldIndex, newIndex) -> {
@@ -41,7 +41,7 @@ public class MainMenuAdminPaneController {
     itemList.addListener(
         (ListChangeListener<Item>) change -> {
           updatePagination();
-          renderItem(itemList, mainMenuAdminPanePagination.getCurrentPageIndex());
+          renderItem(itemList, pagination.getCurrentPageIndex());
         });
   }
 
@@ -60,11 +60,11 @@ public class MainMenuAdminPaneController {
 
   private void updatePagination() {
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
-    mainMenuAdminPanePagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+    pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
   public void renderItem(List<Item> list, int paginationIndex) {
-    mainMenuAdminPaneGridPane.getChildren().clear();
+    gridPane.getChildren().clear();
 
     if (list.isEmpty())
       return;
@@ -91,7 +91,7 @@ public class MainMenuAdminPaneController {
         int columnIndex = i / COLUMN_COUNT;
         int rowIndex = i % COLUMN_COUNT;
 
-        mainMenuAdminPaneGridPane.add(card, columnIndex, rowIndex);
+        gridPane.add(card, columnIndex, rowIndex);
       } catch (IOException e) {
         e.printStackTrace();
       }

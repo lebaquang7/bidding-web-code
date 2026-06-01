@@ -20,11 +20,11 @@ import javafx.scene.image.ImageView;
 public class AdminCardController {
   // mostly copied from auctionCardController
   @FXML
-  Label mainMenuAdminAuctionCardNameLabel;
+  Label nameLabel;
   @FXML
-  Label mainMenuAdminAuctionCardPriceLabel;
+  Label priceLabel;
   @FXML
-  ImageView mainMenuAdminAuctionCardImageView;
+  ImageView imageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -32,16 +32,16 @@ public class AdminCardController {
   public void setData(Item item) {
     currentItem = item;
 
-    mainMenuAdminAuctionCardNameLabel.setText(item.getItemName());
-    LabelHandler.setDetailedTooltip(mainMenuAdminAuctionCardNameLabel);
+    nameLabel.setText(item.getItemName());
+    LabelHandler.setDetailedTooltip(nameLabel);
 
     CurrencySelectorHandler.bindPriceLabel(
-        mainMenuAdminAuctionCardPriceLabel, item.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(mainMenuAdminAuctionCardPriceLabel, 20, 12, 10, 1);
+        priceLabel, item.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
 
     // Tải hình ảnh lên
     if (item.getImageBytes() != null) {
-      mainMenuAdminAuctionCardImageView.setImage(
+      imageView.setImage(
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
@@ -51,7 +51,7 @@ public class AdminCardController {
               item.setImageBytes(bytes);
               Platform.runLater(
                   () -> {
-                    mainMenuAdminAuctionCardImageView.setImage(
+                    imageView.setImage(
                         new Image(new ByteArrayInputStream(bytes)));
                   });
             }
@@ -67,21 +67,22 @@ public class AdminCardController {
                   () -> {
                     if (newVal != null) {
                       CurrencySelectorHandler.bindPriceLabel(
-                          mainMenuAdminAuctionCardPriceLabel, newVal);
+                          priceLabel, newVal);
                       LabelHandler.scaleFontSizeToFit(
-                          mainMenuAdminAuctionCardPriceLabel, 20, 12, 10, 1);
+                          priceLabel, 20, 12, 10, 1);
                     }
                   });
             });
   }
 
-  public void mainMenuAdminAuctionCardGoToItemDetails(ActionEvent event) {
+  @FXML
+  public void goToItemDetails(ActionEvent event) {
     SceneHandler.switchToItemView(
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 
   @FXML
-  public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {
+  public void initializeAuction(ActionEvent event) {
     User currentUser = AccountEventHandler.getCurrentUser();
     String result = ItemsEventHandler.initializeAuction(currentItem.getId(), currentUser);
 
@@ -96,6 +97,7 @@ public class AdminCardController {
 
   // TODO: make this button denies a published auction from coming to the actual
   // auction list
-  public void mainMenuAdminAuctionCardDenyAuction(ActionEvent event) {
+  @FXML
+  public void denyAuction(ActionEvent event) {
   }
 }

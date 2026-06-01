@@ -34,7 +34,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="mainMenuSellItemPaneItemNameField" prefHeight="28.0" prefWidth="350.0" promptText="Input item name....">
+                  <TextField fx:id="itemNameField" prefHeight="28.0" prefWidth="350.0" promptText="Input item name....">
                      <HBox.margin>
                         <Insets top="1.0" />
                      </HBox.margin>
@@ -62,7 +62,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="mainMenuSellItemPaneItemDescriptionField" prefHeight="28.0" prefWidth="350.0" promptText="Input item description....">
+                  <TextField fx:id="itemDescriptionField" prefHeight="28.0" prefWidth="350.0" promptText="Input item description....">
                      <HBox.margin>
                         <Insets bottom="1.0" top="1.0" />
                      </HBox.margin>
@@ -76,7 +76,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="mainMenuSellItemPaneStartingPriceField" prefHeight="28.0" prefWidth="350.0" promptText="Input starting price.... (Minimum of 100000.00 VND)">
+                  <TextField fx:id="startingPriceField" prefHeight="28.0" prefWidth="350.0" promptText="Input starting price.... (Minimum of 100000.00 VND)">
                      <HBox.margin>
                         <Insets top="1.0" />
                      </HBox.margin>
@@ -93,7 +93,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="mainMenuSellItemPanePriceIncrementField" prefHeight="28.0" prefWidth="350.0" promptText="Input minimum bid increment (min: 1%, max: 10% of starting price)">
+                  <TextField fx:id="priceIncrementField" prefHeight="28.0" prefWidth="350.0" promptText="Input minimum bid increment (min: 1%, max: 10% of starting price)">
                      <HBox.margin>
                         <Insets top="1.0" />
                      </HBox.margin>

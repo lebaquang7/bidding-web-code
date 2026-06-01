@@ -31,43 +31,44 @@ import javafx.scene.layout.VBox;
 public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   @FXML
-  VBox auctionViewBidderFeatureBox;
+  VBox bidderFeatureBox;
   @FXML
-  Label auctionViewItemName;
+  Label itemNameLabel;
   @FXML
-  Label auctionViewStartingBid;
+  Label startingBidLabel;
   @FXML
-  Label auctionViewCurrentBid;
+  Label currentBidLabel;
   @FXML
-  Label auctionViewRemainingTime;
+  Label remainingTimeLabel;
   @FXML
-  Label auctionViewPlaceBidErrorBox;
+  Label placeBidErrorBox;
   @FXML
-  Label auctionViewAutoBidderErrorBox;
+  Label autoBidderErrorBox;
 
   @FXML
-  TextField auctionViewPlaceBidBox;
+  TextField placeBidBox;
   @FXML
-  TextField auctionViewAutoBidderMaxBidBox;
+  TextField autoBidderMaxBidBox;
   @FXML
-  TextField auctionViewAutoBidderBidIncrementBox;
+  TextField autoBidderBidIncrementBox;
 
   @FXML
-  LineChart<Number, Number> auctionViewPriceChart;
+  LineChart<Number, Number> priceChart;
   @FXML
-  NumberAxis auctionViewPriceChartXAxis;
+  NumberAxis priceChartXAxis;
   @FXML
-  NumberAxis auctionViewPriceChartYAxis;
+  NumberAxis priceChartYAxis;
 
   private Item currentItem;
 
   public void initialize() {
     if (!(AccountEventHandler.getCurrentUser() instanceof Bidder)) {
-      UIElementHandler.disableElement(auctionViewBidderFeatureBox);
+      UIElementHandler.disableElement(bidderFeatureBox);
     }
   }
 
-  public void auctionViewGoBackToList(ActionEvent event) {
+  @FXML
+  public void goBackToList(ActionEvent event) {
     if (MainApp.getNotificationListener() != null) {
       MainApp.getNotificationListener().stopListener();
       MainApp.setNotificationListener(null);
@@ -76,56 +77,57 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   }
 
   @FXML
-  public void auctionViewPlaceBid(ActionEvent event) {
+  public void placeBid(ActionEvent event) {
     // 1. Xóa thông báo lỗi/thành công cũ
-    auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: red;");
-    auctionViewPlaceBidErrorBox.setText("");
+    placeBidErrorBox.setStyle("-fx-text-fill: red;");
+    placeBidErrorBox.setText("");
 
-    String bidInput = auctionViewPlaceBidBox.getText();
+    String bidInput = placeBidBox.getText();
 
     // 2. Kiểm tra rỗng
     if (bidInput == null || bidInput.trim().isEmpty()) {
-      auctionViewPlaceBidErrorBox.setText("Vui lòng nhập số tiền muốn trả!");
+      placeBidErrorBox.setText("Vui lòng nhập số tiền muốn trả!");
       return;
     }
 
     try {
-      BigDecimal bidAmount = new BigDecimal(auctionViewPlaceBidBox.getText());
+      BigDecimal bidAmount = new BigDecimal(placeBidBox.getText());
       BigDecimal currentPrice = currentItem.getCurrentPrice();
       BigDecimal incrementPercent = currentItem.getPriceIncrement();
       BigDecimal minBidRequired = currentPrice
           .add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
 
       if (bidAmount.compareTo(minBidRequired) < 0) {
-        auctionViewPlaceBidErrorBox.setText("Tối thiểu: " + minBidRequired.toPlainString());
+        placeBidErrorBox.setText("Tối thiểu: " + minBidRequired.toPlainString());
         return;
       }
 
       // 4. Lấy thông tin User hiện tại đang đăng nhập
       User currentUser = AccountEventHandler.getCurrentUser();
       if (currentUser == null) {
-        auctionViewPlaceBidErrorBox.setText("Lỗi: Không tìm thấy thông tin phiên đăng nhập!");
+        placeBidErrorBox.setText("Lỗi: Không tìm thấy thông tin phiên đăng nhập!");
         return;
       }
 
       // Trả về enum BidStatus từ Server
       BidStatus.bidStatus result = ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
+      updateUiFromBidStatus(result);
 
       // 6. Xử lý UI dựa trên phản hồi của Server
       if (result == BidStatus.bidStatus.SUCCESS) {
-        auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: green;");
-        auctionViewPlaceBidErrorBox.setText("Đặt giá thành công!");
-        auctionViewPlaceBidBox.clear();
+        placeBidErrorBox.setStyle("-fx-text-fill: green;");
+        placeBidErrorBox.setText("Đặt giá thành công!");
+        placeBidBox.clear();
       } else if (result == BidStatus.bidStatus.INVALID) {
-        auctionViewPlaceBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
+        placeBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
       } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
-        auctionViewPlaceBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
+        placeBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
       } else {
-        auctionViewPlaceBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
+        placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
       }
 
     } catch (NumberFormatException e) {
-      auctionViewPlaceBidErrorBox.setText("Vui lòng nhập đúng định dạng số tiền!");
+      placeBidErrorBox.setText("Vui lòng nhập đúng định dạng số tiền!");
     }
   }
 
@@ -138,23 +140,23 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     } // Phòng hờ nếu Inventory rỗng
 
     // Hiển thị giá ban đầu
-    CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, item.getCurrentPrice());
+    CurrencySelectorHandler.bindPriceLabel(currentBidLabel, item.getCurrentPrice());
 
     // init labels
-    auctionViewItemName.setText(currentItem.getItemName());
-    LabelHandler.setDetailedTooltip(auctionViewItemName);
+    itemNameLabel.setText(currentItem.getItemName());
+    LabelHandler.setDetailedTooltip(itemNameLabel);
     // init time label
-    auctionViewRemainingTime.setText("00:00");
-    auctionViewRemainingTime.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
+    remainingTimeLabel.setText("00:00");
+    remainingTimeLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
 
-    CurrencySelectorHandler.bindPriceLabel(auctionViewStartingBid, currentItem.getStartingPrice());
-    LabelHandler.scaleFontSizeToFit(auctionViewStartingBid, 20, 12, 8, 1);
-    CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, currentItem.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
+    CurrencySelectorHandler.bindPriceLabel(startingBidLabel, currentItem.getStartingPrice());
+    LabelHandler.scaleFontSizeToFit(startingBidLabel, 20, 12, 8, 1);
+    CurrencySelectorHandler.bindPriceLabel(currentBidLabel, currentItem.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
 
     setupChartLayout(item);
 
-    AuctionViewController.updateChartPrice(item, auctionViewPriceChartYAxis);
+    AuctionViewController.updateChartPrice(item, priceChartYAxis);
     // TODO: UNCOMMENT WHEN ACTUAL CHART DATA IS MADE
     // auctionViewPriceChart.setData(ChartDataHandler
     // .setChartDisplay(AuctionManager.getInstance().getAuctionSession(item.getId()).getBidHistory()));
@@ -170,9 +172,9 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
         .addListener(
             (obs, oldVal, newVal) -> {
               Platform.runLater(() -> {
-                CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
-                LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
-                AuctionViewController.updateChartPrice(item, auctionViewPriceChartYAxis);
+                CurrencySelectorHandler.bindPriceLabel(currentBidLabel, newVal);
+                LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
+                AuctionViewController.updateChartPrice(item, priceChartYAxis);
                 updateChartBounds();
               });
             });
@@ -204,11 +206,11 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
    * Usage: update remaining time label
    */
   public void updateRemainingTime(int totalSeconds) {
-    auctionViewRemainingTime.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
+    remainingTimeLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
     if (totalSeconds <= 10) {
-      auctionViewRemainingTime.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+      remainingTimeLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
     } else {
-      auctionViewRemainingTime.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
+      remainingTimeLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
     }
   }
 
@@ -216,23 +218,23 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
    * Usage: disable feature box, print winner on auction win
    */
   public void handleAuctionEndEvent(String winnerName) {
-    auctionViewBidderFeatureBox.setDisable(true);
-    auctionViewRemainingTime.setText("00:00");
-    auctionViewPlaceBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
+    bidderFeatureBox.setDisable(true);
+    remainingTimeLabel.setText("00:00");
+    placeBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
   }
 
   /**
    * Usage: initialize chart layout
    */
   private void setupChartLayout(Item item) {
-    auctionViewPriceChart.setTitle("Auction price for Item " + item.getItemName());
-    auctionViewPriceChartXAxis.setLabel("Time");
-    auctionViewPriceChartYAxis.setLabel("Price");
-    auctionViewPriceChartXAxis.setAutoRanging(false);
-    auctionViewPriceChartYAxis.setAutoRanging(false);
+    priceChart.setTitle("Auction price for Item " + item.getItemName());
+    priceChartXAxis.setLabel("Time");
+    priceChartYAxis.setLabel("Price");
+    priceChartXAxis.setAutoRanging(false);
+    priceChartYAxis.setAutoRanging(false);
     // TODO: track based on time. HALF COMPLETED, NEED FETCHIN TIME LINKED WITH ITEM
     // X label format based on time
-    auctionViewPriceChartXAxis.setTickLabelFormatter(new ChartTimeLabelFormatter(auctionViewPriceChartXAxis));
+    priceChartXAxis.setTickLabelFormatter(new ChartTimeLabelFormatter(priceChartXAxis));
     updateChartBounds();
   }
 
@@ -242,11 +244,11 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   private void updateChartBounds() {
     if (currentItem == null)
       return;
-    auctionViewPriceChartYAxis.setLowerBound(0);
+    priceChartYAxis.setLowerBound(0);
     BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
     double uproundedMaxPrice = MiscTools.roundUp(updatedPrice.doubleValue());
-    auctionViewPriceChartYAxis.setUpperBound(uproundedMaxPrice);
-    auctionViewPriceChartYAxis.setTickUnit(uproundedMaxPrice / 10);
+    priceChartYAxis.setUpperBound(uproundedMaxPrice);
+    priceChartYAxis.setTickUnit(uproundedMaxPrice / 10);
   }
 
   /**
@@ -255,20 +257,22 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   private void updateUiFromBidStatus(BidStatus.bidStatus status) {
     switch (status) {
       case SUCCESS -> {
-        auctionViewPlaceBidErrorBox.setStyle("-fx-text-fill: green;");
-        auctionViewPlaceBidErrorBox.setText("Đặt giá thành công!");
-        auctionViewPlaceBidBox.clear();
+        placeBidErrorBox.setStyle("-fx-text-fill: green;");
+        placeBidErrorBox.setText("Đặt giá thành công!");
+        placeBidBox.clear();
       }
-      case INVALID -> auctionViewPlaceBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
-      case ALREADY_HIGHEST -> auctionViewPlaceBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
-      default -> auctionViewPlaceBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
+      case INVALID -> placeBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
+      case ALREADY_HIGHEST -> placeBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
+      default -> placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
     }
   }
 
   // TODO: work on these
-  public void auctionViewEnableAutoBid(ActionEvent event) {
+  @FXML
+  public void enableAutoBid(ActionEvent event) {
   }
 
-  public void auctionViewStopAutoBid(ActionEvent event) {
+  @FXML
+  public void stopAutoBid(ActionEvent event) {
   }
 }

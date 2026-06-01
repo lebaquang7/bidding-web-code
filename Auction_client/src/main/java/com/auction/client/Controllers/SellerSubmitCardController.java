@@ -18,11 +18,11 @@ import javafx.scene.image.ImageView;
 public class SellerSubmitCardController {
   // mostly copied from auctioncard controller
   @FXML
-  Label mainMenuSellerSubmitCardNameLabel;
+  Label nameLabel;
   @FXML
-  Label mainMenuSellerSubmitCardPriceLabel;
+  Label priceLabel;
   @FXML
-  ImageView mainMenuSellerSubmitCardImageView;
+  ImageView imageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -30,16 +30,16 @@ public class SellerSubmitCardController {
   public void setData(Item item) {
     currentItem = item;
 
-    mainMenuSellerSubmitCardNameLabel.setText(item.getItemName());
-    LabelHandler.setDetailedTooltip(mainMenuSellerSubmitCardNameLabel);
+    nameLabel.setText(item.getItemName());
+    LabelHandler.setDetailedTooltip(nameLabel);
 
     CurrencySelectorHandler.bindPriceLabel(
-        mainMenuSellerSubmitCardPriceLabel, item.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(mainMenuSellerSubmitCardPriceLabel, 20, 12, 10, 1);
+        priceLabel, item.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
 
     // Tải hình ảnh lên
     if (item.getImageBytes() != null) {
-      mainMenuSellerSubmitCardImageView.setImage(
+      imageView.setImage(
           new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
@@ -49,7 +49,7 @@ public class SellerSubmitCardController {
               item.setImageBytes(bytes);
               Platform.runLater(
                   () -> {
-                    mainMenuSellerSubmitCardImageView.setImage(
+                    imageView.setImage(
                         new Image(new ByteArrayInputStream(bytes)));
                   });
             }
@@ -65,20 +65,22 @@ public class SellerSubmitCardController {
                   () -> {
                     if (newVal != null) {
                       CurrencySelectorHandler.bindPriceLabel(
-                          mainMenuSellerSubmitCardPriceLabel, newVal);
+                          priceLabel, newVal);
                       LabelHandler.scaleFontSizeToFit(
-                          mainMenuSellerSubmitCardPriceLabel, 20, 12, 10, 1);
+                          priceLabel, 20, 12, 10, 1);
                     }
                   });
             });
   }
 
-  public void mainMenuSellerSubmitCardGoToItemDetails(ActionEvent event) {
+  @FXML
+  public void goToItemDetails(ActionEvent event) {
     SceneHandler.switchToItemView(
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 
   // TODO: logic for recalling auction
-  public void mainMenuSellerSubmitCardRecallAuction(ActionEvent event) {
+  @FXML
+  public void recallAuction(ActionEvent event) {
   }
 }

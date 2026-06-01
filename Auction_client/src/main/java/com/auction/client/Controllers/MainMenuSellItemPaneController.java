@@ -19,13 +19,13 @@ import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
   @FXML
-  TextField mainMenuSellItemPaneItemNameField;
+  TextField itemNameField;
   @FXML
-  TextField mainMenuSellItemPaneItemDescriptionField;
+  TextField itemDescriptionField;
   @FXML
-  TextField mainMenuSellItemPaneStartingPriceField;
+  TextField startingPriceField;
   @FXML
-  TextField mainMenuSellItemPanePriceIncrementField;
+  TextField priceIncrementField;
   @FXML
   private Button uploadImageButton;
 
@@ -53,7 +53,7 @@ public class MainMenuSellItemPaneController {
         .getConvertedPrice(BigDecimal.valueOf(100000))
         .doubleValue();
     String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
-    mainMenuSellItemPaneStartingPriceField.setPromptText(
+    startingPriceField.setPromptText(
         String.format(
             "Input starting price.... (Minimum of %.2f %s)", convertedPrice, activeCurrency));
   }
@@ -76,13 +76,14 @@ public class MainMenuSellItemPaneController {
         duration = 60;
       }
 
-      String name = mainMenuSellItemPaneItemNameField.getText();
-      String description = mainMenuSellItemPaneItemDescriptionField.getText();
+      // TODO: add errors for edge values
+      String name = itemNameField.getText();
+      String description = itemDescriptionField.getText();
       BigDecimal startingPrice = CurrencySelectorHandler.getInstance()
           .getVNDPrice(
               BigDecimal.valueOf(
-                  Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
-      double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
+                  Double.valueOf((startingPriceField.getText()))));
+      double percentage = Double.parseDouble(priceIncrementField.getText());
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
       User currentUser = AccountEventHandler.getCurrentUser();
@@ -130,7 +131,7 @@ public class MainMenuSellItemPaneController {
         .addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
     // Mở cửa sổ chọn file
-    File file = fileChooser.showOpenDialog(mainMenuSellItemPaneItemNameField.getScene().getWindow());
+    File file = fileChooser.showOpenDialog(itemNameField.getScene().getWindow());
 
     if (file != null) {
       // Kiểm tra dung lượng giới hạn 10MB
@@ -145,10 +146,10 @@ public class MainMenuSellItemPaneController {
   }
 
   private void clearFields() {
-    mainMenuSellItemPaneItemNameField.clear();
-    mainMenuSellItemPaneItemDescriptionField.clear();
-    mainMenuSellItemPaneStartingPriceField.clear();
-    mainMenuSellItemPanePriceIncrementField.clear();
+    itemNameField.clear();
+    itemDescriptionField.clear();
+    startingPriceField.clear();
+    priceIncrementField.clear();
     this.selectedImageFile = null;
   }
 }

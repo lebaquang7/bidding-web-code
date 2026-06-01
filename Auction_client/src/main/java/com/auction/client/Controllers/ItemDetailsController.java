@@ -19,29 +19,29 @@ import javafx.scene.image.ImageView;
 public class ItemDetailsController implements SceneHandler.ItemLoadable {
 
   @FXML
-  Label itemDetailsID;
+  Label idLabel;
   @FXML
-  Label itemDetailsItemName;
+  Label itemNameLabel;
   @FXML
-  Label itemDetailsDescription;
+  Label descriptionLabel;
   @FXML
-  Label itemDetailsInitialPrice;
+  Label initialPriceLabel;
   @FXML
-  Label itemDetailsCurrentPrice;
+  Label currentPriceLabel;
   @FXML
-  Label itemDetailsWinner;
+  Label winnerLabel;
   @FXML
-  Label itemDetailsTimeRemaining;
+  Label timeRemainingLabel;
   @FXML
   Label auctionWonLabel;
   @FXML
   Button auctionWonButton;
   @FXML
-  ImageView itemDetailsImageView;
+  ImageView imageView;
 
   private Item currentItem;
 
-  public void itemDetailsGoBackToList(ActionEvent event) {
+  public void goBackToList(ActionEvent event) {
     SceneHandler.closeScene(event);
   }
 
@@ -65,23 +65,23 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
   public void setItem(Item item) {
     this.currentItem = item;
 
-    itemDetailsID.setText(currentItem.getId());
-    LabelHandler.setDetailedTooltip(itemDetailsID);
+    idLabel.setText(currentItem.getId());
+    LabelHandler.setDetailedTooltip(idLabel);
 
-    itemDetailsItemName.setText(currentItem.getItemName());
-    LabelHandler.setDetailedTooltip(itemDetailsItemName);
+    itemNameLabel.setText(currentItem.getItemName());
+    LabelHandler.setDetailedTooltip(itemNameLabel);
 
-    itemDetailsDescription.setText(currentItem.getDescription());
-    LabelHandler.setDetailedTooltip(itemDetailsDescription);
+    descriptionLabel.setText(currentItem.getDescription());
+    LabelHandler.setDetailedTooltip(descriptionLabel);
 
-    CurrencySelectorHandler.bindPriceLabel(itemDetailsInitialPrice, currentItem.getStartingPrice());
-    LabelHandler.scaleFontSizeToFit(itemDetailsInitialPrice, 15, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(initialPriceLabel, currentItem.getStartingPrice());
+    LabelHandler.scaleFontSizeToFit(initialPriceLabel, 15, 12, 10, 1);
 
-    CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, currentItem.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 15, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(currentPriceLabel, currentItem.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(currentPriceLabel, 15, 12, 10, 1);
 
     if (currentItem.getImageBytes() != null) {
-      itemDetailsImageView.setImage(
+      imageView.setImage(
           new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
     } else if (currentItem.getImagePath() != null && !currentItem.getImagePath().isEmpty()) {
       new Thread(
@@ -91,7 +91,7 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
               currentItem.setImageBytes(bytes);
               Platform.runLater(
                   () -> {
-                    itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
                   });
             }
           })
@@ -104,8 +104,8 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
               Platform.runLater(
                   () -> {
                     if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, newVal);
-                      LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 20, 12, 10, 1);
+                      CurrencySelectorHandler.bindPriceLabel(currentPriceLabel, newVal);
+                      LabelHandler.scaleFontSizeToFit(currentPriceLabel, 20, 12, 10, 1);
                     }
                   });
             });
