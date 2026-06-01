@@ -2,14 +2,17 @@ package com.auction.client.Controllers;
 
 import java.io.ByteArrayInputStream;
 
+import com.auction.client.Models.AccountEventHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ItemsEventHandler;
 import com.auction.client.Models.LabelHandler;
 import com.auction.shared.models.Item;
-import java.io.ByteArrayInputStream;
+
+import com.auction.shared.models.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -77,15 +80,35 @@ public class AdminCardController {
   // TODO: make this button push an auction to the actual auction list
   @FXML
   public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {
-      boolean success = ItemsEventHandler.initializeAuction(currentItem.getId());
-      if (success) {
-          System.out.println("Vật phẩm " + currentItem.getItemName() + " đã được mở bán!");
+      User currentUser = AccountEventHandler.getCurrentUser();
+      String result = ItemsEventHandler.initializeAuction(currentItem.getId(), currentUser);
+
+      if (result.equals("success")) {
+          showInfo("Thành công", currentItem.getItemName() + " đã được đấu giá.");
+      } else if (result.equals("unauthorized")) {
+          showError("Lỗi", "Bạn không phải Admin.");
       } else {
-          System.err.println("Lỗi khi duyệt vật phẩm.");
+          showError("Lỗi", "Không thể khởi tạo phiên đấu giá.");
       }
   }
 
   // TODO: make this button denies a published auction from coming to the actual
   // auction list
   public void mainMenuAdminAuctionCardDenyAuction(ActionEvent event) {}
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showInfo(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }

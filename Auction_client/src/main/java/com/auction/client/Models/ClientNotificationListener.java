@@ -1,5 +1,6 @@
 package com.auction.client.Models;
 
+import com.auction.client.Controllers.AuctionViewController;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
@@ -9,17 +10,24 @@ import java.net.Socket;
 import javafx.application.Platform;
 
 public class ClientNotificationListener extends Thread {
+  private static AuctionViewController currentController;
+  private Socket socket;
+
   public ClientNotificationListener() {
     this.setDaemon(true); // Tự tắt khi app đóng
+  }
+
+  public static void setCurrentController(AuctionViewController controller) {
+    currentController = controller;
   }
 
   @Override
   public void run() {
     // Tạo một kết nối luôn mở để nhận cập nhật về giá vật phẩm, etc
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
-
+    try{
+      Socket socket = new Socket("127.0.0.1", 1234);
+      ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
@@ -31,6 +39,11 @@ public class ClientNotificationListener extends Thread {
 
       while (true) {
         Object incoming = in.readObject();
+
+        if (currentController != null) {
+          currentController.handleNotification(incoming);
+        }
+
         if (incoming instanceof BidTransaction) {
           BidTransaction tx = (BidTransaction) incoming;
           // Tìm item trong Inventory để cập nhật giá
@@ -48,6 +61,18 @@ public class ClientNotificationListener extends Thread {
       }
     } catch (Exception e) {
       System.err.println("Luồng Real-time bị ngắt kết nối.");
+      e.printStackTrace();
+    } finally {stopListener();}
+  }
+
+  public void stopListener() {
+    try {
+      currentController = null;
+      if (socket != null && !socket.isClosed()) {
+        socket.close();
+      }
+      System.out.println("Đã ngắt kết nối Real-time.");
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

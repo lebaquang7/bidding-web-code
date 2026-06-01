@@ -1,6 +1,7 @@
 package com.auction.client;
 
 import com.auction.client.Controllers.SceneController;
+import com.auction.client.Models.ClientNotificationListener;
 import com.auction.client.Models.ConfigFileHandler;
 import com.auction.client.Models.CurrencySelectorHandler;
 import com.auction.client.Models.ThemeHandler;
@@ -13,6 +14,15 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
+  private static ClientNotificationListener notificationListener;
+
+  public static void setNotificationListener(ClientNotificationListener listener) {
+    notificationListener = listener;
+  }
+
+  public static ClientNotificationListener getNotificationListener() {
+    return notificationListener;
+  }
 
   public static void main(String[] args) {
     launch(args);

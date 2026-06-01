@@ -18,7 +18,7 @@ public abstract class Item extends Entity {
   private BigDecimal priceIncrement;
   private String imagePath; // Lưu tên file ảnh
   private byte[] imageBytes; // Truyền dữ liệu ảnh qua Socket
-
+  private int durationTime;
   private LocalDateTime endTime;
 
   public LocalDateTime getEndTime() {
@@ -91,10 +91,7 @@ public abstract class Item extends Entity {
     this.sellerId = id;
   }
 
-  public String getHighestBidderId() {
-    return highestBidderId;
-  }
-
+  public String getHighestBidderId() {return highestBidderId;}
   public void setHighestBidderId(String highestBidderId) {
     this.highestBidderId = highestBidderId;
   }
@@ -102,11 +99,14 @@ public abstract class Item extends Entity {
   public BigDecimal getPriceIncrement() {
     return priceIncrement;
   }
-
   public void setPriceIncrement(BigDecimal priceIncrement) {
     this.priceIncrement = priceIncrement;
   }
 
+  public int getDurationTime() { return durationTime; }
+  public void setDurationTime(int durationTime) { this.durationTime = durationTime; }
+
+  // Xử lý việc Property curentPrice không Serializable được
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
     out.writeObject(getCurrentPrice()); // Ghi giá trị BigDecimal thực tế

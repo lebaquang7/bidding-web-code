@@ -38,6 +38,11 @@ public class MainMenuSellItemPaneController {
       itemTypeComboBox.getSelectionModel().selectFirst();
     }
 
+    if (itemAuctionDuration != null) {
+      itemAuctionDuration.getItems().addAll("10 minutes", "30 minutes", "1 hour");
+      itemAuctionDuration.setValue("10 minutes");
+    }
+
     // set prompt text based on currency type.
     double convertedPrice =
         CurrencySelectorHandler.getInstance()
@@ -56,6 +61,12 @@ public class MainMenuSellItemPaneController {
         showError("Chưa chọn loại vật phẩm");
         return;
       }
+
+      int duration = 10;
+      String selectedDuration = itemAuctionDuration.getValue();
+      if (selectedDuration.contains("10")) {duration = 10;}
+      else if (selectedDuration.contains("30")) {duration = 30;}
+      else if (selectedDuration.contains("1 hour")) {duration = 60;}
 
       String name = mainMenuSellItemPaneItemNameField.getText();
       String description = mainMenuSellItemPaneItemDescriptionField.getText();
@@ -93,6 +104,7 @@ public class MainMenuSellItemPaneController {
       }
       newItem.setSellerId(currentUser.getId());
       newItem.setPriceIncrement(priceIncrement);
+      newItem.setDurationTime(duration);
 
       String result = ItemsEventHandler.sellItem(newItem);
       if ("success".equals(result)) {

@@ -2,16 +2,16 @@ package com.auction.client.Models;
 
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.*;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemsEventHandler {
   // Sell item
@@ -121,22 +121,26 @@ public class ItemsEventHandler {
     return null;
   }
 
-  public static boolean initializeAuction(String itemId) {
+  public static String initializeAuction(String itemId, User currentUser) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.InitializeAuction, itemId);
+      Map<String, Object> requestData = new HashMap<>();
+      requestData.put("itemId", itemId);
+      requestData.put("requester", currentUser);
+
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.InitializeAuction, requestData);
       out.writeObject(request);
       out.flush();
 
       Object response = in.readObject();
-      return "success".equals(response);
+      return (response instanceof String) ? (String) response : "fail";
     } catch (Exception e) {
       e.printStackTrace();
-      return false;
+      return "error";
     }
   }
 }

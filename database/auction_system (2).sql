@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 31, 2026 lúc 08:23 AM
+-- Thời gian đã tạo: Th6 01, 2026 lúc 02:24 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -61,7 +61,8 @@ CREATE TABLE `artworks` (
 
 INSERT INTO `artworks` (`id`, `artistName`, `isOriginal`, `creationYear`, `medium`) VALUES
 ('01799397-9cb6-4358-a54c-e46389880ea0', '', 1, 0, ''),
-('320e77a8-0267-46e5-ba03-6f3f03768957', '', 1, 0, '');
+('320e77a8-0267-46e5-ba03-6f3f03768957', '', 1, 0, ''),
+('ed9e068a-9541-49e0-bc4a-dddd5a508816', '', 1, 0, '');
 
 -- --------------------------------------------------------
 
@@ -94,7 +95,7 @@ CREATE TABLE `bid_history` (
   `bid_id` int(11) NOT NULL,
   `item_Id` varchar(40) NOT NULL,
   `bidder_Id` varchar(40) NOT NULL,
-  `bid_amount` decimal(19,2) NOT NULL,
+  `bid_amount` decimal(15,2) NOT NULL,
   `bid_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` varchar(20) NOT NULL DEFAULT 'SUCCESS'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -128,7 +129,10 @@ INSERT INTO `bid_history` (`bid_id`, `item_Id`, `bidder_Id`, `bid_amount`, `bid_
 (22, '320e77a8-0267-46e5-ba03-6f3f03768957', '23312c96-d768-4e4f-b7ff-de57529c1e97', 227300.00, '2026-05-27 16:55:30', 'SUCCESS'),
 (23, '320e77a8-0267-46e5-ba03-6f3f03768957', '969885f3-1093-4903-ad56-aa4e123306eb', 237000.00, '2026-05-27 17:11:49', 'SUCCESS'),
 (24, '320e77a8-0267-46e5-ba03-6f3f03768957', '23312c96-d768-4e4f-b7ff-de57529c1e97', 247000.00, '2026-05-31 06:11:33', 'SUCCESS'),
-(25, '972e8aac-5ab6-4619-b586-07fd3afb2650', '23312c96-d768-4e4f-b7ff-de57529c1e97', 40000000.00, '2026-05-31 06:14:44', 'SUCCESS');
+(25, '972e8aac-5ab6-4619-b586-07fd3afb2650', '23312c96-d768-4e4f-b7ff-de57529c1e97', 40000000.00, '2026-05-31 06:14:44', 'SUCCESS'),
+(26, '320e77a8-0267-46e5-ba03-6f3f03768957', '969885f3-1093-4903-ad56-aa4e123306eb', 257000.00, '2026-06-01 04:12:30', 'SUCCESS'),
+(27, '320e77a8-0267-46e5-ba03-6f3f03768957', '23312c96-d768-4e4f-b7ff-de57529c1e97', 268000.00, '2026-06-01 04:41:10', 'SUCCESS'),
+(28, '320e77a8-0267-46e5-ba03-6f3f03768957', '969885f3-1093-4903-ad56-aa4e123306eb', 300000.00, '2026-06-01 12:18:58', 'SUCCESS');
 
 -- --------------------------------------------------------
 
@@ -168,18 +172,20 @@ CREATE TABLE `items` (
   `highest_Bidder_Id` varchar(40) DEFAULT NULL,
   `price_Increment` decimal(15,2) NOT NULL DEFAULT 0.00,
   `image_path` varchar(255) DEFAULT NULL,
-  `status` varchar(30) NOT NULL DEFAULT 'PENDING_APPROVAL'
+  `status` varchar(30) NOT NULL DEFAULT 'PENDING_APPROVAL',
+  `duration_time` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `items`
 --
 
-INSERT INTO `items` (`id`, `type`, `name`, `description`, `starting_price`, `current_price`, `seller_Id`, `highest_Bidder_Id`, `price_Increment`, `image_path`, `status`) VALUES
-('01799397-9cb6-4358-a54c-e46389880ea0', 'Art', 'randompicture', 'drawn by a 2 yo kid', 5000000.00, 250000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 0.00, NULL, 'PENDING_APPROVAL'),
-('1d27b154-9af4-4257-af67-6cbca151ce1f', 'Vehicle', 'Mercedes-Benz 300SL', 'Manufactured in 1954', 45000000000.00, 46000000009.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '969885f3-1093-4903-ad56-aa4e123306eb', 4.00, NULL, 'PENDING_APPROVAL'),
-('320e77a8-0267-46e5-ba03-6f3f03768957', 'Art', 'Job application', 'A JOB', 200000.00, 247000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 4.00, '1779889715308_Screenshot 2026-05-27 204806.png', 'RUNNING'),
-('972e8aac-5ab6-4619-b586-07fd3afb2650', 'Electronics', 'Iphone 18 ProMax', 'Iphone 17 but better', 36000000.00, 40000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 6.00, '1779872725865_tải xuống.jpg', 'PENDING_APPROVAL');
+INSERT INTO `items` (`id`, `type`, `name`, `description`, `starting_price`, `current_price`, `seller_Id`, `highest_Bidder_Id`, `price_Increment`, `image_path`, `status`, `duration_time`) VALUES
+('01799397-9cb6-4358-a54c-e46389880ea0', 'Art', 'randompicture', 'drawn by a 2 yo kid', 5000000.00, 250000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 0.00, NULL, 'PENDING_APPROVAL', 600),
+('1d27b154-9af4-4257-af67-6cbca151ce1f', 'Vehicle', 'Mercedes-Benz 300SL', 'Manufactured in 1954', 45000000000.00, 46000000009.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '969885f3-1093-4903-ad56-aa4e123306eb', 4.00, NULL, 'PENDING_APPROVAL', 600),
+('320e77a8-0267-46e5-ba03-6f3f03768957', 'Art', 'Job application', 'A JOB', 200000.00, 300000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '969885f3-1093-4903-ad56-aa4e123306eb', 4.00, '1779889715308_Screenshot 2026-05-27 204806.png', 'RUNNING', 600),
+('972e8aac-5ab6-4619-b586-07fd3afb2650', 'Electronics', 'Iphone 18 ProMax', 'Iphone 17 but better', 36000000.00, 40000000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', '23312c96-d768-4e4f-b7ff-de57529c1e97', 6.00, '1779872725865_tải xuống.jpg', 'PENDING_APPROVAL', 600),
+('ed9e068a-9541-49e0-bc4a-dddd5a508816', 'Art', 'randombs', '', 100000.00, 100000.00, 'ac75be0f-a079-4e8d-8b86-bd586ce2f2d5', NULL, 4.00, NULL, 'PENDING_APPROVAL', 10);
 
 -- --------------------------------------------------------
 
@@ -311,7 +317,7 @@ ALTER TABLE `vehicle`
 -- AUTO_INCREMENT cho bảng `bid_history`
 --
 ALTER TABLE `bid_history`
-  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

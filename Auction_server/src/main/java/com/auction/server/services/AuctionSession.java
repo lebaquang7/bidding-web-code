@@ -6,9 +6,12 @@ import com.auction.shared.models.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class AuctionSession {
@@ -16,10 +19,11 @@ public class AuctionSession {
   private final Item auctionItem;
   private Bidder highestBidder;
   private Auction auctionDetails;
-
   private AuctionStatus currentState;
   private final List<BidTransaction> bidHistory;
   private final long durationInSeconds;
+  private long remainingSeconds;
+  private ScheduledFuture<?> countdownTask;
 
   private final Object lock = new Object();
   private final ScheduledExecutorService scheduler =
@@ -40,7 +44,7 @@ public class AuctionSession {
     this.currentState = AuctionStatus.PENDING_APPROVAL;
   }
 
-  public boolean start() {
+  public boolean startAuction() {
     synchronized (lock) {
       if (currentState != AuctionStatus.PENDING_APPROVAL) {
         return false;
@@ -49,12 +53,29 @@ public class AuctionSession {
       boolean dbUpdated = DatabaseConfig.updateAuctionStatus(this.sessionId, AuctionStatus.RUNNING);
 
       if (dbUpdated) {
+        this.remainingSeconds = durationInSeconds;
         this.currentState = AuctionStatus.RUNNING;
+
         if (auctionDetails != null) {
-          auctionDetails.setStatus(AuctionStatus.RUNNING);
+          auctionDetails.setStatus(currentState);
         }
 
-        scheduler.schedule(this::finish, durationInSeconds, TimeUnit.SECONDS);
+        countdownTask = scheduler.scheduleAtFixedRate(() -> {
+          if (remainingSeconds > 0) {
+            remainingSeconds--;
+
+            Map<String, Object> timeData = new HashMap<>();
+            timeData.put("type", "TIME_UPDATE");
+            timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
+            timeData.put("value", remainingSeconds);
+            NotificationService.broadcast(timeData);
+            System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
+          } else {
+            if (countdownTask != null) {countdownTask.cancel(false);}
+            endAuction();
+          }
+        }, 1, 1, TimeUnit.SECONDS);
+        System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");
 
         System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
         return true;
@@ -70,11 +91,15 @@ public class AuctionSession {
    * báo cho tất cả người tham gia. Nếu không có người thắng nào, thì sẽ chuyển trạng thái sang
    * CANCELLED và thông báo cho tất cả người tham gia.
    */
-  public boolean finish() {
+  public boolean endAuction() {
     synchronized (lock) {
-      if (currentState != AuctionStatus.RUNNING) {
-        return false;
+      if (countdownTask != null) {
+        countdownTask.cancel(false);
       }
+
+      this.currentState = AuctionStatus.FINISHED;
+      DatabaseConfig.updateAuctionStatus(sessionId, currentState);
+      this.highestBidder = DatabaseConfig.getWinnerFromHistory(sessionId);
 
       if (highestBidder == null) {
         this.currentState = AuctionStatus.CANCELLED;
@@ -84,16 +109,20 @@ public class AuctionSession {
                 + "]: đã kết thúc mà không có người thắng. Mặt hàng: "
                 + auctionItem.getItemName()
                 + " sẽ được rút khỏi đấu giá.");
-        scheduler.shutdown(); // Giải phóng luồng đếm giờ
       }
 
-      this.currentState = AuctionStatus.FINISHED;
       System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc.");
       System.out.println(
           "Người thắng: "
               + highestBidder.getUserName()
               + " với giá: "
               + auctionItem.getCurrentPrice());
+
+      Map<String, Object> endData = new HashMap<>();
+      endData.put("type", "END_AUCTION");
+      endData.put("sessionId", sessionId);
+      endData.put("winnerName", highestBidder.getUserName());
+      NotificationService.broadcast(endData);
 
       scheduler.schedule(this::handledPaymentTimeout, 10, TimeUnit.MINUTES);
       return true;

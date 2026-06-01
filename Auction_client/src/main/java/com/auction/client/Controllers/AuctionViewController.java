@@ -1,17 +1,15 @@
 package com.auction.client.Controllers;
 
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
-import com.auction.client.Models.MiscTools;
-import com.auction.client.Models.TestChartData;
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.Bidder;
-import com.auction.shared.models.Inventory;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.User;
+import com.auction.client.MainApp;
+import com.auction.client.Models.*;
+import com.auction.shared.models.*;
+
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Map;
+
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,6 +38,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
   @FXML NumberAxis auctionViewPriceChartYAxis;
 
   private Item currentItem;
+  private Timeline countdownTimeline;
 
   public void initialize() {
     if (!(AccountEventHandler.getCurrentUser() instanceof Bidder)) {
@@ -48,6 +47,10 @@ public class AuctionViewController implements SceneController.ItemLoadable {
   }
 
   public void auctionViewGoBackToList(ActionEvent event) {
+    if (MainApp.getNotificationListener() != null) {
+      MainApp.getNotificationListener().stopListener();
+      MainApp.setNotificationListener(null);
+    }
     SceneController.closeScene(event);
   }
 
@@ -97,8 +100,6 @@ public class AuctionViewController implements SceneController.ItemLoadable {
         auctionViewPlaceBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
       } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
         auctionViewPlaceBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
-      } else if (result == BidStatus.bidStatus.EXPIRED) {
-        auctionViewPlaceBidErrorBox.setText("Phiên đấu giá này đã kết thúc!");
       } else {
         auctionViewPlaceBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
       }
@@ -115,24 +116,9 @@ public class AuctionViewController implements SceneController.ItemLoadable {
 
   @Override
   public void setItem(Item item) {
+    ClientNotificationListener.setCurrentController(this);
     this.currentItem = Inventory.getItemById(item.getId());
-    if (this.currentItem == null) this.currentItem = item; // Phòng hờ nếu Inventory rỗng
-
-    this.currentItem
-        .currentPriceProperty()
-        .addListener(
-            (obs, oldVal, newVal) -> {
-              Platform.runLater(
-                  () -> {
-                    if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
-                      ;
-
-                      LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
-                      System.out.println("UI đã cập nhật giá mới: " + newVal);
-                    }
-                  });
-            });
+    if (this.currentItem == null) {this.currentItem = item;} // Phòng hờ nếu Inventory rỗng
 
     // Hiển thị giá ban đầu
     CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, item.getCurrentPrice());
@@ -176,12 +162,75 @@ public class AuctionViewController implements SceneController.ItemLoadable {
               auctionViewPriceChart.setData(TestChartData.getSalesData(item));
             });
 
+    // Cập nhật currentPrice realtime
     item.currentPriceProperty()
         .addListener(
             (obs, oldVal, newVal) -> {
-              AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
-              auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+              Platform.runLater(() -> {
+                CurrencySelectorHandler.bindPriceLabel(auctionViewCurrentBid, newVal);
+
+                LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
+
+                AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
+                auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+
+                System.out.println("UI đã cập nhật giá mới và biểu đồ: " + newVal);
+              });
             });
+
+    // Khởi tạo thời gian
+    auctionViewRemainingTime.setText("00:00");
+    auctionViewRemainingTime.setStyle("-fx-text-fill: black; -fx-font-weight: normal;");
+  }
+
+  public void handleNotification(Object message) {
+    if (message instanceof BidTransaction) {
+      BidTransaction tx = (BidTransaction) message;
+
+      if (currentItem != null && tx.getItemId().equals(currentItem.getId())) {
+        Platform.runLater(() -> {
+          currentItem.setCurrentPrice(tx.getBidAmount());
+          currentItem.setHighestBidderId(tx.getBidderId());
+        });
+      }
+    }
+
+    else if (message instanceof Map) {
+      Map<String, Object> data = (Map<String, Object>) message;
+      String type = (String) data.get("type");
+
+      if ("TIME_UPDATE".equals(type)) {
+        String sessionId = String.valueOf(data.get("sessionId")).trim();
+
+        if (currentItem != null && currentItem.getId().equals(sessionId)) {
+          Object valObj = data.get("value");
+          if (valObj instanceof Number) {
+            int totalSeconds = ((Number) valObj).intValue();
+            Platform.runLater(() -> {
+              auctionViewRemainingTime.setText(formatTime(totalSeconds));
+
+              if (totalSeconds <= 10) {
+                auctionViewRemainingTime.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+              } else {
+                auctionViewRemainingTime.setStyle("-fx-text-fill: black; -fx-font-weight: normal;");
+              }
+            });
+          }
+        }
+      }
+
+      if ("END_AUCTION".equals(data.get("type"))) {
+        Platform.runLater(() -> {
+          String winner = (String) data.get("winnerName");
+
+          auctionViewBidderFeatureBox.setDisable(true);
+          auctionViewRemainingTime.setText("00:00");
+          auctionViewPlaceBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winner);
+
+          System.out.println("Kết thúc phiên. Người thắng là " + winner);
+        });
+      }
+    }
   }
 
   /**
@@ -200,5 +249,12 @@ public class AuctionViewController implements SceneController.ItemLoadable {
         CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
     yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
     yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
+  }
+
+  // Giúp remaining time hiển thị cả phút
+  private String formatTime(int totalSeconds) {
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+    return String.format("%02d:%02d", minutes, seconds);
   }
 }
