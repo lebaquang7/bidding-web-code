@@ -1,18 +1,17 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.io.ByteArrayInputStream;
 
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
-
 import com.auction.shared.models.User;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -80,7 +79,6 @@ public class AdminCardController {
         "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
   }
 
-  // TODO: make this button push an auction to the actual auction list
   @FXML
   public void mainMenuAdminAuctionCardInitializeAuction(ActionEvent event) {
     User currentUser = AccountEventHandler.getCurrentUser();

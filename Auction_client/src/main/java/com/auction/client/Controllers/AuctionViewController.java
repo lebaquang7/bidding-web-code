@@ -1,16 +1,16 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
 import com.auction.client.MainApp;
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.client.Models.ChartTimeLabelFormatter;
-import com.auction.client.Models.ClientNotificationListener;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
-import com.auction.client.Models.MiscTools;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ClientNotificationListener;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.ChartTimeLabelFormatter;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
+import com.auction.client.utils.MiscTools;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Bidder;
@@ -208,6 +208,19 @@ public class AuctionViewController implements SceneController.ItemLoadable {
     auctionViewRemainingTime.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
   }
 
+  /**
+   * Usage: update Y axis's chart position based on price.
+   *
+   * @param item
+   * @param yAxis
+   */
+  public static void updateChartPrice(Item item, NumberAxis yAxis) {
+    yAxis.setLowerBound(0);
+    BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
+    yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
+    yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
+  }
+
   public void handleNotification(Object message) {
     if (message instanceof BidTransaction) {
       BidTransaction tx = (BidTransaction) message;
@@ -256,19 +269,6 @@ public class AuctionViewController implements SceneController.ItemLoadable {
         });
       }
     }
-  }
-
-  /**
-   * Usage: update Y axis's chart position based on price.
-   *
-   * @param item
-   * @param yAxis
-   */
-  public static void updateChartPrice(Item item, NumberAxis yAxis) {
-    yAxis.setLowerBound(0);
-    BigDecimal updatedPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
-    yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
-    yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
   }
 
   // Giúp remaining time hiển thị cả phút

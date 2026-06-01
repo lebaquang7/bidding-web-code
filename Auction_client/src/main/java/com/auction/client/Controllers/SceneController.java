@@ -1,10 +1,12 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.ThemeHandler;
-import com.auction.client.Properties;
-import com.auction.shared.models.Item;
 import java.io.IOException;
 import java.net.URL;
+
+import com.auction.client.Properties;
+import com.auction.client.utils.ThemeHandler;
+import com.auction.shared.models.Item;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -40,7 +42,8 @@ public class SceneController {
   }
 
   /**
-   * Makes node 1 visible, while hiding node 2 via managed and visible Do use bidirectional binding
+   * Makes node 1 visible, while hiding node 2 via managed and visible Do use
+   * bidirectional binding
    * if value of node 1 and 2 need to be tied Usage: pwd hide/show checkbox, etc
    *
    * @param node1

@@ -1,11 +1,11 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.io.File;
 import java.math.BigDecimal;
 
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.Electronics;
 import com.auction.shared.models.Item;

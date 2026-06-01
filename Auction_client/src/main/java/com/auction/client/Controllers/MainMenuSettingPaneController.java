@@ -1,8 +1,8 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.ConfigFileHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ThemeHandler;
+import com.auction.client.utils.ConfigFileHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.ThemeHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,8 +10,10 @@ import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 
 public class MainMenuSettingPaneController {
-  @FXML ChoiceBox<String> mainMenuSettingPaneCurrencyUnitSettingBox;
-  @FXML ChoiceBox<String> mainMenuSettingPaneThemeSettingBox;
+  @FXML
+  ChoiceBox<String> mainMenuSettingPaneCurrencyUnitSettingBox;
+  @FXML
+  ChoiceBox<String> mainMenuSettingPaneThemeSettingBox;
 
   public void initialize() {
     // Currency unit setting handling
@@ -55,8 +57,7 @@ public class MainMenuSettingPaneController {
             });
 
     // Custom theme handling
-    ObservableList<String> themeSetting =
-        FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
+    ObservableList<String> themeSetting = FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
     mainMenuSettingPaneThemeSettingBox.setItems(themeSetting);
     mainMenuSettingPaneThemeSettingBox.setValue(ConfigFileHandler.getProperty("theme", "Default"));
     mainMenuSettingPaneThemeSettingBox

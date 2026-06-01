@@ -1,10 +1,10 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.io.ByteArrayInputStream;
 
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
 
 import javafx.application.Platform;

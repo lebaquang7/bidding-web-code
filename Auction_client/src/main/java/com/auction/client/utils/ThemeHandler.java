@@ -1,7 +1,8 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -12,8 +13,8 @@ public class ThemeHandler {
   private final String THEME_CSS_PATH = getClass().getResource("/files/theme.css").toExternalForm();
 
   // singleton stuff
-  private ThemeHandler() {}
-  ;
+  private ThemeHandler() {
+  };
 
   public static synchronized ThemeHandler getInstance() {
     if (instance == null) {
@@ -28,22 +29,26 @@ public class ThemeHandler {
   }
 
   /**
-   * Usage: switch root theme based on given theme strings. if nothing found, defaults to standard
+   * Usage: switch root theme based on given theme strings. if nothing found,
+   * defaults to standard
    * light theme
    *
    * @param theme
    * @param root
    */
   private void applyTheme(String theme, Parent root) {
-    if (root == null) return; // skip if no root
+    if (root == null)
+      return; // skip if no root
     root.getStyleClass().removeAll("theme-active", "theme-dark", "theme-modernblue", "theme-mint");
-    if (theme.equals("Default")) return; // skip if theme default is white
+    if (theme.equals("Default"))
+      return; // skip if theme default is white
     root.getStyleClass().add("theme-active");
     switch (theme) {
       case "Dark" -> root.getStyleClass().add("theme-dark");
       case "Modern Blue" -> root.getStyleClass().add("theme-modernblue");
       case "Mint" -> root.getStyleClass().add("theme-mint");
-      default -> {}
+      default -> {
+      }
     }
   }
 

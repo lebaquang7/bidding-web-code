@@ -1,13 +1,13 @@
-package com.auction.client.Models;
+package com.auction.client.services;
 
-import static com.auction.shared.models.NetworkRequest.requestType.Register;
-
-import com.auction.shared.models.Bidder;
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.User;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.NetworkRequest;
+import static com.auction.shared.models.NetworkRequest.requestType.Register;
+import com.auction.shared.models.User;
 
 public class AccountEventHandler {
   // Loại bỏ accountStorage HashMap, dùng database thay thế
@@ -35,8 +35,7 @@ public class AccountEventHandler {
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
       // 1. Gửi yêu cầu Login
-      NetworkRequest request =
-          new NetworkRequest(NetworkRequest.requestType.Login, loginRequestData);
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.Login, loginRequestData);
       out.writeObject(request);
       out.flush();
 

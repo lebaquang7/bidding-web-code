@@ -1,7 +1,8 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.AccountEventHandler; // Import model : AccountEventHandler
-import com.auction.client.Models.ClientNotificationListener;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ClientNotificationListener;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -17,11 +18,16 @@ public class LoginController {
     return PATH_TO_VIEW;
   }
 
-  @FXML TextField loginWindowUsernameField; // load fxml UI elements
-  @FXML PasswordField loginWindowPasswordField;
-  @FXML TextField loginWindowShownPwdTextField;
-  @FXML CheckBox loginWindowShowPwdCheckbox;
-  @FXML Label loginWindowErrorPrompt;
+  @FXML
+  TextField loginWindowUsernameField; // load fxml UI elements
+  @FXML
+  PasswordField loginWindowPasswordField;
+  @FXML
+  TextField loginWindowShownPwdTextField;
+  @FXML
+  CheckBox loginWindowShowPwdCheckbox;
+  @FXML
+  Label loginWindowErrorPrompt;
 
   /** Usage: called when user presses the login button. */
   public void loginWindowLoginAction(ActionEvent event) {

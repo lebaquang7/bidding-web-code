@@ -1,10 +1,11 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.io.ByteArrayInputStream;
 
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
 
 import javafx.application.Platform;
@@ -137,7 +138,7 @@ public class AuctionCardController {
           java.util.Map<String, Object> autoBidMap = new java.util.HashMap<>();
           autoBidMap.put("itemId", currentItem.getId());
 
-          String myBidderId = com.auction.client.Models.AccountEventHandler.getCurrentUser().getId();
+          String myBidderId = AccountEventHandler.getCurrentUser().getId();
           autoBidMap.put("bidderId", myBidderId);
 
           autoBidMap.put("maxBid", maxBid);

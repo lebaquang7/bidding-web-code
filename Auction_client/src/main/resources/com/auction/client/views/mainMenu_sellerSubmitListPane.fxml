@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.MainMenuSellerSubmitListController">
+<VBox fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.MainMenuSellerSubmitListController">
    <children>
       <GridPane fx:id="mainMenuSellerSubmitListGridPane" hgap="20.0" prefHeight="500.0" prefWidth="640.0" vgap="20.0">
         <columnConstraints>

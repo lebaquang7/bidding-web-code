@@ -1,9 +1,10 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.AccountEventHandler;
+import com.auction.client.services.AccountEventHandler;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -19,12 +20,18 @@ public class RegisterController {
     return PATH_TO_VIEW;
   }
 
-  @FXML TextField registerWindowUsernameField;
-  @FXML TextField registerWindowEmailField;
-  @FXML ChoiceBox<String> registerWindowAccountTypeChoiceBox;
-  @FXML PasswordField registerWindowPasswordField;
-  @FXML PasswordField registerWindowPasswordConfirmationField;
-  @FXML Label registerWindowErrorPrompt;
+  @FXML
+  TextField registerWindowUsernameField;
+  @FXML
+  TextField registerWindowEmailField;
+  @FXML
+  ChoiceBox<String> registerWindowAccountTypeChoiceBox;
+  @FXML
+  PasswordField registerWindowPasswordField;
+  @FXML
+  PasswordField registerWindowPasswordConfirmationField;
+  @FXML
+  Label registerWindowErrorPrompt;
 
   @FXML
   public void initialize() {
