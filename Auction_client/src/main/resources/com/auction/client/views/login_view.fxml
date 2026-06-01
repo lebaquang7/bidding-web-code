@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.LoginController">
+   <children>
+      <Label alignment="CENTER" layoutY="14.0" prefHeight="70.0" prefWidth="600.0" text="Welcome to AuctionClient.">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutY="82.0" prefHeight="35.0" prefWidth="600.0" text="Please enter your login informations.">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button layoutX="261.0" layoutY="253.0" mnemonicParsing="false" onAction="#loginAction" text="Login">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Label layoutX="167.0" layoutY="320.0" prefHeight="26.0" prefWidth="144.0" text="No account?">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button layoutX="330.0" layoutY="322.0" mnemonicParsing="false" onAction="#switchToRegister" prefHeight="26.0" prefWidth="76.0" text="Register">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="errorPrompt" layoutX="183.0" layoutY="122.0" prefHeight="18.0" prefWidth="255.0" styleClass="label-forced-warning" text="             " textFill="RED" />
+      <VBox layoutX="48.0" layoutY="148.0" prefHeight="80.0" prefWidth="528.0" spacing="25.0">
+         <children>
+            <HBox prefHeight="28.0" prefWidth="528.0" spacing="35.0">
+               <children>
+                  <Label prefHeight="28.0" prefWidth="100.0" text="USERNAME">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="usernameField" prefHeight="26.0" prefWidth="255.0" promptText="Input username here....">
+                     <HBox.margin>
+                        <Insets top="1.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="28.0" prefWidth="528.0" spacing="25.0">
+               <children>
+                  <Label prefHeight="28.0" prefWidth="100.0" text="PASSWORD">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <StackPane prefHeight="28.0" prefWidth="255.0">
+                     <children>
+                        <TextField fx:id="shownPwdTextField" prefHeight="26.0" prefWidth="255.0" promptText="Input password here...." visible="false">
+                           <StackPane.margin>
+                              <Insets top="1.0" />
+                           </StackPane.margin>
+                        </TextField>
+                        <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="255.0" promptText="Input password here....">
+                           <StackPane.margin>
+                              <Insets top="1.0" />
+                           </StackPane.margin>
+                        </PasswordField>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </StackPane>
+                  <CheckBox fx:id="showPwdCheckbox" mnemonicParsing="false" onAction="#showPwd" text="Show Password">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </CheckBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

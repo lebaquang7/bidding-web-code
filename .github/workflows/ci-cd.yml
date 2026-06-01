@@ -1,0 +1,36 @@
+name: CI/CD Maven 
+
+# triggers on:
+on:
+  push:
+    branches: [ "main", "master", "dev" ] #on push toward main, master, dev
+  pull_request:
+    branches: [ "main", "master" ] # on pr toward main/master branch
+
+jobs:
+  cross-platform-build:
+    # multi-os matrix strategy
+    strategy:
+      fail-fast: false # prevent fail on one platform from stopping the others
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    # clone repo into vm
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    # setup jdk
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: 'maven' # caching for fast ci/cd
+
+    - name: Run Maven Verify Lifecycle
+      run: mvn -B verify --file pom.xml
+
+    - name: Check compliance with Google Java Style Guide
+      run: mvn spotless:check --file pom.xml

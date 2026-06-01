@@ -1,0 +1,178 @@
+/*themes*/
+.theme-dark {
+    -theme-background-color: #222222;
+    -theme-border-color: #030303;
+    -theme-text-color: #FFFFFF;
+}
+
+.theme-modernblue {
+    -theme-background-color: #1e1c37;
+    -theme-border-color: #0c0b14;
+    -theme-text-color: #fdfdfd;
+}
+
+.theme-mint {
+    -theme-background-color: #261a17;
+    -theme-border-color: #5BFF7C;
+    -theme-text-color: #75FF91;
+}
+
+
+
+
+/*standard theme element affix*/
+.theme-active {
+    -fx-background-color: -theme-background-color;
+    -fx-border-color: -theme-border-color;
+}
+
+.theme-active .label {
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .text-field,
+.theme-active .password-field {
+    -fx-background-color: derive(-theme-background-color, -20%);
+    -fx-border-color: derive(-theme-border-color, -40%);
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .button,
+.theme-active .combo-box>.list-cell,
+.theme-active .choice-box>.label {
+    -fx-background-color: derive(-theme-background-color, 20%);
+    -fx-border-color: derive(-theme-border-color, 40%);
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .rectangle {
+    -fx-stroke: -theme-border-color;
+}
+
+
+
+/*choicebox dropdown color*/
+.theme-active .context-menu {
+    -fx-background-color: -theme-background-color;
+    -fx-border-color: -theme-border-color;
+}
+
+.theme-active .context-menu .list-cell {
+    -fx-text-fill: -theme-text-color;
+    -fx-background-color: transparent;
+}
+
+.theme-active .context-menu .list-cell:hover {
+    -fx-background-color: derive(-theme-background-color, 40%);
+    -fx-text-fill: -theme-text-color;
+}
+
+
+
+
+/*combobox color*/
+.theme-active .combo-box>.arrow-button {
+    -fx-background-color: derive(-theme-background-color, 20%);
+}
+
+.theme-active .combo-box>.arrow-button>.arrow {
+    -fx-background-color: -theme-text-color;
+}
+
+.theme-active .combo-box-popup .list-view {
+    -fx-background-color: -theme-border-color, -theme-background-color;
+}
+
+.theme-active .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: derive(-theme-background-color, 20%);
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: derive(-theme-background-color, 35%);
+    -fx-text-fill: -theme-text-color;
+}
+
+
+/*pagination color*/
+.theme-active .pagination .button,
+.theme-active .pagination .toggle-button {
+    -fx-background-color: derive(-theme-background-color, 40%);
+    -fx-text-fill: -theme-text-color;
+    -fx-border-color: -theme-border-color;
+}
+
+.theme-active .pagination .toggle-button:selected {
+    -fx-background-color: derive(-theme-background-color, 70%);
+    -fx-text-fill: -theme-text-color;
+}
+
+
+
+
+/*checkbox color*/
+.theme-active .check-box,
+.theme-active .check-box:selected .mark {
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .check-box .box {
+    -fx-border-color: -theme-border-color;
+    -fx-background-color: derive(-theme-background-color, -20%);
+}
+
+
+
+
+/*chart colors*/
+.theme-active .chart-plot-background {
+    -fx-background-color: derive(-theme-background-color, -20%);
+}
+
+.theme-active .chart-vertical-grid-lines,
+.theme-active .chart-horizontal-grid-lines {
+    -fx-stroke: derive(-theme-background-color, 40%);
+    ;
+    opacity: 0.4;
+}
+
+.theme-active .axis-tick-mark,
+.theme-active .axis-minor-tick-mark {
+    -fx-stroke: -theme-text-color;
+}
+
+.theme-active .axis,
+.theme-active .chart-title {
+    -fx-text-fill: -theme-text-color;
+}
+
+.theme-active .chart-series-line {
+    -fx-stroke: derive(-theme-text-color, -10%);
+}
+
+.theme-active .chart-line-symbol {
+    -fx-background-color: derive(-theme-text-color, -10%);
+}
+
+
+
+
+/*overrides*/
+.label-forced-warning {
+    -fx-text-fill: #ff0000 !important;
+}
+
+.custom-border {
+    -stroke: #030303;
+    -fx-stroke: -theme-border-color !important;
+}
+
+.auction-status-border {
+    -fx-auction-status-color: #ffffff;
+    -fx-fill: -fx-auction-state-color;
+}

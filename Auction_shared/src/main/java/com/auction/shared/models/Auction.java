@@ -1,0 +1,86 @@
+package com.auction.shared.models;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class Auction implements Serializable {
+  private int id;
+  private Item item;
+  private BigDecimal currentPrice;
+  private BigDecimal startPrice;
+  private User seller;
+  private User highestBidder;
+  private LocalDateTime startTime;
+  private LocalDateTime endTime;
+  private AuctionStatus status;
+
+  public Auction(
+      int id,
+      Item item,
+      BigDecimal startPrice,
+      User seller,
+      LocalDateTime startTime,
+      LocalDateTime endTime) {
+    this.id = id;
+    this.item = item;
+    this.startPrice = startPrice;
+    this.currentPrice = startPrice;
+    this.seller = seller;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.status = AuctionStatus.PENDING_APPROVAL;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public BigDecimal getCurrentPrice() {
+    return currentPrice;
+  }
+
+  public void setCurrentPrice(BigDecimal currentPrice) {
+    this.currentPrice = currentPrice;
+  }
+
+  public Item getItem() {
+    return item;
+  }
+
+  public User getSeller() {
+    return seller;
+  }
+
+  public User getHighestBidder() {
+    return highestBidder;
+  }
+
+  public void setHighestBidder(User highestBidder) {
+    this.highestBidder = highestBidder;
+  }
+
+  public LocalDateTime getStartTime() {
+    return startTime;
+  }
+
+  public LocalDateTime getEndTime() {
+    return endTime;
+  }
+
+  public AuctionStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(AuctionStatus status) {
+    this.status = status;
+  }
+
+  public void setStartTime(LocalDateTime startTime) {
+    this.startTime = startTime;
+  }
+
+  public void setEndTime(LocalDateTime endTime) {
+    this.endTime = endTime;
+  }
+}
