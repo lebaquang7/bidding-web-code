@@ -53,22 +53,12 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label prefHeight="25.0" prefWidth="90.0" text="Bids Made" textOverrun="CLIP">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label prefHeight="25.0" prefWidth="90.0" text="Bidders" textOverrun="CLIP">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label prefHeight="25.0" prefWidth="90.0" text="Last bid" textOverrun="CLIP">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
             <Label prefHeight="25.0" prefWidth="90.0" text="Time Left" textOverrun="CLIP">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label prefHeight="25.0" prefWidth="90.0" text="Winner" textOverrun="CLIP">
                <font>
                   <Font size="15.0" />
                </font>
@@ -105,22 +95,12 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="itemDetailsBidMade" prefHeight="25.0" prefWidth="175.0" text="----">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="itemDetailsBidders" prefHeight="25.0" prefWidth="175.0" text="----">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="ItemDetailsLastBid" prefHeight="25.0" prefWidth="175.0" text="----">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
             <Label fx:id="itemDetailsTimeRemaining" prefHeight="25.0" prefWidth="175.0" text="----">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="itemDetailsWinner" prefHeight="25.0" prefWidth="175.0" text="----">
                <font>
                   <Font size="15.0" />
                </font>
