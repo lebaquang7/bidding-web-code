@@ -10,10 +10,6 @@ public class ManualTestRunner {
 
   public static void main(String[] args) {
     System.out.println(" SHARED TESTING SYSTEM ");
-
-    // TODO: remove comment when deposit method for bidder is made
-    // testBidderDepositValidAmount();
-    // testBidderDepositNegativeAmount();
     testArtFactoryCreation();
     testElectronicsFactoryCreation();
     testVehicleFactoryCreation();
@@ -28,35 +24,7 @@ public class ManualTestRunner {
     System.out.println(" TESTING COMPLETED ");
   }
 
-  // TODO: remove comment when deposit method for bidder is made
-  // //TC09: Kiểm tra chức năng nạp tiền hợp lệ.
-  // public static void testBidderDepositValidAmount() {
-  //     Bidder bidder = new Bidder("hovaten1", "pass123", "Hà Nội", BigDecimal.valueOf(100.0), 5);
-  //     bidder.deposit(50.0);
-
-  //     if (bidder.getBalance() == BigDecimal.valueOf(150.0)) {
-  //         System.out.println("[PASSED] TC09: Nạp tiền hợp lệ thành công (+50$). Số dư hiện tại: "
-  // + bidder.getBalance());
-  //     } else {
-  //         System.err.println("[FAILED] TC09: Nạp tiền hợp lệ nhưng số dư sai.");
-  //     }
-  // }
-
-  // TODO: remove comment when deposit method for bidder is made
-  // //TC10: Kiểm tra khi nạp tiền âm.
-  // public static void testBidderDepositNegativeAmount() {
-  //     Bidder bidder = new Bidder("hovaten2", "pass456", "Hà Nội", BigDecimal.valueOf(100.0), 5);
-  //     bidder.deposit(-20.0);
-
-  //     if (bidder.getBalance() == BigDecimal.valueOf(150.0)) {
-  //         System.out.println("[PASSED] TC10: Chặn nạp tiền âm thành công. Số dư giữ nguyên: " +
-  // bidder.getBalance());
-  //     } else {
-  //         System.err.println("[FAILED] TC10: Hệ thống không chặn được tiền âm.");
-  //     }
-  // }
-
-  // TC11: Kiểm tra quá trình sản xuất Tác phẩm nghệ thuật (ArtFactory).
+  // TC09: Kiểm tra quá trình sản xuất Tác phẩm nghệ thuật (ArtFactory).
   public static void testArtFactoryCreation() {
     ItemFactory artFactory = new ArtFactory();
     Item item =
@@ -73,7 +41,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC12: Kiểm tra quá trình sản xuất Đồ điện tử (ElectronicsFactory).
+  // TC10: Kiểm tra quá trình sản xuất Đồ điện tử (ElectronicsFactory).
   public static void testElectronicsFactoryCreation() {
     ItemFactory elecFactory = new ElectronicsFactory();
     Item item =
@@ -91,7 +59,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC13: Kiểm tra quá trình sản xuất Phương tiện (VehicleFactory).
+  // TC11: Kiểm tra quá trình sản xuất Phương tiện (VehicleFactory).
   public static void testVehicleFactoryCreation() {
     ItemFactory vehicleFactory = new VehicleFactory();
     Item item =
@@ -109,7 +77,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC14: Kiểm tra khởi tạo lớp Admin (Người quản trị).
+  // TC12: Kiểm tra khởi tạo lớp Admin (Người quản trị).
   public static void testAdmin() {
     try {
       Admin admin = new Admin("admin01", "adminpass", 1, "Quản trị viên", "Hệ thống");
@@ -124,7 +92,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC15: Kiểm tra khởi tạo một Phiên đấu giá (Auction)
+  // TC13: Kiểm tra khởi tạo một Phiên đấu giá (Auction)
   public static void testAuction() {
     try {
       ItemFactory artFactory = new ArtFactory();
@@ -142,7 +110,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC16: Kiểm tra khởi tạo một Lịch sử ra giá (BidTransaction)
+  // TC14: Kiểm tra khởi tạo một Lịch sử ra giá (BidTransaction)
   public static void testBidTransaction() {
     try {
 
@@ -164,7 +132,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC17: Kiểm tra thực thể cơ sở Entity.
+  // TC15: Kiểm tra thực thể cơ sở Entity.
   public static void testEntity() {
     try {
       ItemFactory artFactory = new ArtFactory();
@@ -180,7 +148,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC18: Kiểm tra cấu trúc đóng gói tin nhắn mạng NetworkRequest.
+  // TC16: Kiểm tra cấu trúc đóng gói tin nhắn mạng NetworkRequest.
   public static void testNetworkRequest() {
     try {
       NetworkRequest request =
@@ -194,7 +162,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC19: Kiểm tra khởi tạo tài khoản Người bán (Seller)
+  // TC17: Kiểm tra khởi tạo tài khoản Người bán (Seller)
   public static void testSeller() {
     try {
       Seller seller = new Seller("sellera", "password123");
@@ -209,7 +177,7 @@ public class ManualTestRunner {
     }
   }
 
-  // TC20: Kiểm tra tính kế thừa của lớp cha User.
+  // TC18: Kiểm tra tính kế thừa của lớp cha User.
   public static void testUser() {
     User userSample = new Bidder("testuser", "securepwd", "Hà Nội", BigDecimal.valueOf(100.0), 0);
 

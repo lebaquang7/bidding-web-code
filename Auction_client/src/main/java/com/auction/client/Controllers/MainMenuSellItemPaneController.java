@@ -29,7 +29,6 @@ public class MainMenuSellItemPaneController {
   @FXML
   public void initialize() {
     if (itemTypeComboBox != null) {
-      // TODO: elements based on actual available class types?
       itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
       itemTypeComboBox.getSelectionModel().selectFirst();
     }
@@ -68,13 +67,28 @@ public class MainMenuSellItemPaneController {
         duration = 60;
       }
 
-      // TODO: add errors for edge values
       String name = itemNameField.getText();
       String description = itemDescriptionField.getText();
       BigDecimal startingPrice =
           CurrencySelectorHandler.getInstance()
               .getVNDPrice(BigDecimal.valueOf(Double.valueOf((startingPriceField.getText()))));
+      if (startingPrice.doubleValue() < 100000) {
+        AlertMessageController.showError(
+            "Lỗi",
+            "",
+            ("Giá khởi đầu không được phép nhỏ hơn"
+                + CurrencySelectorHandler.getInstance()
+                    .getConvertedPrice(BigDecimal.valueOf(100000))
+                + "  "
+                + CurrencySelectorHandler.getInstance().getActiveCurrency()));
+        return;
+      }
       double percentage = Double.parseDouble(priceIncrementField.getText());
+      if (percentage < 1 || percentage > 10) {
+        AlertMessageController.showError(
+            "Lỗi", "", "Bước tăng giá không được phép nhỏ hơn 1% hoặc lớn hơn 10%");
+        return;
+      }
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
       User currentUser = AccountEventHandler.getCurrentUser();

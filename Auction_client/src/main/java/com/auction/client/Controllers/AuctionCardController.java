@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
@@ -101,5 +102,10 @@ public class AuctionCardController {
         targetColor = "#7f8c8d";
     }
     statusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
+  }
+
+  @FXML
+  public void openImageView(MouseEvent event) {
+    SceneHandler.switchToImageView(event, imageView.getImage());
   }
 }

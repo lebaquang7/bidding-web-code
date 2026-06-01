@@ -46,9 +46,6 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
     // auctionWonButton.setVisible(false);
   }
 
-  // TODO: have to track based on real time price changes. same with other item
-  // labels that actively
-  // changes
   @Override
   public void setItem(Item item) {
     this.currentItem = item;

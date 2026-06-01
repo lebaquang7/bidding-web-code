@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 public class AdminCardController {
   // mostly copied from auctionCardController
@@ -90,4 +91,9 @@ public class AdminCardController {
   // auction list
   @FXML
   public void denyAuction(ActionEvent event) {}
+
+  @FXML
+  public void openImageView(MouseEvent event) {
+    SceneHandler.switchToImageView(event, imageView.getImage());
+  }
 }

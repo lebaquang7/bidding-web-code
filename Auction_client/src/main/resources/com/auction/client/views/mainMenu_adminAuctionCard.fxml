@@ -43,7 +43,7 @@
                   </Label>
                </children>
             </HBox>
-            <ImageView fx:id="imageView" fitHeight="81.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageView" fitHeight="81.0" fitWidth="131.0" onMouseClicked="#openImageView" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets left="28.0" />
                </VBox.margin>
