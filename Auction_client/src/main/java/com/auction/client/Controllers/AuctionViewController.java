@@ -38,7 +38,6 @@ public class AuctionViewController implements SceneController.ItemLoadable {
   @FXML NumberAxis auctionViewPriceChartYAxis;
 
   private Item currentItem;
-  private Timeline countdownTimeline;
 
   public void initialize() {
     if (!(AccountEventHandler.getCurrentUser() instanceof Bidder)) {
@@ -155,9 +154,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
     // auctionViewPriceChart.setData(ChartDataHandler
     // .setChartDisplay(AuctionManager.getInstance().getAuctionSession(item.getId()).getBidHistory()));
 
-    AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
-    auctionViewPriceChart.setData(TestChartData.getSalesData(item));
-
+    // listener for currency type changes
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
         .addListener(
@@ -176,8 +173,7 @@ public class AuctionViewController implements SceneController.ItemLoadable {
 
                 LabelHandler.scaleFontSizeToFit(auctionViewCurrentBid, 20, 12, 8, 1);
 
-                AuctionViewController.updatePrice(item, auctionViewPriceChartYAxis);
-                auctionViewPriceChart.setData(TestChartData.getSalesData(item));
+                AuctionViewController.updateChartPrice(item, auctionViewPriceChartYAxis);
 
                 System.out.println("UI đã cập nhật giá mới và biểu đồ: " + newVal);
               });
