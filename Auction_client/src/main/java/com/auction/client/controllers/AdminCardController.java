@@ -98,19 +98,22 @@ public class AdminCardController {
     if (result.equals("success")) {
       AlertMessageController.showInfo("Thành công: ", "", "Vật phẩm đã được xóa khỏi hệ thống.");
 
-      Platform.runLater(() -> {
-        if (nameLabel.getScene() != null) {
-          Node cardNode = nameLabel.getParent();
-          if (cardNode.getParent() instanceof javafx.scene.layout.Pane) {
-            ((javafx.scene.layout.Pane) cardNode.getParent()).getChildren().remove(cardNode);
-          }
-        }
-      });
+      Platform.runLater(
+          () -> {
+            if (nameLabel.getScene() != null) {
+              Node cardNode = nameLabel.getParent();
+              if (cardNode.getParent() instanceof javafx.scene.layout.Pane) {
+                ((javafx.scene.layout.Pane) cardNode.getParent()).getChildren().remove(cardNode);
+              }
+            }
+          });
 
     } else if (result.equals("running") || result.equals("finished")) {
-      AlertMessageController.showError("Lỗi", "", "Phiên đấu giá đã được khởi tạo hoặc đã kết thúc nên không hủy được.");
+      AlertMessageController.showError(
+          "Lỗi", "", "Phiên đấu giá đã được khởi tạo hoặc đã kết thúc nên không hủy được.");
     } else if (result.equals("unauthorized")) {
-      AlertMessageController.showError("Lỗi", "", "Bạn không có quyền Admin để thực hiện thao tác này.");
+      AlertMessageController.showError(
+          "Lỗi", "", "Bạn không có quyền Admin để thực hiện thao tác này.");
     } else {
       AlertMessageController.showError("Lỗi", "", "Không thể xóa vật phẩm do lỗi hệ thống.");
     }

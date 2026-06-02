@@ -203,7 +203,7 @@ public class ItemsEventHandler {
 
   public static String denyAuction(String itemId, User currentUser) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
-         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
@@ -211,7 +211,8 @@ public class ItemsEventHandler {
       requestData.put("itemId", itemId);
       requestData.put("requester", currentUser);
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.DenyAuction, requestData);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.DenyAuction, requestData);
       out.writeObject(request);
       out.flush();
 

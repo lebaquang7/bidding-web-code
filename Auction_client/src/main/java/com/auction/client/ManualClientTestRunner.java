@@ -1,12 +1,11 @@
 package com.auction.client;
 
-import java.io.InputStream;
-
 import com.auction.client.controllers.AuctionViewController;
 import com.auction.client.controllers.LoginController;
 import com.auction.client.controllers.MainMenuController;
 import com.auction.client.controllers.RegisterController;
 import com.auction.client.services.AccountEventHandler;
+import java.io.InputStream;
 
 public class ManualClientTestRunner {
 

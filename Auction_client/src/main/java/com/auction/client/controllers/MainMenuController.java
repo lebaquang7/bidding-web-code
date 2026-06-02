@@ -4,7 +4,6 @@ import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.shared.models.Admin;
 import com.auction.shared.models.Seller;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,14 +26,14 @@ public class MainMenuController {
     BorderPaneController.setMainLayout(mainBorderPane);
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
 
-    //hides buttons depending on user type
-    if (!(AccountEventHandler.getCurrentUser() instanceof Seller ||
-    AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    sellItemButton.setVisible(false);
-    sellerListButton.setVisible(false);
+    // hides buttons depending on user type
+    if (!(AccountEventHandler.getCurrentUser() instanceof Seller
+        || AccountEventHandler.getCurrentUser() instanceof Admin)) {
+      sellItemButton.setVisible(false);
+      sellerListButton.setVisible(false);
     }
     if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    adminAuctionButton.setVisible(false);
+      adminAuctionButton.setVisible(false);
     }
   }
 

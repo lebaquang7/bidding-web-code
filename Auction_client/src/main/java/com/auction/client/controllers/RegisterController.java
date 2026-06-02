@@ -5,7 +5,6 @@ import com.auction.client.services.SceneHandler;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;

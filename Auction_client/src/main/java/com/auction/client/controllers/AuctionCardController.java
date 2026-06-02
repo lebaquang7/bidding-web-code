@@ -1,14 +1,12 @@
 package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -87,14 +85,15 @@ public class AuctionCardController {
     AuctionStatus auctionState = ItemsEventHandler.getAuctionStatus(currentItem);
     String targetColor;
 
-    targetColor = switch (auctionState) {
+    targetColor =
+        switch (auctionState) {
           case RUNNING -> "#47ff66";
           case FINISHED -> "#45cbf0";
           case CANCELLED -> "#f53535";
           case PAID -> "#db35f5";
           case PENDING_APPROVAL -> "#ff6600";
           default -> "#7f8c8d";
-      };
+        };
     statusCircle.setStyle("-fx-fill: " + targetColor + ";");
   }
 

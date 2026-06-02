@@ -1,7 +1,5 @@
 package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.services.AuctionBiddingService;
 import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.services.ItemsEventHandler;
@@ -10,7 +8,7 @@ import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.client.utils.MiscTools;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

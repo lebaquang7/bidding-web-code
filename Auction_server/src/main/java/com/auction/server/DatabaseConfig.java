@@ -255,7 +255,7 @@ public class DatabaseConfig {
     String deleteSql = "DELETE FROM items WHERE id = ?";
 
     try (Connection conn = getConnection();
-         PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+        PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
 
       psCheck.setString(1, itemId);
       ResultSet rs = psCheck.executeQuery();
