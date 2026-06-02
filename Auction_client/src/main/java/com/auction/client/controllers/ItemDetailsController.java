@@ -1,15 +1,17 @@
 package com.auction.client.controllers;
 
+import com.auction.client.services.AuctionBiddingService;
+import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
+import com.auction.client.utils.MiscTools;
 import com.auction.shared.models.Item;
 import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,8 +25,6 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
   @FXML Label currentPriceLabel;
   @FXML Label winnerLabel;
   @FXML Label timeRemainingLabel;
-  @FXML Label auctionWonLabel;
-  @FXML Button auctionWonButton;
   @FXML ImageView imageView;
 
   private Item currentItem;
@@ -33,24 +33,31 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
     SceneHandler.closeScene(event);
   }
 
-  // TODO: opens a small panel where user can input details. does nothing with the
-  // details given. removes the auction when info in small panel is given.
-  public void proceedToPayment(ActionEvent event) {
-    SceneHandler.closeScene(event);
+  public void handleNotification(Object message) {
+    Platform.runLater(
+        () -> {
+          // Gọi hàm overload đã chốt trong AuctionBiddingService
+          AuctionBiddingService.processIncomingNotification(message, currentItem, this);
+        });
   }
 
-  public void initialize() {
-    // TODO: Logic for hiding win label and button when auction havent been won and
-    // display when auction is won for user
-    // auctionWonLabel.setVisible(false);
-    // auctionWonButton.setVisible(false);
+  public void updateRemainingTime(int totalSeconds) {
+    timeRemainingLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
+    if (totalSeconds <= 10) {
+      timeRemainingLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+    } else {
+      timeRemainingLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
+    }
   }
 
-  // TODO: have to track based on real time price changes. same with other item
-  // labels that actively
-  // changes
+  public void handleAuctionEndEvent(String winnerName) {
+    timeRemainingLabel.setText("00:00");
+    winnerLabel.setText(winnerName);
+  }
+
   @Override
   public void setItem(Item item) {
+    ClientNotificationListener.setCurrentController(this);
     this.currentItem = item;
 
     idLabel.setText(currentItem.getId());

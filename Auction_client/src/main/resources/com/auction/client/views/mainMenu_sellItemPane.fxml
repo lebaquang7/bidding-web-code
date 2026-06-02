@@ -86,18 +86,26 @@
                   <Insets />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="200.0" spacing="30.0">
+            <HBox prefHeight="30.0" prefWidth="200.0">
                <children>
                   <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="174.0" text="Price Increment">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="priceIncrementField" prefHeight="28.0" prefWidth="350.0" promptText="Input minimum bid increment (min: 1%, max: 10% of starting price)">
+                  <TextField fx:id="priceIncrementField" prefHeight="28.0" prefWidth="350.0" promptText="Input bid increment (1-10% of starting price)">
                      <HBox.margin>
-                        <Insets top="1.0" />
+                        <Insets left="30.0" top="1.0" />
                      </HBox.margin>
                   </TextField>
+                  <Label prefHeight="30.0" text="\%">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="200.0" spacing="30.0">

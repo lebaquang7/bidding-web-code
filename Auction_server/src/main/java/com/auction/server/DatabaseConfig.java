@@ -2,13 +2,10 @@ package com.auction.server;
 
 import com.auction.shared.models.*;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseConfig {
@@ -252,6 +249,36 @@ public class DatabaseConfig {
     }
   }
 
+  // Xóa vật phẩm nếu Admin từ chối bán
+  public static String deleteItemIfPending(String itemId) {
+    String checkSql = "SELECT status FROM items WHERE id = ?";
+    String deleteSql = "DELETE FROM items WHERE id = ?";
+
+    try (Connection conn = getConnection();
+        PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+
+      psCheck.setString(1, itemId);
+      ResultSet rs = psCheck.executeQuery();
+
+      if (rs.next()) {
+        String status = rs.getString("status");
+
+        if ("PENDING_APPROVAL".equalsIgnoreCase(status)) {
+          try (PreparedStatement psDelete = conn.prepareStatement(deleteSql)) {
+            psDelete.setString(1, itemId);
+            int rows = psDelete.executeUpdate();
+            return (rows > 0) ? "success" : "fail";
+          }
+        } else {
+          return status.toLowerCase();
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return "fail";
+  }
+
   // Hàm lấy tất cả vật phẩm trong DB để đưa lên giao diện
   public static List<Item> getAllItems() {
     List<Item> items = new ArrayList<>();
@@ -272,6 +299,10 @@ public class DatabaseConfig {
         String sellerId = rs.getString("seller_Id");
         BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
         String imagePath = rs.getString("image_path");
+        String highestBidderId = rs.getString("highest_Bidder_Id");
+        int durationTime = rs.getInt("duration_time");
+        Timestamp startTime = rs.getTimestamp("start_time");
+        Timestamp endTime = rs.getTimestamp("end_time");
 
         Item item = null;
         if ("Art".equals(type)) {
@@ -349,9 +380,16 @@ public class DatabaseConfig {
         if (item != null) {
           item.setId(id);
           item.setSellerId(sellerId);
-          item.setHighestBidderId(rs.getString("highest_Bidder_Id"));
+          item.setHighestBidderId(highestBidderId);
           item.setPriceIncrement(priceIncrement);
           item.setImagePath(imagePath);
+          item.setDurationTime(durationTime);
+          if (startTime != null) {
+            item.setStartTime(startTime.toLocalDateTime());
+          }
+          if (endTime != null) {
+            item.setEndTime(endTime.toLocalDateTime());
+          }
           items.add(item);
         }
       }
@@ -380,6 +418,8 @@ public class DatabaseConfig {
           BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
           String highestBidderId = rs.getString("highest_Bidder_Id");
           int durationTime = rs.getInt("duration_time");
+          Timestamp startTime = rs.getTimestamp("start_time");
+          Timestamp endTime = rs.getTimestamp("end_time");
 
           Item item = null;
           if ("Art".equals(type)) {
@@ -456,6 +496,12 @@ public class DatabaseConfig {
             item.setSellerId(sellerId);
             item.setPriceIncrement(priceIncrement);
             item.setDurationTime(durationTime);
+            if (startTime != null) {
+              item.setStartTime(startTime.toLocalDateTime());
+            }
+            if (endTime != null) {
+              item.setEndTime(endTime.toLocalDateTime());
+            }
             item.setHighestBidderId(highestBidderId);
           }
           return item;
@@ -465,6 +511,23 @@ public class DatabaseConfig {
       System.err.println("Lỗi khi tìm vật phẩm theo ID: " + e.getMessage());
     }
     return null;
+  }
+
+  // Cập nhật startTime / endTime
+  public static void updateAuctionTimer(
+      String itemId, LocalDateTime startTime, LocalDateTime endTime) {
+    String sql = "UPDATE items SET start_time = ?, end_time = ? WHERE id = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      pstmt.setTimestamp(1, startTime != null ? Timestamp.valueOf(startTime) : null);
+      pstmt.setTimestamp(2, endTime != null ? Timestamp.valueOf(endTime) : null);
+      pstmt.setString(3, itemId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   // Hàm thực hiện yêu cầu lưu lịch sử đấu giá
@@ -594,6 +657,52 @@ public class DatabaseConfig {
       e.printStackTrace();
     }
     return null;
+  }
+
+  public static List<BidTransaction> getAllBidHistory() {
+    String sql = "SELECT * FROM bid_history";
+    List<BidTransaction> bidHistory = new ArrayList<>();
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        String itemId = rs.getString("item_Id");
+        String bidderId = rs.getString("bidder_Id");
+        BigDecimal bidAmount = rs.getBigDecimal("bid_amount");
+        LocalDateTime bidTime = rs.getTimestamp("bid_time").toLocalDateTime();
+        BidTransaction bidTransaction = new BidTransaction(itemId, bidderId, bidAmount, bidTime);
+        bidHistory.add(bidTransaction);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+    return bidHistory;
+  }
+
+  public static HashMap<String, AuctionStatus> getAuctionState() {
+    String sql = "SELECT * FROM items";
+    HashMap<String, AuctionStatus> itemStatusHashMap = new HashMap<>();
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        AuctionStatus auctionStatus = AuctionStatus.UNKNOWN;
+        switch (rs.getString("status")) {
+          case "PENDING_APPROVAL" -> auctionStatus = AuctionStatus.PENDING_APPROVAL;
+          case "RUNNING" -> auctionStatus = AuctionStatus.RUNNING;
+          case "FINISHED" -> auctionStatus = AuctionStatus.FINISHED;
+          case "CANCELLED" -> auctionStatus = AuctionStatus.CANCELLED;
+          case "PAID" -> auctionStatus = AuctionStatus.PAID;
+        }
+        String itemId = rs.getString("id");
+        itemStatusHashMap.put(itemId, auctionStatus);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return new HashMap<>();
+    }
+    return itemStatusHashMap;
   }
 
   public static User findUserById(String id) {

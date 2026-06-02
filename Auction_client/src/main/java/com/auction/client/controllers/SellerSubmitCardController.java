@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 public class SellerSubmitCardController {
   // mostly copied from auctioncard controller
@@ -72,4 +73,9 @@ public class SellerSubmitCardController {
   // TODO: logic for recalling auction
   @FXML
   public void recallAuction(ActionEvent event) {}
+
+  @FXML
+  public void openImageView(MouseEvent event) {
+    SceneHandler.switchToImageView(event, imageView.getImage());
+  }
 }

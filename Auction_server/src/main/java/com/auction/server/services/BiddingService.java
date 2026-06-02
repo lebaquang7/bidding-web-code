@@ -36,7 +36,7 @@ public class BiddingService {
         System.out.println("[Recovery] Đã khôi phục AuctionSession cho item: " + itemId);
       }
 
-      if (session == null || session.getCurrentState() != AuctionStatus.RUNNING) {
+      if (session == null || session.getCurrentState() == AuctionStatus.PENDING_APPROVAL) {
         System.out.println("Lỗi: Phiên đấu giá chưa bắt đầu hoặc chưa được duyệt.");
         return BidStatus.bidStatus.NOT_STARTED;
       }

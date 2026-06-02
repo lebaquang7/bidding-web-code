@@ -18,8 +18,11 @@ public abstract class Item extends Entity {
   private BigDecimal priceIncrement;
   private String imagePath; // Lưu tên file ảnh
   private byte[] imageBytes; // Truyền dữ liệu ảnh qua Socket
-  private int durationTime;
+  private int durationTime; // Phút
   private LocalDateTime endTime;
+  private LocalDateTime startTime;
+
+  private static final long serialVersionUID = 1L;
 
   public LocalDateTime getEndTime() {
     return endTime;
@@ -29,7 +32,16 @@ public abstract class Item extends Entity {
     this.endTime = endTime;
   }
 
-  private static final long serialVersionUID = 1L;
+  public LocalDateTime getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(LocalDateTime startTime) {
+    this.startTime = startTime;
+    if (startTime != null && this.durationTime > 0 && this.endTime == null) {
+      this.endTime = startTime.plusMinutes(this.durationTime);
+    }
+  }
 
   public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
     super();

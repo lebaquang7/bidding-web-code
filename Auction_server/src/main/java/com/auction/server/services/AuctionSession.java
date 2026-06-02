@@ -6,6 +6,8 @@ import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Item;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +51,29 @@ public class AuctionSession {
 
   public boolean startAuction() {
     synchronized (lock) {
+      if (auctionItem.getEndTime() != null) {
+        long durationInSeconds =
+            Duration.between(LocalDateTime.now(), auctionItem.getEndTime()).getSeconds();
+
+        this.remainingSeconds = Math.max(0, durationInSeconds);
+      } else {
+        LocalDateTime startTime = LocalDateTime.now();
+        auctionItem.setStartTime(startTime);
+
+        DatabaseConfig.updateAuctionTimer(
+            auctionItem.getId(), auctionItem.getStartTime(), auctionItem.getEndTime());
+
+        long durationInSeconds =
+            Duration.between(LocalDateTime.now(), auctionItem.getEndTime()).getSeconds();
+
+        this.remainingSeconds = Math.max(0, durationInSeconds);
+      }
+
+      if (this.remainingSeconds <= 0) {
+        endAuction();
+        return true;
+      }
+
       if (currentState != AuctionStatus.PENDING_APPROVAL) {
         return false;
       }
@@ -56,7 +81,6 @@ public class AuctionSession {
       boolean dbUpdated = DatabaseConfig.updateAuctionStatus(this.sessionId, AuctionStatus.RUNNING);
 
       if (dbUpdated) {
-        this.remainingSeconds = durationInSeconds;
         this.currentState = AuctionStatus.RUNNING;
 
         if (auctionDetails != null) {
@@ -75,7 +99,6 @@ public class AuctionSession {
                         "sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
                     timeData.put("value", remainingSeconds);
                     NotificationService.broadcast(timeData);
-                    System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
                   } else {
                     if (countdownTask != null) {
                       countdownTask.cancel(false);
@@ -83,7 +106,7 @@ public class AuctionSession {
                     endAuction();
                   }
                 },
-                1,
+                0,
                 1,
                 TimeUnit.SECONDS);
         System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");

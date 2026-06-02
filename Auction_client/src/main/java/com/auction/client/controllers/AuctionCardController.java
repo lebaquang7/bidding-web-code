@@ -4,6 +4,7 @@ import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
+import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Item;
 import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
@@ -62,9 +64,7 @@ public class AuctionCardController {
                   });
             });
 
-    // TODO: initialize and listenner for updateColorByAuctionState method to update
-    // auction status
-    // in real time
+    updateColorByAuctionState();
   }
 
   @FXML
@@ -81,25 +81,24 @@ public class AuctionCardController {
 
   @FXML private Circle statusCircle;
 
-  public void updateColorByAuctionState(String auctionState) {
+  public void updateColorByAuctionState() {
+    AuctionStatus auctionState = ItemsEventHandler.getAuctionStatus(currentItem);
     String targetColor;
 
-    switch (auctionState.toUpperCase()) {
-      case "RUNNING":
-        targetColor = "#47ff66";
-        break;
-      case "FINISHED":
-        targetColor = "#45cbf0";
-        break;
-      case "CANCELLED":
-        targetColor = "#f53535";
-        break;
-      case "PAID":
-        targetColor = "#db35f5";
-        break;
-      default:
-        targetColor = "#7f8c8d";
-    }
-    statusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
+    targetColor =
+        switch (auctionState) {
+          case RUNNING -> "#47ff66";
+          case FINISHED -> "#45cbf0";
+          case CANCELLED -> "#f53535";
+          case PAID -> "#db35f5";
+          case PENDING_APPROVAL -> "#ff6600";
+          default -> "#7f8c8d";
+        };
+    statusCircle.setStyle("-fx-fill: " + targetColor + ";");
+  }
+
+  @FXML
+  public void openImageView(MouseEvent event) {
+    SceneHandler.switchToImageView(event, imageView.getImage());
   }
 }

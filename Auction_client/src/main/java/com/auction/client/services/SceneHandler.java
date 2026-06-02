@@ -1,6 +1,7 @@
 package com.auction.client.services;
 
 import com.auction.client.Properties;
+import com.auction.client.controllers.ImageViewController;
 import com.auction.client.utils.ThemeHandler;
 import com.auction.shared.models.Item;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class SceneHandler {
@@ -60,6 +63,38 @@ public class SceneHandler {
 
       Stage popupStage = new Stage();
       popupStage.setTitle(Properties.getAPPLICATION_NAME_AND_VERSION());
+      Scene popupScene = new Scene(popupRoot);
+      ThemeHandler.getInstance().addActiveScene(popupScene);
+      popupStage.setScene(popupScene);
+      popupStage.show();
+    } catch (IOException errorEvent) {
+      errorEvent.printStackTrace();
+    }
+  }
+
+  public interface ImageLoadable {
+    void setImage(Image image);
+  }
+
+  /**
+   * Usage: switch to image view controller
+   *
+   * @param event
+   * @param image
+   */
+  public static void switchToImageView(MouseEvent event, Image image) {
+    try {
+      FXMLLoader loader =
+          new FXMLLoader(
+              SceneHandler.class.getResource("/com/auction/client/views/imageView.fxml"));
+      Parent popupRoot = loader.load();
+
+      ImageViewController controller = loader.getController();
+      if (image == null) return;
+      controller.setImage(image);
+
+      Stage popupStage = new Stage();
+      popupStage.setTitle("Zoomed in image");
       Scene popupScene = new Scene(popupRoot);
       ThemeHandler.getInstance().addActiveScene(popupScene);
       popupStage.setScene(popupScene);

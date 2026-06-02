@@ -21,8 +21,7 @@ public class ChartTimeLabelFormatter extends StringConverter<Number> {
   @Override
   public String toString(Number object) {
     long epochSecond = object.longValue();
-    // instant is not bound to timezone.
-    // TODO: use instant across all time variables
+
     LocalDateTime time =
         LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.systemDefault());
 

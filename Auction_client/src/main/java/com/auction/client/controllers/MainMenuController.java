@@ -1,6 +1,9 @@
 package com.auction.client.controllers;
 
+import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.SceneHandler;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Seller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,22 +20,21 @@ public class MainMenuController {
   @FXML BorderPane mainBorderPane;
   @FXML Button sellItemButton;
   @FXML Button adminAuctionButton;
+  @FXML Button sellerListButton;
 
   public void initialize() {
     BorderPaneController.setMainLayout(mainBorderPane);
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
 
-    // TODO: currently left as comments for easier testing,
-    // but remove comments when its done
-    // //hides buttons depending on user type
-    // if (!(AccountEventHandler.getCurrentUser() instanceof Seller ||
-    // AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    // sellItemButton.setVisible(false);
-    // sellerListButton.setVisible(false);
-    // }
-    // if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    // adminAuctionButton.setVisible(false);
-    // }
+    // hides buttons depending on user type
+    if (!(AccountEventHandler.getCurrentUser() instanceof Seller
+        || AccountEventHandler.getCurrentUser() instanceof Admin)) {
+      sellItemButton.setVisible(false);
+      sellerListButton.setVisible(false);
+    }
+    if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
+      adminAuctionButton.setVisible(false);
+    }
   }
 
   // Size of center pane: 700 W, 600 H (full pane + side pane is 900 W, 600 H)

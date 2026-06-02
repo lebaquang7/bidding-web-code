@@ -12,7 +12,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.ItemDetailsController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="238.0" layoutX="339.0" layoutY="66.0" stroke="BLACK" strokeType="INSIDE" width="243.0" />
-      <Button layoutX="73.0" layoutY="329.0" mnemonicParsing="false" onAction="#goBackToList" text="Go back to Item List">
+      <Button layoutX="203.0" layoutY="329.0" mnemonicParsing="false" onAction="#goBackToList" text="Go back to Item List">
          <font>
             <Font size="19.0" />
          </font>
@@ -107,11 +107,5 @@
             </Label>
          </children>
       </VBox>
-      <Button fx:id="auctionWonButton" layoutX="339.0" layoutY="328.0" mnemonicParsing="false" onAction="#proceedToPayment" prefHeight="42.0" prefWidth="243.0" text="Proceed to payment">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
-      <Label fx:id="auctionWonLabel" layoutX="34.0" layoutY="305.0" prefHeight="18.0" prefWidth="270.0" text="You won this auction! Please proceed to payment." />
    </children>
 </AnchorPane>
