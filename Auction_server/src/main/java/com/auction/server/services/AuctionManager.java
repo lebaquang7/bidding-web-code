@@ -39,8 +39,8 @@ public class AuctionManager {
     System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
   }
 
-  private Map<String, Map<String, com.auction.shared.models.BidTransaction>>
-      autoBidRegistry = new java.util.concurrent.ConcurrentHashMap<>();
+  private Map<String, Map<String, com.auction.shared.models.BidTransaction>> autoBidRegistry =
+      new java.util.concurrent.ConcurrentHashMap<>();
 
   public static class AutoBidConfig {
     public String itemId;

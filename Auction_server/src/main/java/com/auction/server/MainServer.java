@@ -4,7 +4,6 @@ import com.auction.server.services.AuctionManager;
 import com.auction.server.services.AuctionSession;
 import com.auction.shared.models.Auction;
 import com.auction.shared.models.Item;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,20 +27,11 @@ public class MainServer {
         if (DatabaseConfig.isAuctionRunningInDB(itemId)) {
           AuctionSession session = AuctionManager.getInstance().getAuctionSession(itemId);
           if (session == null) {
-            Auction auctionDetails = new Auction(
-                    0,
-                    item,
-                    item.getStartingPrice(),
-                    null,
-                    null,
-                    null
-            );
-            session = new AuctionSession(
-                    itemId,
-                    item,
-                    auctionDetails,
-                    (long) item.getDurationTime() * 60
-            );
+            Auction auctionDetails =
+                new Auction(0, item, item.getStartingPrice(), null, null, null);
+            session =
+                new AuctionSession(
+                    itemId, item, auctionDetails, (long) item.getDurationTime() * 60);
 
             AuctionManager.getInstance().registerSession(itemId, session);
           }

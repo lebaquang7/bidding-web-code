@@ -274,7 +274,6 @@ public class DatabaseConfig {
         Timestamp startTime = rs.getTimestamp("start_time");
         Timestamp endTime = rs.getTimestamp("end_time");
 
-
         Item item = null;
         if ("Art".equals(type)) {
           String sqlArtwork = "SELECT * FROM artworks WHERE id = ?";
@@ -334,7 +333,8 @@ public class DatabaseConfig {
                 int mileage = rsSub.getInt("mileage");
                 int manufacturingYear = rsSub.getInt("manufacturingYear");
 
-                item = new Vehicle(
+                item =
+                    new Vehicle(
                         name,
                         description,
                         startingPrice,
@@ -354,8 +354,12 @@ public class DatabaseConfig {
           item.setPriceIncrement(priceIncrement);
           item.setImagePath(imagePath);
           item.setDurationTime(durationTime);
-          if (startTime != null) {item.setStartTime(startTime.toLocalDateTime());}
-          if (endTime != null) {item.setEndTime(endTime.toLocalDateTime());}
+          if (startTime != null) {
+            item.setStartTime(startTime.toLocalDateTime());
+          }
+          if (endTime != null) {
+            item.setEndTime(endTime.toLocalDateTime());
+          }
           items.add(item);
         }
       }
@@ -462,8 +466,12 @@ public class DatabaseConfig {
             item.setSellerId(sellerId);
             item.setPriceIncrement(priceIncrement);
             item.setDurationTime(durationTime);
-            if (startTime != null) {item.setStartTime(startTime.toLocalDateTime());}
-            if (endTime != null) {item.setEndTime(endTime.toLocalDateTime());}
+            if (startTime != null) {
+              item.setStartTime(startTime.toLocalDateTime());
+            }
+            if (endTime != null) {
+              item.setEndTime(endTime.toLocalDateTime());
+            }
             item.setHighestBidderId(highestBidderId);
           }
           return item;
@@ -476,10 +484,11 @@ public class DatabaseConfig {
   }
 
   // Cập nhật startTime / endTime
-  public static void updateAuctionTimer(String itemId, LocalDateTime startTime, LocalDateTime endTime) {
+  public static void updateAuctionTimer(
+      String itemId, LocalDateTime startTime, LocalDateTime endTime) {
     String sql = "UPDATE items SET start_time = ?, end_time = ? WHERE id = ?";
     try (Connection conn = getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
       pstmt.setTimestamp(1, startTime != null ? Timestamp.valueOf(startTime) : null);
       pstmt.setTimestamp(2, endTime != null ? Timestamp.valueOf(endTime) : null);
@@ -599,7 +608,8 @@ public class DatabaseConfig {
 
   // Lấy thông tin User thắng cuộc khi hết giờ
   public static Bidder getWinnerFromHistory(String itemId) {
-    String sql = "SELECT bidder_id FROM bid_history WHERE item_id = ? ORDER BY bid_amount DESC LIMIT 1";
+    String sql =
+        "SELECT bidder_id FROM bid_history WHERE item_id = ? ORDER BY bid_amount DESC LIMIT 1";
     try (Connection conn = getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, itemId);
@@ -665,68 +675,71 @@ public class DatabaseConfig {
     return itemStatusHashMap;
   }
 
-    public static User findUserById(String id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+  public static User findUserById(String id) {
+    String sql = "SELECT * FROM users WHERE id = ?";
+    try (Connection conn = getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, id);
-            ResultSet rs = ps.executeQuery();
+      ps.setString(1, id);
+      ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                String role = rs.getString("role");
-                String username = rs.getString("username");
-                String pass = rs.getString("password");
+      if (rs.next()) {
+        String role = rs.getString("role");
+        String username = rs.getString("username");
+        String pass = rs.getString("password");
 
-                User user = null;
-                if ("Admin".equals(role)) {
-                    String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
-                    try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
-                        psAdmin.setString(1, id);
-                        ResultSet rsAdmin = psAdmin.executeQuery();
-                        if (rsAdmin.next()) {
-                            user = new Admin(
-                                            username,
-                                            pass,
-                                            rsAdmin.getInt("accessLevel"),
-                                            rsAdmin.getString("department"),
-                                            rsAdmin.getString("internalEmployeeId"));
-                        }
-                    }
-                }
-                if ("Bidder".equals(role)) {
-                    String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
-                    try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
-                        psBidder.setString(1, id);
-                        ResultSet rsBidder = psBidder.executeQuery();
-                        if (rsBidder.next()) {
-                            user =
-                                    new Bidder(
-                                            username,
-                                            pass,
-                                            rsBidder.getString("shippingAddress"),
-                                            rsBidder.getBigDecimal("balance"),
-                                            rsBidder.getInt("reputationScore"));
-                        }
-                    }
-                }
-                if ("Seller".equals(role)) {
-                    String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
-                    try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
-                        psSeller.setString(1, id);
-                        ResultSet rsSeller = psSeller.executeQuery();
-                        if (rsSeller.next()) {
-                            user = new Seller(username, pass);
-                        }
-                    }
-                }
-
-              if (user != null) {
-                user.setId(id);
-              }
-              return user;
+        User user = null;
+        if ("Admin".equals(role)) {
+          String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
+          try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
+            psAdmin.setString(1, id);
+            ResultSet rsAdmin = psAdmin.executeQuery();
+            if (rsAdmin.next()) {
+              user =
+                  new Admin(
+                      username,
+                      pass,
+                      rsAdmin.getInt("accessLevel"),
+                      rsAdmin.getString("department"),
+                      rsAdmin.getString("internalEmployeeId"));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return null;
+          }
+        }
+        if ("Bidder".equals(role)) {
+          String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
+          try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
+            psBidder.setString(1, id);
+            ResultSet rsBidder = psBidder.executeQuery();
+            if (rsBidder.next()) {
+              user =
+                  new Bidder(
+                      username,
+                      pass,
+                      rsBidder.getString("shippingAddress"),
+                      rsBidder.getBigDecimal("balance"),
+                      rsBidder.getInt("reputationScore"));
+            }
+          }
+        }
+        if ("Seller".equals(role)) {
+          String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
+          try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
+            psSeller.setString(1, id);
+            ResultSet rsSeller = psSeller.executeQuery();
+            if (rsSeller.next()) {
+              user = new Seller(username, pass);
+            }
+          }
+        }
+
+        if (user != null) {
+          user.setId(id);
+        }
+        return user;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+    return null;
+  }
 }

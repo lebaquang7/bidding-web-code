@@ -19,7 +19,8 @@ public class AuctionBiddingService {
   }
 
   @SuppressWarnings("unchecked")
-  public static void processIncomingNotification(Object message, Item currentItem, AuctionViewController controller) {
+  public static void processIncomingNotification(
+      Object message, Item currentItem, AuctionViewController controller) {
     if (message instanceof BidTransaction tx) {
       if (currentItem != null && tx.getItemId().equals(currentItem.getId())) {
         currentItem.setCurrentPrice(tx.getBidAmount());
@@ -47,7 +48,8 @@ public class AuctionBiddingService {
     }
   }
 
-  public static void processIncomingNotification(Object message, Item currentItem, ItemDetailsController controller) {
+  public static void processIncomingNotification(
+      Object message, Item currentItem, ItemDetailsController controller) {
     if (message instanceof BidTransaction tx) {
       if (currentItem != null && tx.getItemId().equals(currentItem.getId())) {
         currentItem.setCurrentPrice(tx.getBidAmount());

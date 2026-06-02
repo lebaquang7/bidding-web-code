@@ -1,8 +1,5 @@
 package com.auction.client.controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
@@ -21,7 +18,8 @@ import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-
+import java.math.BigDecimal;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -119,7 +117,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
         placeBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
       } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
         placeBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
-      }else if (result == BidStatus.bidStatus.NOT_STARTED) {
+      } else if (result == BidStatus.bidStatus.NOT_STARTED) {
         placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
       } else {
         placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu/ đã kết thúc");
@@ -159,14 +157,17 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     AuctionViewController.updateChartPrice(item, priceChartYAxis);
 
     // listener for currency type changes
-    CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener(
+    CurrencySelectorHandler.getInstance()
+        .getActiveCurrencyObjectProperty()
+        .addListener(
             (observable, oldVal, newVal) -> {
               updateChartBounds();
               updateChart();
             });
 
     // Cập nhật currentPrice realtime
-    item.currentPriceProperty().addListener(
+    item.currentPriceProperty()
+        .addListener(
             (obs, oldVal, newVal) -> {
               Platform.runLater(
                   () -> {

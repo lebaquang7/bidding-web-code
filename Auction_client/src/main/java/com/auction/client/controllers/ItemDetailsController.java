@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,31 +39,32 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
     SceneHandler.closeScene(event);
   }
 
-    public void handleNotification(Object message) {
-        Platform.runLater(() -> {
-            // Gọi hàm overload đã chốt trong AuctionBiddingService
-            AuctionBiddingService.processIncomingNotification(message, currentItem, this);
+  public void handleNotification(Object message) {
+    Platform.runLater(
+        () -> {
+          // Gọi hàm overload đã chốt trong AuctionBiddingService
+          AuctionBiddingService.processIncomingNotification(message, currentItem, this);
         });
-    }
+  }
 
-    public void updateRemainingTime(int totalSeconds) {
-        timeRemainingLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
-        if (totalSeconds <= 10) {
-            timeRemainingLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-        } else {
-            timeRemainingLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
-        }
+  public void updateRemainingTime(int totalSeconds) {
+    timeRemainingLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
+    if (totalSeconds <= 10) {
+      timeRemainingLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+    } else {
+      timeRemainingLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
     }
+  }
 
-    public void handleAuctionEndEvent(String winnerName) {
-        timeRemainingLabel.setText("00:00");
-        winnerLabel.setText(winnerName);
-    }
+  public void handleAuctionEndEvent(String winnerName) {
+    timeRemainingLabel.setText("00:00");
+    winnerLabel.setText(winnerName);
+  }
 
   @Override
   public void setItem(Item item) {
-      ClientNotificationListener.setCurrentController(this);
-      this.currentItem = item;
+    ClientNotificationListener.setCurrentController(this);
+    this.currentItem = item;
 
     idLabel.setText(currentItem.getId());
     LabelHandler.setDetailedTooltip(idLabel);
@@ -98,7 +98,8 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
           .start();
     }
 
-    item.currentPriceProperty().addListener(
+    item.currentPriceProperty()
+        .addListener(
             (obs, oldVal, newVal) -> {
               Platform.runLater(
                   () -> {
@@ -110,5 +111,3 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
             });
   }
 }
-
-

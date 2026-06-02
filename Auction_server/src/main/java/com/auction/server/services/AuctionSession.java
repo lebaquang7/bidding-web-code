@@ -6,7 +6,6 @@ import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Item;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,10 +52,8 @@ public class AuctionSession {
   public boolean startAuction() {
     synchronized (lock) {
       if (auctionItem.getEndTime() != null) {
-        long durationInSeconds = Duration.between(
-                LocalDateTime.now(),
-                auctionItem.getEndTime()
-        ).getSeconds();
+        long durationInSeconds =
+            Duration.between(LocalDateTime.now(), auctionItem.getEndTime()).getSeconds();
 
         this.remainingSeconds = Math.max(0, durationInSeconds);
       } else {
@@ -64,15 +61,10 @@ public class AuctionSession {
         auctionItem.setStartTime(startTime);
 
         DatabaseConfig.updateAuctionTimer(
-                auctionItem.getId(),
-                auctionItem.getStartTime(),
-                auctionItem.getEndTime()
-        );
+            auctionItem.getId(), auctionItem.getStartTime(), auctionItem.getEndTime());
 
-        long durationInSeconds = Duration.between(
-                LocalDateTime.now(),
-                auctionItem.getEndTime()
-        ).getSeconds();
+        long durationInSeconds =
+            Duration.between(LocalDateTime.now(), auctionItem.getEndTime()).getSeconds();
 
         this.remainingSeconds = Math.max(0, durationInSeconds);
       }
@@ -95,20 +87,28 @@ public class AuctionSession {
           auctionDetails.setStatus(currentState);
         }
 
-        countdownTask = scheduler.scheduleAtFixedRate(() -> {
-          if (remainingSeconds > 0) {
-            remainingSeconds--;
+        countdownTask =
+            scheduler.scheduleAtFixedRate(
+                () -> {
+                  if (remainingSeconds > 0) {
+                    remainingSeconds--;
 
-            Map<String, Object> timeData = new HashMap<>();
-            timeData.put("type", "TIME_UPDATE");
-            timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
-            timeData.put("value", remainingSeconds);
-            NotificationService.broadcast(timeData);
-          } else {
-            if (countdownTask != null) {countdownTask.cancel(false);}
-            endAuction();
-          }
-        }, 0, 1, TimeUnit.SECONDS);
+                    Map<String, Object> timeData = new HashMap<>();
+                    timeData.put("type", "TIME_UPDATE");
+                    timeData.put(
+                        "sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
+                    timeData.put("value", remainingSeconds);
+                    NotificationService.broadcast(timeData);
+                  } else {
+                    if (countdownTask != null) {
+                      countdownTask.cancel(false);
+                    }
+                    endAuction();
+                  }
+                },
+                0,
+                1,
+                TimeUnit.SECONDS);
         System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");
 
         System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
