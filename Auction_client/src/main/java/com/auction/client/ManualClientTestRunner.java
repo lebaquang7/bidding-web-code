@@ -1,7 +1,8 @@
 package com.auction.client;
 
-import com.auction.client.Controllers.*;
-import com.auction.client.Models.*;
+import com.auction.client.controllers.*;
+import com.auction.client.services.*;
+import com.auction.client.utils.*;
 import java.io.InputStream;
 
 public class ManualClientTestRunner {

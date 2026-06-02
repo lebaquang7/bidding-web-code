@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

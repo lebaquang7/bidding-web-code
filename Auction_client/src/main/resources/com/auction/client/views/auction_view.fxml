@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.AuctionViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.AuctionViewController">
    <children>
       <VBox prefHeight="173.0" prefWidth="200.0">
          <children>
@@ -27,7 +27,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Label fx:id="auctionViewItemName" prefHeight="30.0" prefWidth="135.0" text="----">
+                  <Label fx:id="itemNameLabel" prefHeight="30.0" prefWidth="135.0" text="----">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -47,7 +47,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="auctionViewStartingBid" prefHeight="30.0" prefWidth="108.0" text="----">
+                  <Label fx:id="startingBidLabel" prefHeight="30.0" prefWidth="108.0" text="----">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -64,7 +64,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="auctionViewCurrentBid" prefHeight="30.0" prefWidth="135.0" text="----">
+                  <Label fx:id="currentBidLabel" prefHeight="30.0" prefWidth="135.0" text="----">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -77,7 +77,7 @@
             <HBox prefHeight="26.0" prefWidth="200.0">
                <children>
                   <Label prefHeight="26.0" prefWidth="125.0" text="Time Remaining:" />
-                  <Label fx:id="auctionViewRemainingTime" prefHeight="30.0" prefWidth="135.0" text="------">
+                  <Label fx:id="remainingTimeLabel" prefHeight="30.0" prefWidth="135.0" text="------">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -89,15 +89,15 @@
             </HBox>
          </children>
       </VBox>
-      <LineChart fx:id="auctionViewPriceChart" layoutX="200.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0">
+      <LineChart fx:id="priceChart" layoutX="200.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0">
         <xAxis>
-          <NumberAxis fx:id="auctionViewPriceChartXAxis" side="BOTTOM" />
+          <NumberAxis fx:id="priceChartXAxis" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis fx:id="auctionViewPriceChartYAxis" side="LEFT" />
+          <NumberAxis fx:id="priceChartYAxis" side="LEFT" />
         </yAxis>
       </LineChart>
-      <VBox fx:id="auctionViewBidderFeatureBox" layoutY="174.0" prefHeight="426.0" prefWidth="200.0">
+      <VBox fx:id="bidderFeatureBox" layoutY="174.0" prefHeight="426.0" prefWidth="200.0">
          <children>
             <Label alignment="CENTER" prefHeight="37.0" prefWidth="170.0" text="Place a bid!">
                <font>
@@ -107,17 +107,17 @@
                   <Insets left="15.0" right="15.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="auctionViewPlaceBidBox" prefHeight="26.0" prefWidth="165.0" promptText="Your bid....">
+            <TextField fx:id="placeBidBox" prefHeight="26.0" prefWidth="165.0" promptText="Your bid....">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
             </TextField>
-            <Button mnemonicParsing="false" onAction="#auctionViewPlaceBid" prefHeight="30.0" prefWidth="100.0" text="Place bid!">
+            <Button mnemonicParsing="false" onAction="#placeBid" prefHeight="30.0" prefWidth="100.0" text="Place bid!">
                <VBox.margin>
                   <Insets left="50.0" right="50.0" top="10.0" />
                </VBox.margin>
             </Button>
-            <Label fx:id="auctionViewPlaceBidErrorBox" prefHeight="18.0" prefWidth="186.0" styleClass="label-forced-warning">
+            <Label fx:id="placeBidErrorBox" prefHeight="18.0" prefWidth="186.0" styleClass="label-forced-warning">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
@@ -130,12 +130,12 @@
                   <Insets left="15.0" right="15.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="auctionViewAutoBidderMaxBidBox" prefHeight="26.0" prefWidth="165.0" promptText="Input max bid....">
+            <TextField fx:id="autoBidderMaxBidBox" prefHeight="26.0" prefWidth="165.0" promptText="Input max bid....">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
             </TextField>
-            <TextField fx:id="auctionViewAutoBidderBidIncrementBox" prefHeight="26.0" prefWidth="165.0" promptText="Input bid increment....">
+            <TextField fx:id="autoBidderBidIncrementBox" prefHeight="26.0" prefWidth="165.0" promptText="Input bid increment....">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="10.0" />
                </VBox.margin>
@@ -145,20 +145,20 @@
                   <Insets left="15.0" right="15.0" top="10.0" />
                </VBox.margin>
                <children>
-                  <Button mnemonicParsing="false" onAction="#auctionViewEnableAutoBid" prefHeight="30.0" prefWidth="114.0" text="Enable AutoBid">
+                  <Button mnemonicParsing="false" onAction="#enableAutoBid" prefHeight="30.0" prefWidth="114.0" text="Enable AutoBid">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#auctionViewStopAutoBid" prefHeight="30.0" prefWidth="50.0" text="Stop" />
+                  <Button mnemonicParsing="false" onAction="#stopAutoBid" prefHeight="30.0" prefWidth="50.0" text="Stop" />
                </children>
             </HBox>
-            <Label id="label-forced-warning" fx:id="auctionViewAutoBidderErrorBox" prefHeight="18.0" prefWidth="186.0">
+            <Label id="label-forced-warning" fx:id="autoBidderErrorBox" prefHeight="18.0" prefWidth="186.0">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <Button mnemonicParsing="false" onAction="#auctionViewGoBackToList" prefHeight="30.0" prefWidth="100.0" text="Go back to list">
+            <Button mnemonicParsing="false" onAction="#goBackToList" prefHeight="30.0" prefWidth="100.0" text="Go back to list">
                <VBox.margin>
                   <Insets left="50.0" right="50.0" top="5.0" />
                </VBox.margin>

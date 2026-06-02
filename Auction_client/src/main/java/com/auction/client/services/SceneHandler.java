@@ -1,7 +1,8 @@
-package com.auction.client.Controllers;
+package com.auction.client.services;
 
-import com.auction.client.Models.ThemeHandler;
 import com.auction.client.Properties;
+import com.auction.client.controllers.ImageViewController;
+import com.auction.client.utils.ThemeHandler;
 import com.auction.shared.models.Item;
 import java.io.IOException;
 import java.net.URL;
@@ -10,12 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class SceneController {
+public class SceneHandler {
   private static Stage stage; // Declare stage-scene-root (used for switching scenes)
   private static Scene scene;
   private static Parent root;
@@ -39,32 +39,6 @@ public class SceneController {
     stage.show();
   }
 
-  /**
-   * Makes node 1 visible, while hiding node 2 via managed and visible Do use bidirectional binding
-   * if value of node 1 and 2 need to be tied Usage: pwd hide/show checkbox, etc
-   *
-   * @param node1
-   * @param node2
-   */
-  public static void switchElement(Node node1, Node node2) {
-    node1.setManaged(true);
-    node1.setVisible(true);
-    node2.setManaged(false);
-    node2.setVisible(false);
-  }
-
-  /**
-   * usage: make node invisible and non managed.
-   *
-   * @param node
-   */
-  public static void disableElement(Node node) {
-    node.setVisible(false);
-    node.setManaged(false);
-  }
-
-  // Interface for controllers that "loads" an item in, rn covers itemdetails and
-  // auctionview
   public interface ItemLoadable {
     void setItem(Item item);
   }
@@ -80,7 +54,7 @@ public class SceneController {
       String target, ActionEvent event, Item item) {
     try {
       // load the view in fxmlloader
-      FXMLLoader loader = new FXMLLoader(SceneController.class.getResource(target));
+      FXMLLoader loader = new FXMLLoader(SceneHandler.class.getResource(target));
       Parent popupRoot = loader.load();
 
       // create controller of new scene
@@ -98,6 +72,38 @@ public class SceneController {
     }
   }
 
+  public interface ImageLoadable {
+    void setImage(Image image);
+  }
+
+  /**
+   * Usage: switch to image view controller
+   *
+   * @param event
+   * @param image
+   */
+  public static void switchToImageView(MouseEvent event, Image image) {
+    try {
+      FXMLLoader loader =
+          new FXMLLoader(
+              SceneHandler.class.getResource("/com/auction/client/views/imageView.fxml"));
+      Parent popupRoot = loader.load();
+
+      ImageViewController controller = loader.getController();
+      if (image == null) return;
+      controller.setImage(image);
+
+      Stage popupStage = new Stage();
+      popupStage.setTitle("Zoomed in image");
+      Scene popupScene = new Scene(popupRoot);
+      ThemeHandler.getInstance().addActiveScene(popupScene);
+      popupStage.setScene(popupScene);
+      popupStage.show();
+    } catch (IOException errorEvent) {
+      errorEvent.printStackTrace();
+    }
+  }
+
   /**
    * Usage: close the scene.
    *
@@ -105,21 +111,5 @@ public class SceneController {
    */
   public static void closeScene(ActionEvent event) {
     ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
-  }
-
-  /**
-   * Usage: When user presses X, will prompt before closing the client.
-   *
-   * @param event
-   */
-  public static void closeWithExitPrompt(Stage stage) {
-    Alert alert = new Alert(AlertType.CONFIRMATION);
-    alert.setTitle("You are about to log out of the client.");
-    alert.setHeaderText("Are you sure you want to close the client?");
-    alert.setContentText("This will close the client and signs you out.");
-
-    if (alert.showAndWait().get() == ButtonType.OK) {
-      stage.close();
-    }
   }
 }

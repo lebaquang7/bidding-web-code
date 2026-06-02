@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.RegisterController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.RegisterController">
    <children>
       <Label layoutX="137.0" layoutY="14.0" prefHeight="54.0" prefWidth="326.0" text="Register an account">
          <font>
             <Font size="37.0" />
          </font>
       </Label>
-      <Button layoutX="245.0" layoutY="333.0" mnemonicParsing="false" onAction="#registerWindowRegisterAction" prefHeight="46.0" prefWidth="110.0" text="Register">
+      <Button layoutX="245.0" layoutY="333.0" mnemonicParsing="false" onAction="#registerAction" prefHeight="46.0" prefWidth="110.0" text="Register">
          <font>
             <Font size="21.0" />
          </font>
@@ -28,12 +28,12 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button layoutX="371.0" layoutY="399.0" mnemonicParsing="false" onAction="#registerWindowSwitchToLogin" text="Login">
+      <Button layoutX="371.0" layoutY="399.0" mnemonicParsing="false" onAction="#switchToLogin" text="Login">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label fx:id="registerWindowErrorPrompt" layoutX="163.0" layoutY="68.0" prefHeight="18.0" prefWidth="274.0" styleClass="label-forced-warning" textFill="RED" />
+      <Label fx:id="errorPrompt" layoutX="163.0" layoutY="68.0" prefHeight="18.0" prefWidth="274.0" styleClass="label-forced-warning" textFill="RED" />
       <VBox alignment="TOP_RIGHT" layoutX="476.0" layoutY="316.0" prefHeight="240.0" prefWidth="171.0" spacing="20.0">
          <opaqueInsets>
             <Insets />
@@ -52,7 +52,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="registerWindowUsernameField" prefHeight="26.0" prefWidth="280.0" promptText="Enter username...." />
+                  <TextField fx:id="usernameField" prefHeight="26.0" prefWidth="280.0" promptText="Enter username...." />
                </children>
             </HBox>
             <HBox prefHeight="28.0" prefWidth="200.0" spacing="40.0">
@@ -62,7 +62,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="registerWindowEmailField" prefHeight="26.0" prefWidth="280.0" promptText="Enter email...." />
+                  <TextField fx:id="emailField" prefHeight="26.0" prefWidth="280.0" promptText="Enter email...." />
                </children>
             </HBox>
             <HBox prefHeight="28.0" prefWidth="200.0" spacing="40.0">
@@ -72,7 +72,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <ChoiceBox fx:id="registerWindowAccountTypeChoiceBox" prefHeight="26.0" prefWidth="280.0" />
+                  <ChoiceBox fx:id="accountTypeChoiceBox" prefHeight="26.0" prefWidth="280.0" />
                </children>
             </HBox>
             <HBox prefHeight="28.0" prefWidth="200.0" spacing="40.0">
@@ -82,7 +82,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <PasswordField fx:id="registerWindowPasswordField" prefHeight="26.0" prefWidth="280.0" promptText="Enter password...." />
+                  <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="280.0" promptText="Enter password...." />
                </children>
             </HBox>
             <HBox prefHeight="28.0" prefWidth="200.0" spacing="40.0">
@@ -92,7 +92,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <PasswordField fx:id="registerWindowPasswordConfirmationField" prefHeight="26.0" prefWidth="280.0" promptText="Enter password again...." />
+                  <PasswordField fx:id="passwordConfirmationField" prefHeight="26.0" prefWidth="280.0" promptText="Enter password again...." />
                </children>
             </HBox>
          </children>

@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,7 +1,9 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.AccountEventHandler; // Import model : AccountEventHandler
-import com.auction.client.Models.ClientNotificationListener;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ClientNotificationListener;
+import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.UIElementHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -17,16 +19,17 @@ public class LoginController {
     return PATH_TO_VIEW;
   }
 
-  @FXML TextField loginWindowUsernameField; // load fxml UI elements
-  @FXML PasswordField loginWindowPasswordField;
-  @FXML TextField loginWindowShownPwdTextField;
-  @FXML CheckBox loginWindowShowPwdCheckbox;
-  @FXML Label loginWindowErrorPrompt;
+  @FXML TextField usernameField; // load fxml UI elements
+  @FXML PasswordField passwordField;
+  @FXML TextField shownPwdTextField;
+  @FXML CheckBox showPwdCheckbox;
+  @FXML Label errorPrompt;
 
   /** Usage: called when user presses the login button. */
-  public void loginWindowLoginAction(ActionEvent event) {
-    String username = loginWindowUsernameField.getText();
-    String password = loginWindowPasswordField.getText();
+  @FXML
+  public void loginAction(ActionEvent event) {
+    String username = usernameField.getText();
+    String password = passwordField.getText();
 
     String result = AccountEventHandler.validateAccount(username, password);
 
@@ -38,17 +41,17 @@ public class LoginController {
         System.out.println("Path: " + MainMenuController.getPATH_TO_VIEW());
         System.out.println(
             "Resource: " + getClass().getResource(MainMenuController.getPATH_TO_VIEW()));
-        SceneController.switchToScene(
+        SceneHandler.switchToScene(
             getClass().getResource(MainMenuController.getPATH_TO_VIEW()), event);
       }
       case "invalidPassword" -> {
-        loginWindowErrorPrompt.setText("Invalid password.");
+        errorPrompt.setText("Invalid password.");
       }
       case "accountDoesntExist" -> {
-        loginWindowErrorPrompt.setText("This account does not exist.");
+        errorPrompt.setText("This account does not exist.");
       }
       default -> {
-        loginWindowErrorPrompt.setText("Unexpected error occurred: " + result);
+        errorPrompt.setText("Unexpected error occurred: " + result);
       }
     }
   }
@@ -58,26 +61,28 @@ public class LoginController {
    *
    * @param event
    */
-  public void loginWindowSwitchToRegister(ActionEvent event) {
-    SceneController.switchToScene(
+  @FXML
+  public void switchToRegister(ActionEvent event) {
+    SceneHandler.switchToScene(
         getClass().getResource("/com/auction/client/views/register_view.fxml"), event);
   }
 
   /**
    * @param event Usage: Called when user presses the show password checkbox.
    */
-  public void loginWindowShowPwd(ActionEvent event) {
-    loginWindowShownPwdTextField
+  @FXML
+  public void showPwd(ActionEvent event) {
+    shownPwdTextField
         .textProperty()
         .bindBidirectional(
-            loginWindowPasswordField.textProperty()); // bidirectional binding with pwd field text
+            passwordField.textProperty()); // bidirectional binding with pwd field text
 
-    if (loginWindowShowPwdCheckbox.isSelected() == true) {
+    if (showPwdCheckbox.isSelected() == true) {
       // make pwd shown
-      SceneController.switchElement(loginWindowShownPwdTextField, loginWindowPasswordField);
+      UIElementHandler.switchElement(shownPwdTextField, passwordField);
     } else {
       // reverse
-      SceneController.switchElement(loginWindowPasswordField, loginWindowShownPwdTextField);
+      UIElementHandler.switchElement(passwordField, shownPwdTextField);
     }
   }
 }

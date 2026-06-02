@@ -1,6 +1,6 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.ItemsEventHandler;
+import com.auction.client.services.ItemsEventHandler;
 import com.auction.shared.models.Item;
 import java.io.IOException;
 import java.util.List;
@@ -14,9 +14,10 @@ import javafx.scene.control.Pagination;
 import javafx.scene.layout.GridPane;
 
 public class MainMenuAdminPaneController {
-  // mostly similar to auctionview controller but for admins to initialize auctions
-  @FXML GridPane mainMenuAdminPaneGridPane;
-  @FXML Pagination mainMenuAdminPanePagination;
+  // mostly similar to auctionview controller but for admins to initialize
+  // auctions
+  @FXML GridPane gridPane;
+  @FXML Pagination pagination;
 
   private ObservableList<Item> itemList = FXCollections.observableArrayList();
 
@@ -26,7 +27,7 @@ public class MainMenuAdminPaneController {
   public void initialize() {
     refreshItems();
 
-    mainMenuAdminPanePagination
+    pagination
         .currentPageIndexProperty()
         .addListener(
             (observable, oldIndex, newIndex) -> {
@@ -37,7 +38,7 @@ public class MainMenuAdminPaneController {
         (ListChangeListener<Item>)
             change -> {
               updatePagination();
-              renderItem(itemList, mainMenuAdminPanePagination.getCurrentPageIndex());
+              renderItem(itemList, pagination.getCurrentPageIndex());
             });
   }
 
@@ -56,11 +57,11 @@ public class MainMenuAdminPaneController {
 
   private void updatePagination() {
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
-    mainMenuAdminPanePagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+    pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
   public void renderItem(List<Item> list, int paginationIndex) {
-    mainMenuAdminPaneGridPane.getChildren().clear();
+    gridPane.getChildren().clear();
 
     if (list.isEmpty()) return;
 
@@ -86,7 +87,7 @@ public class MainMenuAdminPaneController {
         int columnIndex = i / COLUMN_COUNT;
         int rowIndex = i % COLUMN_COUNT;
 
-        mainMenuAdminPaneGridPane.add(card, columnIndex, rowIndex);
+        gridPane.add(card, columnIndex, rowIndex);
       } catch (IOException e) {
         e.printStackTrace();
       }

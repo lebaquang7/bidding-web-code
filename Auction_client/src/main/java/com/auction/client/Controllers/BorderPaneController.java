@@ -1,4 +1,4 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;

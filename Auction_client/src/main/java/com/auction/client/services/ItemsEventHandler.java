@@ -1,9 +1,13 @@
-package com.auction.client.Models;
+package com.auction.client.services;
 
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
-import com.auction.shared.models.*;
-
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -64,6 +68,58 @@ public class ItemsEventHandler {
       e.printStackTrace();
       return new ArrayList<>();
     }
+  }
+
+  public static AuctionStatus getAuctionStatus(Item item) {
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      // Gửi request yêu cầu lấy toàn bộ vật phẩm
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.GetAuctionState, null);
+      out.writeObject(request);
+      out.flush();
+
+      // Nhận kết quả từ ClientHandler trả về
+      Object response = in.readObject();
+      AuctionStatus itemStatus = ((HashMap<String, AuctionStatus>) response).get(item.getId());
+      return itemStatus;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return AuctionStatus.UNKNOWN;
+  }
+
+  // Lấy bid_history từ DB về
+  public static List<BidTransaction> fetchBidTransactionsForItem(Item item) {
+    // new Socket("192.168.x.x", port)
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      // Gửi request yêu cầu lấy toàn bộ vật phẩm
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.FetchBidHistory, null);
+      out.writeObject(request);
+      out.flush();
+
+      // Nhận kết quả từ ClientHandler trả về
+      Object response = in.readObject();
+      if (response instanceof List<?>) {
+        return ((List<?>) response)
+            .stream()
+                .filter(BidTransaction.class::isInstance) // filter instances of bidtransaction
+                .map(BidTransaction.class::cast) // map to bid transaction class
+                .filter(bt -> bt.getItemId().equals(item.getId())) // filter those with correct id
+                .toList(); // to list
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return new ArrayList<>();
   }
 
   public static BidStatus.bidStatus placeBid(String itemId, String userId, BigDecimal amount) {
@@ -132,7 +188,8 @@ public class ItemsEventHandler {
       requestData.put("itemId", itemId);
       requestData.put("requester", currentUser);
 
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.InitializeAuction, requestData);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.InitializeAuction, requestData);
       out.writeObject(request);
       out.flush();
 

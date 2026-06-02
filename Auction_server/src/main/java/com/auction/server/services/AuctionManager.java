@@ -1,7 +1,6 @@
 package com.auction.server.services;
 
 import com.auction.shared.models.Item;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class AuctionManager {
   private final Map<String, List<AutoBidConfig>> activeAutoBids = new ConcurrentHashMap<>();
 
   public void registerAutoBid(
-          String itemId, String bidderId, BigDecimal maxBid, BigDecimal increment) {
+      String itemId, String bidderId, BigDecimal maxBid, BigDecimal increment) {
     activeAutoBids
         .computeIfAbsent(itemId, k -> new java.util.concurrent.CopyOnWriteArrayList<>())
         .add(new AutoBidConfig(itemId, bidderId, maxBid, increment));

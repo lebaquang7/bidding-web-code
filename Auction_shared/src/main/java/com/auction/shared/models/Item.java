@@ -97,7 +97,10 @@ public abstract class Item extends Entity {
     this.sellerId = id;
   }
 
-  public String getHighestBidderId() {return highestBidderId;}
+  public String getHighestBidderId() {
+    return highestBidderId;
+  }
+
   public void setHighestBidderId(String highestBidderId) {
     this.highestBidderId = highestBidderId;
   }
@@ -105,12 +108,18 @@ public abstract class Item extends Entity {
   public BigDecimal getPriceIncrement() {
     return priceIncrement;
   }
+
   public void setPriceIncrement(BigDecimal priceIncrement) {
     this.priceIncrement = priceIncrement;
   }
 
-  public int getDurationTime() { return durationTime; }
-  public void setDurationTime(int durationTime) { this.durationTime = durationTime; }
+  public int getDurationTime() {
+    return durationTime;
+  }
+
+  public void setDurationTime(int durationTime) {
+    this.durationTime = durationTime;
+  }
 
 
 

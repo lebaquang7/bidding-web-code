@@ -1,27 +1,25 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
+import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
-  @FXML
-  Label mainMenuAuctionCardNameLabel;
-  @FXML
-  Label mainMenuAuctionCardPriceLabel;
-  @FXML
-  ImageView mainMenuAuctionCardImageView;
+  @FXML Label nameLabel;
+  @FXML Label priceLabel;
+  @FXML ImageView imageView;
 
   // each auction card holds the current item
   private Item currentItem;
@@ -29,29 +27,27 @@ public class AuctionCardController {
   public void setData(Item item) {
     currentItem = item;
 
-    mainMenuAuctionCardNameLabel.setText(item.getItemName());
-    LabelHandler.setDetailedTooltip(mainMenuAuctionCardNameLabel);
+    nameLabel.setText(item.getItemName());
+    LabelHandler.setDetailedTooltip(nameLabel);
 
-    CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, item.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(priceLabel, item.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
 
     // Tải hình ảnh lên
     if (item.getImageBytes() != null) {
-      mainMenuAuctionCardImageView.setImage(
-          new Image(new ByteArrayInputStream(item.getImageBytes())));
+      imageView.setImage(new Image(new ByteArrayInputStream(item.getImageBytes())));
     } else if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
       new Thread(
-          () -> {
-            byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
-            if (bytes != null) {
-              item.setImageBytes(bytes);
-              Platform.runLater(
-                  () -> {
-                    mainMenuAuctionCardImageView.setImage(
-                        new Image(new ByteArrayInputStream(bytes)));
-                  });
-            }
-          })
+              () -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(item.getImagePath());
+                if (bytes != null) {
+                  item.setImageBytes(bytes);
+                  Platform.runLater(
+                      () -> {
+                        imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                      });
+                }
+              })
           .start();
     }
 
@@ -62,104 +58,59 @@ public class AuctionCardController {
               Platform.runLater(
                   () -> {
                     if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(mainMenuAuctionCardPriceLabel, newVal);
-                      LabelHandler.scaleFontSizeToFit(mainMenuAuctionCardPriceLabel, 20, 12, 10, 1);
+                      CurrencySelectorHandler.bindPriceLabel(priceLabel, newVal);
+                      LabelHandler.scaleFontSizeToFit(priceLabel, 20, 12, 10, 1);
                     }
                   });
             });
 
-    // TODO: initialize and listenner for updateColorByAuctionState method to update
-    // auction status
-    // in real time
-  }
-
-  public void mainMenuAuctionCardGoToItemDetails(ActionEvent event) {
-    SceneController.switchToItemView(
-        "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
-  }
-
-  public void mainMenuAuctionCardGoToAuction(ActionEvent event) {
-    SceneController.switchToItemView(
-        "/com/auction/client/views/auction_view.fxml", event, currentItem);
+    // changes color based on auction state. TODO: if possible, update realtime. if not, delete the
+    // comment.
+    updateColorByAuctionState();
   }
 
   @FXML
-  private Circle mainMenuAuctionCardStatusCircle;
+  public void goToItemDetails(ActionEvent event) {
+    SceneHandler.switchToItemView(
+        "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
+  }
 
-  public void updateColorByAuctionState(String auctionState) {
+  @FXML
+  public void goToAuction(ActionEvent event) {
+    SceneHandler.switchToItemView(
+        "/com/auction/client/views/auction_view.fxml", event, currentItem);
+  }
+
+  @FXML private Circle statusCircle;
+
+  public void updateColorByAuctionState() {
+    AuctionStatus auctionState = ItemsEventHandler.getAuctionStatus(currentItem);
     String targetColor;
 
-    switch (auctionState.toUpperCase()) {
-      case "RUNNING":
+    switch (auctionState) {
+      case RUNNING:
         targetColor = "#47ff66";
         break;
-      case "FINISHED":
+      case FINISHED:
         targetColor = "#45cbf0";
         break;
-      case "CANCELLED":
+      case CANCELLED:
         targetColor = "#f53535";
         break;
-      case "PAID":
+      case PAID:
         targetColor = "#db35f5";
+        break;
+      case PENDING_APPROVAL:
+        targetColor = "#ff6600";
         break;
       default:
         targetColor = "#7f8c8d";
     }
-    mainMenuAuctionCardStatusCircle.setStyle("-fx-auction-status-color: " + targetColor + ";");
+    statusCircle.setStyle("-fx-fill: " + targetColor + ";");
   }
 
-  public void handleAutoBidSetup(ActionEvent event) {
-    if (currentItem == null)
-      return;
-
-    // Hiện bảng hỏi giá trần
-    javafx.scene.control.TextInputDialog maxBidDialog = new javafx.scene.control.TextInputDialog("1000000");
-    maxBidDialog.setTitle("Cài đặt Auto-Bid");
-    maxBidDialog.setHeaderText("Cài đặt trả giá tự động cho" + currentItem.getItemName());
-    maxBidDialog.setContentText("Nhập giá tối đa bạn muốn trả:");
-
-    java.util.Optional<String> maxBidResult = maxBidDialog.showAndWait();
-    if (maxBidResult.isPresent()) {
-
-      // Hiện bảng hỏi bước giá tự động
-      javafx.scene.control.TextInputDialog incrementDialog = new javafx.scene.control.TextInputDialog(
-          currentItem.getPriceIncrement().toString());
-      incrementDialog.setTitle("Cài đặt bước giá");
-      incrementDialog.setHeaderText("Bước giá mỗi lần hệ thống thay bạn đè lên đối thủ");
-      incrementDialog.setContentText("Nhập bước giá:");
-
-      java.util.Optional<String> incResult = incrementDialog.showAndWait();
-      if (incResult.isPresent()) {
-        try {
-          java.math.BigDecimal maxBid = new java.math.BigDecimal(maxBidResult.get());
-          java.math.BigDecimal increment = new java.math.BigDecimal(incResult.get());
-
-          java.util.Map<String, Object> autoBidMap = new java.util.HashMap<>();
-          autoBidMap.put("itemId", currentItem.getId());
-
-          String myBidderId = com.auction.client.Models.AccountEventHandler.getCurrentUser().getId();
-          autoBidMap.put("bidderId", myBidderId);
-
-          autoBidMap.put("maxBid", maxBid);
-          autoBidMap.put("increment", increment);
-
-          com.auction.shared.models.NetworkRequest request = new com.auction.shared.models.NetworkRequest(
-              com.auction.shared.models.NetworkRequest.requestType.Bid, autoBidMap);
-
-          // Gửi cấu hình Bot lên Server
-          try (java.net.Socket socket = new java.net.Socket("localhost", 1234);
-              java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-            out.flush();
-            out.writeObject(request);
-            System.out.println("Đã gửi cấu hình Bot Auto-Bid lên Server thành công");
-          } catch (Exception e) {
-            System.err.println("Lỗi kết nối khi gửi Auto-Bid" + e.getMessage());
-          }
-
-        } catch (Exception e) {
-          System.out.println("Nhập đúng định dạng số:" + e.getMessage());
-        }
-      }
-    }
+  @FXML
+  public void openImageView(MouseEvent event) {
+    SceneHandler.switchToImageView(event, imageView.getImage());
   }
 }

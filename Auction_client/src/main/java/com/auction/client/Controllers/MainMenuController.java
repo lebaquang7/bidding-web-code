@@ -1,5 +1,6 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
+import com.auction.client.services.SceneHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,12 +14,12 @@ public class MainMenuController {
     return PATH_TO_VIEW;
   }
 
-  @FXML BorderPane mainMenuMainBorderPane;
-  @FXML Button mainMenuSellItemButton;
-  @FXML Button mainMenuAdminAuctionButton;
+  @FXML BorderPane mainBorderPane;
+  @FXML Button sellItemButton;
+  @FXML Button adminAuctionButton;
 
   public void initialize() {
-    BorderPaneController.setMainLayout(mainMenuMainBorderPane);
+    BorderPaneController.setMainLayout(mainBorderPane);
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
 
     // TODO: currently left as comments for easier testing,
@@ -26,38 +27,44 @@ public class MainMenuController {
     // //hides buttons depending on user type
     // if (!(AccountEventHandler.getCurrentUser() instanceof Seller ||
     // AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    // mainMenuSellItemButton.setVisible(false);
-    // mainMenuSellerListButton.setVisible(false);
+    // sellItemButton.setVisible(false);
+    // sellerListButton.setVisible(false);
     // }
     // if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
-    // mainMenuAdminAuctionButton.setVisible(false);
+    // adminAuctionButton.setVisible(false);
     // }
   }
 
   // Size of center pane: 700 W, 600 H (full pane + side pane is 900 W, 600 H)
   // (for reference when
   // creating side panes)
-  public void mainMenuSwitchToAuctionList(ActionEvent event) {
+  @FXML
+  public void switchToAuctionList(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
   }
 
-  public void mainMenuSwitchToSellItem(ActionEvent event) {
+  @FXML
+  public void switchToSellItem(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellItemPane.fxml");
   }
 
-  public void mainMenuSwitchToSellerList(ActionEvent event) {
+  @FXML
+  public void switchToSellerList(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellerSubmitListPane.fxml");
   }
 
-  public void mainMenuSwitchToSettings(ActionEvent event) {
+  @FXML
+  public void switchToSettings(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_settingsPane.fxml");
   }
 
-  public void mainMenuSwitchToAdminFunctions(ActionEvent event) {
+  @FXML
+  public void switchToAdminFunctions(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_adminPane.fxml");
   }
 
-  public void mainMenuLogOut(ActionEvent event) {
-    SceneController.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
+  @FXML
+  public void logOut(ActionEvent event) {
+    SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
   }
 }

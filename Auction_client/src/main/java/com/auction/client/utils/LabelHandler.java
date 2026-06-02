@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;

@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import com.auction.client.Properties;
 import java.math.BigDecimal;

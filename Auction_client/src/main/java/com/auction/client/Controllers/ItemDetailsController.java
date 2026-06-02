@@ -1,12 +1,11 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.client.Models.LabelHandler;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,39 +14,29 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class ItemDetailsController implements SceneController.ItemLoadable {
+public class ItemDetailsController implements SceneHandler.ItemLoadable {
 
-  @FXML
-  Label itemDetailsID;
-  @FXML
-  Label itemDetailsItemName;
-  @FXML
-  Label itemDetailsDescription;
-  @FXML
-  Label itemDetailsInitialPrice;
-  @FXML
-  Label itemDetailsCurrentPrice;
-  @FXML
-  Label itemDetailsWinner;
-  @FXML
-  Label itemDetailsTimeRemaining;
-  @FXML
-  Label auctionWonLabel;
-  @FXML
-  Button auctionWonButton;
-  @FXML
-  ImageView itemDetailsImageView;
+  @FXML Label idLabel;
+  @FXML Label itemNameLabel;
+  @FXML Label descriptionLabel;
+  @FXML Label initialPriceLabel;
+  @FXML Label currentPriceLabel;
+  @FXML Label winnerLabel;
+  @FXML Label timeRemainingLabel;
+  @FXML Label auctionWonLabel;
+  @FXML Button auctionWonButton;
+  @FXML ImageView imageView;
 
   private Item currentItem;
 
-  public void itemDetailsGoBackToList(ActionEvent event) {
-    SceneController.closeScene(event);
+  public void goBackToList(ActionEvent event) {
+    SceneHandler.closeScene(event);
   }
 
   // TODO: opens a small panel where user can input details. does nothing with the
   // details given. removes the auction when info in small panel is given.
   public void proceedToPayment(ActionEvent event) {
-    SceneController.closeScene(event);
+    SceneHandler.closeScene(event);
   }
 
   public void initialize() {
@@ -57,43 +46,39 @@ public class ItemDetailsController implements SceneController.ItemLoadable {
     // auctionWonButton.setVisible(false);
   }
 
-  // TODO: have to track based on real time price changes. same with other item
-  // labels that actively
-  // changes
   @Override
   public void setItem(Item item) {
     this.currentItem = item;
 
-    itemDetailsID.setText(currentItem.getId());
-    LabelHandler.setDetailedTooltip(itemDetailsID);
+    idLabel.setText(currentItem.getId());
+    LabelHandler.setDetailedTooltip(idLabel);
 
-    itemDetailsItemName.setText(currentItem.getItemName());
-    LabelHandler.setDetailedTooltip(itemDetailsItemName);
+    itemNameLabel.setText(currentItem.getItemName());
+    LabelHandler.setDetailedTooltip(itemNameLabel);
 
-    itemDetailsDescription.setText(currentItem.getDescription());
-    LabelHandler.setDetailedTooltip(itemDetailsDescription);
+    descriptionLabel.setText(currentItem.getDescription());
+    LabelHandler.setDetailedTooltip(descriptionLabel);
 
-    CurrencySelectorHandler.bindPriceLabel(itemDetailsInitialPrice, currentItem.getStartingPrice());
-    LabelHandler.scaleFontSizeToFit(itemDetailsInitialPrice, 15, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(initialPriceLabel, currentItem.getStartingPrice());
+    LabelHandler.scaleFontSizeToFit(initialPriceLabel, 15, 12, 10, 1);
 
-    CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, currentItem.getCurrentPrice());
-    LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 15, 12, 10, 1);
+    CurrencySelectorHandler.bindPriceLabel(currentPriceLabel, currentItem.getCurrentPrice());
+    LabelHandler.scaleFontSizeToFit(currentPriceLabel, 15, 12, 10, 1);
 
     if (currentItem.getImageBytes() != null) {
-      itemDetailsImageView.setImage(
-          new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
+      imageView.setImage(new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
     } else if (currentItem.getImagePath() != null && !currentItem.getImagePath().isEmpty()) {
       new Thread(
-          () -> {
-            byte[] bytes = ItemsEventHandler.downloadItemImage(currentItem.getImagePath());
-            if (bytes != null) {
-              currentItem.setImageBytes(bytes);
-              Platform.runLater(
-                  () -> {
-                    itemDetailsImageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-                  });
-            }
-          })
+              () -> {
+                byte[] bytes = ItemsEventHandler.downloadItemImage(currentItem.getImagePath());
+                if (bytes != null) {
+                  currentItem.setImageBytes(bytes);
+                  Platform.runLater(
+                      () -> {
+                        imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+                      });
+                }
+              })
           .start();
     }
 
@@ -103,8 +88,8 @@ public class ItemDetailsController implements SceneController.ItemLoadable {
               Platform.runLater(
                   () -> {
                     if (newVal != null) {
-                      CurrencySelectorHandler.bindPriceLabel(itemDetailsCurrentPrice, newVal);
-                      LabelHandler.scaleFontSizeToFit(itemDetailsCurrentPrice, 20, 12, 10, 1);
+                      CurrencySelectorHandler.bindPriceLabel(currentPriceLabel, newVal);
+                      LabelHandler.scaleFontSizeToFit(currentPriceLabel, 20, 12, 10, 1);
                     }
                   });
             });

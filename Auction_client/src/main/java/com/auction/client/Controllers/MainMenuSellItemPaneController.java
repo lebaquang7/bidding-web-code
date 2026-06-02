@@ -1,17 +1,13 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import java.io.File;
-import java.math.BigDecimal;
-
-import com.auction.client.Models.AccountEventHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ItemsEventHandler;
-import com.auction.shared.models.Art;
-import com.auction.shared.models.Electronics;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.ItemFactory;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-import com.auction.shared.models.Vehicle;
-
+import java.io.File;
+import java.math.BigDecimal;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,28 +16,19 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
-  @FXML
-  TextField mainMenuSellItemPaneItemNameField;
-  @FXML
-  TextField mainMenuSellItemPaneItemDescriptionField;
-  @FXML
-  TextField mainMenuSellItemPaneStartingPriceField;
-  @FXML
-  TextField mainMenuSellItemPanePriceIncrementField;
-  @FXML
-  private Button uploadImageButton;
+  @FXML TextField itemNameField;
+  @FXML TextField itemDescriptionField;
+  @FXML TextField startingPriceField;
+  @FXML TextField priceIncrementField;
+  @FXML private Button uploadImageButton;
 
-  @FXML
-  private ComboBox<String> itemTypeComboBox;
-  // TODO: options for auction duration
-  @FXML
-  private ComboBox<String> itemAuctionDuration;
+  @FXML private ComboBox<String> itemTypeComboBox;
+  @FXML private ComboBox<String> itemAuctionDuration;
   private File selectedImageFile; // Lưu file ảnh
 
   @FXML
   public void initialize() {
     if (itemTypeComboBox != null) {
-      // TODO: elements based on actual available class types?
       itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
       itemTypeComboBox.getSelectionModel().selectFirst();
     }
@@ -52,11 +39,12 @@ public class MainMenuSellItemPaneController {
     }
 
     // set prompt text based on currency type.
-    double convertedPrice = CurrencySelectorHandler.getInstance()
-        .getConvertedPrice(BigDecimal.valueOf(100000))
-        .doubleValue();
+    double convertedPrice =
+        CurrencySelectorHandler.getInstance()
+            .getConvertedPrice(BigDecimal.valueOf(100000))
+            .doubleValue();
     String activeCurrency = CurrencySelectorHandler.getInstance().getActiveCurrency();
-    mainMenuSellItemPaneStartingPriceField.setPromptText(
+    startingPriceField.setPromptText(
         String.format(
             "Input starting price.... (Minimum of %.2f %s)", convertedPrice, activeCurrency));
   }
@@ -79,14 +67,28 @@ public class MainMenuSellItemPaneController {
         duration = 60;
       }
 
-      String name = mainMenuSellItemPaneItemNameField.getText();
-      String description = mainMenuSellItemPaneItemDescriptionField.getText();
-      BigDecimal startingPrice = CurrencySelectorHandler.getInstance()
-          .getVNDPrice(
-              BigDecimal.valueOf(
-                  Double.valueOf((mainMenuSellItemPaneStartingPriceField.getText()))));
-      BigDecimal currentPrice = startingPrice;
-      double percentage = Double.parseDouble(mainMenuSellItemPanePriceIncrementField.getText());
+      String name = itemNameField.getText();
+      String description = itemDescriptionField.getText();
+      BigDecimal startingPrice =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(BigDecimal.valueOf(Double.valueOf((startingPriceField.getText()))));
+      if (startingPrice.doubleValue() < 100000) {
+        AlertMessageController.showError(
+            "Lỗi",
+            "",
+            ("Giá khởi đầu không được phép nhỏ hơn"
+                + CurrencySelectorHandler.getInstance()
+                    .getConvertedPrice(BigDecimal.valueOf(100000))
+                + "  "
+                + CurrencySelectorHandler.getInstance().getActiveCurrency()));
+        return;
+      }
+      double percentage = Double.parseDouble(priceIncrementField.getText());
+      if (percentage < 1 || percentage > 10) {
+        AlertMessageController.showError(
+            "Lỗi", "", "Bước tăng giá không được phép nhỏ hơn 1% hoặc lớn hơn 10%");
+        return;
+      }
       BigDecimal priceIncrement = BigDecimal.valueOf(percentage);
 
       User currentUser = AccountEventHandler.getCurrentUser();
@@ -95,19 +97,13 @@ public class MainMenuSellItemPaneController {
         return;
       }
 
-      Item newItem = null;
       String typeOfItem = itemTypeComboBox.getValue();
-      if ("Artwork".equals(typeOfItem)) {
-        newItem = new Art(name, description, startingPrice, currentPrice, "", true, 0, "");
-      } else if ("Electronics".equals(typeOfItem)) {
-        newItem = new Electronics(name, description, startingPrice, currentPrice, 24, "", "", "");
-      } else {
-        newItem = new Vehicle(name, description, startingPrice, currentPrice, "", 0, 0);
-      }
+      Item newItem = ItemFactory.createItem(typeOfItem, name, description, startingPrice);
 
       if (selectedImageFile != null) {
-        byte[] imageBytes = java.nio.file.Files.readAllBytes(
-            selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
+        byte[] imageBytes =
+            java.nio.file.Files.readAllBytes(
+                selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
         newItem.setImageBytes(imageBytes);
         newItem.setImagePath(selectedImageFile.getName()); // Lưu tên file để Server biết định dạng
       }
@@ -117,7 +113,8 @@ public class MainMenuSellItemPaneController {
 
       String result = ItemsEventHandler.sellItem(newItem);
       if ("success".equals(result)) {
-        AlertMessageController.showError("Lỗi", "", "Đưa vật phẩm lên sàn đấu giá thành công");
+        AlertMessageController.showInfo(
+            "Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
         clearFields();
       } else {
         AlertMessageController.showError("Lỗi", "", "Đăng bán thất bại");
@@ -141,7 +138,7 @@ public class MainMenuSellItemPaneController {
         .addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
     // Mở cửa sổ chọn file
-    File file = fileChooser.showOpenDialog(mainMenuSellItemPaneItemNameField.getScene().getWindow());
+    File file = fileChooser.showOpenDialog(itemNameField.getScene().getWindow());
 
     if (file != null) {
       // Kiểm tra dung lượng giới hạn 10MB
@@ -156,10 +153,10 @@ public class MainMenuSellItemPaneController {
   }
 
   private void clearFields() {
-    mainMenuSellItemPaneItemNameField.clear();
-    mainMenuSellItemPaneItemDescriptionField.clear();
-    mainMenuSellItemPaneStartingPriceField.clear();
-    mainMenuSellItemPanePriceIncrementField.clear();
+    itemNameField.clear();
+    itemDescriptionField.clear();
+    startingPriceField.clear();
+    priceIncrementField.clear();
     this.selectedImageFile = null;
   }
 }

@@ -1,6 +1,15 @@
 package com.auction.server;
 
-import com.auction.shared.models.*;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Art;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Electronics;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.Seller;
+import com.auction.shared.models.User;
+import com.auction.shared.models.Vehicle;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -681,4 +690,70 @@ public class DatabaseConfig {
     }
     return null;
   }
+
+
+    public static User findUserById(String id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String role = rs.getString("role");
+                String username = rs.getString("username");
+                String pass = rs.getString("password");
+
+                User user = null;
+                if ("Admin".equals(role)) {
+                    String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
+                    try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
+                        psAdmin.setString(1, id);
+                        ResultSet rsAdmin = psAdmin.executeQuery();
+                        if (rsAdmin.next()) {
+                            user = new Admin(
+                                            username,
+                                            pass,
+                                            rsAdmin.getInt("accessLevel"),
+                                            rsAdmin.getString("department"),
+                                            rsAdmin.getString("internalEmployeeId"));
+                        }
+                    }
+                }
+                if ("Bidder".equals(role)) {
+                    String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
+                    try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
+                        psBidder.setString(1, id);
+                        ResultSet rsBidder = psBidder.executeQuery();
+                        if (rsBidder.next()) {
+                            user =
+                                    new Bidder(
+                                            username,
+                                            pass,
+                                            rsBidder.getString("shippingAddress"),
+                                            rsBidder.getBigDecimal("balance"),
+                                            rsBidder.getInt("reputationScore"));
+                        }
+                    }
+                }
+                if ("Seller".equals(role)) {
+                    String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
+                    try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
+                        psSeller.setString(1, id);
+                        ResultSet rsSeller = psSeller.executeQuery();
+                        if (rsSeller.next()) {
+                            user = new Seller(username, pass);
+                        }
+                    }
+                }
+
+              if (user != null) {
+                user.setId(id);
+              }
+              return user;
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
 }

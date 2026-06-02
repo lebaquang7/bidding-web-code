@@ -80,9 +80,11 @@ public class AuctionSession {
       if (currentState != AuctionStatus.PENDING_APPROVAL) {
         return false;
       }
+
       boolean dbUpdated = DatabaseConfig.updateAuctionStatus(this.sessionId, AuctionStatus.RUNNING);
 
       if (dbUpdated) {
+        this.remainingSeconds = durationInSeconds;
         this.currentState = AuctionStatus.RUNNING;
 
         if (auctionDetails != null) {
@@ -90,26 +92,22 @@ public class AuctionSession {
         }
 
         countdownTask = scheduler.scheduleAtFixedRate(() -> {
-          synchronized (lock) {
-            if (remainingSeconds > 0) {
-              remainingSeconds--;
+          if (remainingSeconds > 0) {
+            remainingSeconds--;
 
-              Map<String, Object> timeData = new HashMap<>();
-              timeData.put("type", "TIME_UPDATE");
-              timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
-              timeData.put("value", remainingSeconds);
-              NotificationService.broadcast(timeData);
-              System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
-            } else {
-              if (countdownTask != null) {
-                countdownTask.cancel(false);
-              }
-              endAuction();
-            }
+            Map<String, Object> timeData = new HashMap<>();
+            timeData.put("type", "TIME_UPDATE");
+            timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
+            timeData.put("value", remainingSeconds);
+            NotificationService.broadcast(timeData);
+            System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
+          } else {
+            if (countdownTask != null) {countdownTask.cancel(false);}
+            endAuction();
           }
         }, 1, 1, TimeUnit.SECONDS);
-
         System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");
+
         System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
         return true;
       } else {

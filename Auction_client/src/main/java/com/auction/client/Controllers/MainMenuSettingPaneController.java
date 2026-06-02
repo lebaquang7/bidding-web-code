@@ -1,8 +1,8 @@
-package com.auction.client.Controllers;
+package com.auction.client.controllers;
 
-import com.auction.client.Models.ConfigFileHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ThemeHandler;
+import com.auction.client.utils.ConfigFileHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.ThemeHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,14 +10,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 
 public class MainMenuSettingPaneController {
-  @FXML ChoiceBox<String> mainMenuSettingPaneCurrencyUnitSettingBox;
-  @FXML ChoiceBox<String> mainMenuSettingPaneThemeSettingBox;
+  @FXML ChoiceBox<String> currencyUnitSettingBox;
+  @FXML ChoiceBox<String> themeSettingBox;
 
   public void initialize() {
     // Currency unit setting handling
     ObservableList<String> currencyUnitSetting = FXCollections.observableArrayList("VND", "USD");
     // Converter so that the choicebox displays long name from internal name
-    mainMenuSettingPaneCurrencyUnitSettingBox.setConverter(
+    currencyUnitSettingBox.setConverter(
         new StringConverter<String>() {
           // Display long name from short internal name
           @Override
@@ -42,11 +42,10 @@ public class MainMenuSettingPaneController {
             }
           }
         });
-    mainMenuSettingPaneCurrencyUnitSettingBox.setItems(currencyUnitSetting);
-    mainMenuSettingPaneCurrencyUnitSettingBox.setValue(
-        ConfigFileHandler.getProperty("currencyType", "VND"));
+    currencyUnitSettingBox.setItems(currencyUnitSetting);
+    currencyUnitSettingBox.setValue(ConfigFileHandler.getProperty("currencyType", "VND"));
     // listener for choice box
-    mainMenuSettingPaneCurrencyUnitSettingBox
+    currencyUnitSettingBox
         .getSelectionModel()
         .selectedItemProperty()
         .addListener(
@@ -57,9 +56,9 @@ public class MainMenuSettingPaneController {
     // Custom theme handling
     ObservableList<String> themeSetting =
         FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
-    mainMenuSettingPaneThemeSettingBox.setItems(themeSetting);
-    mainMenuSettingPaneThemeSettingBox.setValue(ConfigFileHandler.getProperty("theme", "Default"));
-    mainMenuSettingPaneThemeSettingBox
+    themeSettingBox.setItems(themeSetting);
+    themeSettingBox.setValue(ConfigFileHandler.getProperty("theme", "Default"));
+    themeSettingBox
         .getSelectionModel()
         .selectedItemProperty()
         .addListener(

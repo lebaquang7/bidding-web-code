@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.services;
 
 import static com.auction.shared.models.NetworkRequest.requestType.Register;
 
@@ -10,7 +10,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class AccountEventHandler {
-  // Loại bỏ accountStorage HashMap, dùng database thay thế
 
   private static User currentUser;
 
@@ -80,5 +79,4 @@ public class AccountEventHandler {
       return "connection_error";
     }
   }
-
 }

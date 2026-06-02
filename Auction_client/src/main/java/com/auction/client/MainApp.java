@@ -1,10 +1,10 @@
 package com.auction.client;
 
-import com.auction.client.Controllers.SceneController;
-import com.auction.client.Models.ClientNotificationListener;
-import com.auction.client.Models.ConfigFileHandler;
-import com.auction.client.Models.CurrencySelectorHandler;
-import com.auction.client.Models.ThemeHandler;
+import com.auction.client.services.ClientExitHandler;
+import com.auction.client.services.ClientNotificationListener;
+import com.auction.client.utils.ConfigFileHandler;
+import com.auction.client.utils.CurrencySelectorHandler;
+import com.auction.client.utils.ThemeHandler;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -57,7 +57,7 @@ public class MainApp extends Application {
     primaryStage.setOnCloseRequest(
         event -> {
           event.consume(); // consume the event, so it only executes closing if user presses OK
-          SceneController.closeWithExitPrompt(primaryStage);
+          ClientExitHandler.closeWithExitPrompt(primaryStage);
         });
 
     // initialize configurations

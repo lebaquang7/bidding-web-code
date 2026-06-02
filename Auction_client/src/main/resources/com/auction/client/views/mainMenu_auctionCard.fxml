@@ -11,17 +11,17 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.Controllers.AuctionCardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.client.controllers.AuctionCardController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="240.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" styleClass="custom-border" width="200.0" />
       <HBox layoutX="10.0" layoutY="200.0" prefHeight="26.0" prefWidth="180.0" spacing="5.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToItemDetails" prefHeight="26.0" prefWidth="85.0" text="Item Details">
+            <Button mnemonicParsing="false" onAction="#goToItemDetails" prefHeight="26.0" prefWidth="85.0" text="Item Details">
                <font>
                   <Font size="11.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#mainMenuAuctionCardGoToAuction" prefHeight="26.0" prefWidth="90.0" text="Open Auction" textOverrun="CLIP">
+            <Button mnemonicParsing="false" onAction="#goToAuction" prefHeight="26.0" prefWidth="90.0" text="Open Auction" textOverrun="CLIP">
                <font>
                   <Font size="11.0" />
                </font>
@@ -30,26 +30,26 @@
       </HBox>
       <VBox layoutX="3.0" layoutY="3.0" prefHeight="184.0" prefWidth="194.0" spacing="3.0" styleClass="border-custom">
          <children>
-            <Label fx:id="mainMenuAuctionCardNameLabel" prefHeight="30.0" prefWidth="190.0" text="Label" textAlignment="CENTER" wrapText="true">
+            <Label fx:id="nameLabel" prefHeight="30.0" prefWidth="190.0" text="Label" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
             <HBox prefHeight="30.0" prefWidth="100.0">
                <children>
-                  <Label fx:id="mainMenuAuctionCardPriceLabel" prefHeight="30.0" prefWidth="152.0" text="Label" textAlignment="CENTER">
+                  <Label fx:id="priceLabel" prefHeight="30.0" prefWidth="152.0" text="Label" textAlignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Circle fx:id="mainMenuAuctionCardStatusCircle" fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="auction-status-border">
+                  <Circle fx:id="statusCircle" fill="WHITE" radius="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="auction-status-border">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Circle>
                </children>
             </HBox>
-            <ImageView fx:id="mainMenuAuctionCardImageView" fitHeight="120.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageView" fitHeight="120.0" fitWidth="180.0" onMouseClicked="#openImageView" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets left="2.0" />
                </VBox.margin>

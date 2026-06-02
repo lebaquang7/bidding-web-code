@@ -1,4 +1,4 @@
-package com.auction.client.Models;
+package com.auction.client.utils;
 
 import com.auction.shared.models.BidTransaction;
 import java.util.List;
@@ -20,7 +20,12 @@ public class ChartDataHandler {
               .getEpochSecond();
       itemPriceChart
           .getData()
-          .add(new XYChart.Data<>(epochTime, bidTransaction.getBidAmount().doubleValue()));
+          .add(
+              new XYChart.Data<>(
+                  epochTime,
+                  CurrencySelectorHandler.getInstance()
+                      .getConvertedPrice(bidTransaction.getBidAmount())
+                      .doubleValue()));
     }
     ObservableList<XYChart.Series<Number, Number>> data = FXCollections.observableArrayList();
     data.add(itemPriceChart);
