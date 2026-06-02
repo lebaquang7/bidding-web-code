@@ -2,11 +2,7 @@ package com.auction.server;
 
 import com.auction.shared.models.*;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +161,72 @@ public class DatabaseConfig {
     }
   }
 
+  // Tìm User bằng
+  public static User findUserById(String id) {
+    String sql = "SELECT * FROM users WHERE id = ?";
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      ps.setString(1, id);
+      ResultSet rs = ps.executeQuery();
+
+      if (rs.next()) {
+        String role = rs.getString("role");
+        String username = rs.getString("username");
+        String pass = rs.getString("password");
+
+        User user = null;
+        if ("Admin".equals(role)) {
+          String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
+          try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
+            psAdmin.setString(1, id);
+            ResultSet rsAdmin = psAdmin.executeQuery();
+            if (rsAdmin.next()) {
+              user = new Admin(
+                      username,
+                      pass,
+                      rsAdmin.getInt("accessLevel"),
+                      rsAdmin.getString("department"),
+                      rsAdmin.getString("internalEmployeeId"));
+            }
+          }
+        }
+        if ("Bidder".equals(role)) {
+          String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
+          try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
+            psBidder.setString(1, id);
+            ResultSet rsBidder = psBidder.executeQuery();
+            if (rsBidder.next()) {
+              user =
+                      new Bidder(
+                              username,
+                              pass,
+                              rsBidder.getString("shippingAddress"),
+                              rsBidder.getBigDecimal("balance"),
+                              rsBidder.getInt("reputationScore"));
+            }
+          }
+        }
+        if ("Seller".equals(role)) {
+          String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
+          try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
+            psSeller.setString(1, id);
+            ResultSet rsSeller = psSeller.executeQuery();
+            if (rsSeller.next()) {
+              user = new Seller(username, pass);
+            }
+          }
+        }
+
+        if (user != null) {
+          user.setId(id);
+        }
+        return user;
+      }
+    } catch (SQLException e) { e.printStackTrace(); }
+    return null;
+  }
+
   // Thêm vật phẩm vào database khi bán vật phẩm
   public static boolean saveNewItem(Item item) {
     String sqlItem =
@@ -272,6 +334,11 @@ public class DatabaseConfig {
         String sellerId = rs.getString("seller_Id");
         BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
         String imagePath = rs.getString("image_path");
+        String highestBidderId = rs.getString("highest_Bidder_Id");
+        int durationTime = rs.getInt("duration_time");
+        Timestamp startTime = rs.getTimestamp("start_time");
+        Timestamp endTime = rs.getTimestamp("end_time");
+
 
         Item item = null;
         if ("Art".equals(type)) {
@@ -332,8 +399,7 @@ public class DatabaseConfig {
                 int mileage = rsSub.getInt("mileage");
                 int manufacturingYear = rsSub.getInt("manufacturingYear");
 
-                item =
-                    new Vehicle(
+                item = new Vehicle(
                         name,
                         description,
                         startingPrice,
@@ -349,9 +415,12 @@ public class DatabaseConfig {
         if (item != null) {
           item.setId(id);
           item.setSellerId(sellerId);
-          item.setHighestBidderId(rs.getString("highest_Bidder_Id"));
+          item.setHighestBidderId(highestBidderId);
           item.setPriceIncrement(priceIncrement);
           item.setImagePath(imagePath);
+          item.setDurationTime(durationTime);
+          if (startTime != null) {item.setStartTime(startTime.toLocalDateTime());}
+          if (endTime != null) {item.setEndTime(endTime.toLocalDateTime());}
           items.add(item);
         }
       }
@@ -380,6 +449,8 @@ public class DatabaseConfig {
           BigDecimal priceIncrement = rs.getBigDecimal("price_Increment");
           String highestBidderId = rs.getString("highest_Bidder_Id");
           int durationTime = rs.getInt("duration_time");
+          Timestamp startTime = rs.getTimestamp("start_time");
+          Timestamp endTime = rs.getTimestamp("end_time");
 
           Item item = null;
           if ("Art".equals(type)) {
@@ -456,6 +527,8 @@ public class DatabaseConfig {
             item.setSellerId(sellerId);
             item.setPriceIncrement(priceIncrement);
             item.setDurationTime(durationTime);
+            if (startTime != null) {item.setStartTime(startTime.toLocalDateTime());}
+            if (endTime != null) {item.setEndTime(endTime.toLocalDateTime());}
             item.setHighestBidderId(highestBidderId);
           }
           return item;
@@ -465,6 +538,22 @@ public class DatabaseConfig {
       System.err.println("Lỗi khi tìm vật phẩm theo ID: " + e.getMessage());
     }
     return null;
+  }
+
+  // Cập nhật startTime / endTime
+  public static void updateAuctionTimer(String itemId, LocalDateTime startTime, LocalDateTime endTime) {
+    String sql = "UPDATE items SET start_time = ?, end_time = ? WHERE id = ?";
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      pstmt.setTimestamp(1, startTime != null ? Timestamp.valueOf(startTime) : null);
+      pstmt.setTimestamp(2, endTime != null ? Timestamp.valueOf(endTime) : null);
+      pstmt.setString(3, itemId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   // Hàm thực hiện yêu cầu lưu lịch sử đấu giá
@@ -592,70 +681,4 @@ public class DatabaseConfig {
     }
     return null;
   }
-
-
-    public static User findUserById(String id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String role = rs.getString("role");
-                String username = rs.getString("username");
-                String pass = rs.getString("password");
-
-                User user = null;
-                if ("Admin".equals(role)) {
-                    String sqlAdmin = "SELECT * FROM admins WHERE id = ?";
-                    try (PreparedStatement psAdmin = conn.prepareStatement(sqlAdmin)) {
-                        psAdmin.setString(1, id);
-                        ResultSet rsAdmin = psAdmin.executeQuery();
-                        if (rsAdmin.next()) {
-                            user = new Admin(
-                                            username,
-                                            pass,
-                                            rsAdmin.getInt("accessLevel"),
-                                            rsAdmin.getString("department"),
-                                            rsAdmin.getString("internalEmployeeId"));
-                        }
-                    }
-                }
-                if ("Bidder".equals(role)) {
-                    String sqlBidder = "SELECT * FROM bidders WHERE id = ?";
-                    try (PreparedStatement psBidder = conn.prepareStatement(sqlBidder)) {
-                        psBidder.setString(1, id);
-                        ResultSet rsBidder = psBidder.executeQuery();
-                        if (rsBidder.next()) {
-                            user =
-                                    new Bidder(
-                                            username,
-                                            pass,
-                                            rsBidder.getString("shippingAddress"),
-                                            rsBidder.getBigDecimal("balance"),
-                                            rsBidder.getInt("reputationScore"));
-                        }
-                    }
-                }
-                if ("Seller".equals(role)) {
-                    String sqlSeller = "SELECT * FROM sellers WHERE id = ?";
-                    try (PreparedStatement psSeller = conn.prepareStatement(sqlSeller)) {
-                        psSeller.setString(1, id);
-                        ResultSet rsSeller = psSeller.executeQuery();
-                        if (rsSeller.next()) {
-                            user = new Seller(username, pass);
-                        }
-                    }
-                }
-
-              if (user != null) {
-                user.setId(id);
-              }
-              return user;
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return null;
-    }
 }

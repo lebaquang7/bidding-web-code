@@ -9,8 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AuctionManager {
 
-  private Map<String, AuctionSession> activeAuctions =
-      new java.util.concurrent.ConcurrentHashMap<>();
+  private Map<String, AuctionSession> activeAuctions = new ConcurrentHashMap<>();
   private static volatile AuctionManager instance;
 
   private AuctionManager() {}
@@ -41,7 +40,7 @@ public class AuctionManager {
     System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
   }
 
-  private java.util.Map<String, java.util.Map<String, com.auction.shared.models.BidTransaction>>
+  private Map<String, Map<String, com.auction.shared.models.BidTransaction>>
       autoBidRegistry = new java.util.concurrent.ConcurrentHashMap<>();
 
   public static class AutoBidConfig {
@@ -62,8 +61,7 @@ public class AuctionManager {
     }
   }
 
-  private final Map<String, List<AutoBidConfig>> activeAutoBids =
-      new ConcurrentHashMap<>();
+  private final Map<String, List<AutoBidConfig>> activeAutoBids = new ConcurrentHashMap<>();
 
   public void registerAutoBid(
           String itemId, String bidderId, BigDecimal maxBid, BigDecimal increment) {

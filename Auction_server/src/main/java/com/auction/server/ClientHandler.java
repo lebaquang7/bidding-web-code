@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -216,10 +217,10 @@ public class ClientHandler extends Thread {
           if (session == null) {
             Item item = DatabaseConfig.getItemById(itemId);
             if (item != null) {
-              java.time.LocalDateTime startTime = java.time.LocalDateTime.now();
-              java.time.LocalDateTime endTime = startTime.plusMinutes(item.getDurationTime());
+              LocalDateTime startTime = LocalDateTime.now();
+              LocalDateTime endTime = startTime.plusMinutes(item.getDurationTime());
 
-              Auction auctionDetails = new com.auction.shared.models.Auction(
+              Auction auctionDetails = new Auction(
                       0,
                       item,
                       item.getStartingPrice(),
@@ -227,7 +228,7 @@ public class ClientHandler extends Thread {
                       null,
                       null
               );
-              auctionDetails.setStatus(com.auction.shared.models.AuctionStatus.PENDING_APPROVAL);
+              auctionDetails.setStatus(AuctionStatus.PENDING_APPROVAL);
 
               long durationInSeconds = (long) item.getDurationTime() * 60;
 

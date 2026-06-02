@@ -18,18 +18,25 @@ public abstract class Item extends Entity {
   private BigDecimal priceIncrement;
   private String imagePath; // Lưu tên file ảnh
   private byte[] imageBytes; // Truyền dữ liệu ảnh qua Socket
-  private int durationTime;
+  private int durationTime; // Phút
   private LocalDateTime endTime;
+  private LocalDateTime startTime;
+
+  private static final long serialVersionUID = 1L;
 
   public LocalDateTime getEndTime() {
     return endTime;
   }
-
   public void setEndTime(LocalDateTime endTime) {
     this.endTime = endTime;
   }
 
-  private static final long serialVersionUID = 1L;
+  public LocalDateTime getStartTime() {return  startTime;}
+  public void setStartTime(LocalDateTime startTime) {
+    this.startTime = startTime;
+    if (startTime != null && this.durationTime > 0 && this.endTime == null) {
+      this.endTime = startTime.plusMinutes(this.durationTime);
+    }}
 
   public Item(String name, String description, BigDecimal startingPrice, BigDecimal currentPrice) {
     super();
@@ -42,7 +49,6 @@ public abstract class Item extends Entity {
   public String getImagePath() {
     return imagePath;
   }
-
   public void setImagePath(String imagePath) {
     this.imagePath = imagePath;
   }
@@ -50,7 +56,6 @@ public abstract class Item extends Entity {
   public byte[] getImageBytes() {
     return imageBytes;
   }
-
   public void setImageBytes(byte[] imageBytes) {
     this.imageBytes = imageBytes;
   }
@@ -58,7 +63,6 @@ public abstract class Item extends Entity {
   public String getItemName() {
     return name;
   }
-
   public void setName(String name) {
     this.name = name;
   }
@@ -66,7 +70,6 @@ public abstract class Item extends Entity {
   public String getDescription() {
     return description;
   }
-
   public void setDescription(String description) {
     this.description = description;
   }
@@ -74,7 +77,6 @@ public abstract class Item extends Entity {
   public BigDecimal getStartingPrice() {
     return startingPrice;
   }
-
   // Hàm Getter cho currentPrice (Dùng để Bind UI ở Client)
   public ObjectProperty<BigDecimal> currentPriceProperty() {
     return currentPrice;
@@ -84,7 +86,6 @@ public abstract class Item extends Entity {
   public BigDecimal getCurrentPrice() {
     return currentPrice.get();
   }
-
   public void setCurrentPrice(BigDecimal price) {
     this.currentPrice.set(price);
   }
@@ -92,7 +93,6 @@ public abstract class Item extends Entity {
   public String getSellerId() {
     return sellerId;
   }
-
   public void setSellerId(String id) {
     this.sellerId = id;
   }
@@ -111,6 +111,8 @@ public abstract class Item extends Entity {
 
   public int getDurationTime() { return durationTime; }
   public void setDurationTime(int durationTime) { this.durationTime = durationTime; }
+
+
 
   // Xử lý việc Property curentPrice không Serializable được
   private void writeObject(ObjectOutputStream out) throws IOException {
