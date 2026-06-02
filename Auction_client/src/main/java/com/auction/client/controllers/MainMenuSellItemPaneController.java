@@ -5,6 +5,7 @@ import com.auction.client.services.ItemFactory;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
+import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
 import java.io.File;
 import java.math.BigDecimal;
@@ -93,8 +94,10 @@ public class MainMenuSellItemPaneController {
 
       User currentUser = AccountEventHandler.getCurrentUser();
       if (currentUser == null) {
-        AlertMessageController.showError("Lỗi", "", "Không tìm thấy thông tin người dùng");
+        AlertMessageController.showError("Lỗi: ", "", "Không tìm thấy thông tin người dùng");
         return;
+      } else if (!(currentUser instanceof Seller)) {
+        AlertMessageController.showError("Lỗi: ", "", "Bạn không phải Seller");
       }
 
       String typeOfItem = itemTypeComboBox.getValue();
