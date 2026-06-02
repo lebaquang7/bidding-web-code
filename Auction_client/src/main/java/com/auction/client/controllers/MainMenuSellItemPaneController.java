@@ -35,8 +35,8 @@ public class MainMenuSellItemPaneController {
     }
 
     if (itemAuctionDuration != null) {
-      itemAuctionDuration.getItems().addAll("10 minutes", "30 minutes", "1 hour");
-      itemAuctionDuration.setValue("10 minutes");
+      itemAuctionDuration.getItems().addAll("2 minutes", "10 minutes", "30 minutes", "1 hour");
+      itemAuctionDuration.setValue("2 minutes");
     }
 
     // set prompt text based on currency type.
@@ -58,11 +58,13 @@ public class MainMenuSellItemPaneController {
         return;
       }
 
-      int duration = 10;
+      int duration = 2;
       String selectedDuration = itemAuctionDuration.getValue();
-      if (selectedDuration.contains("10")) {
+      if (selectedDuration.contains("2 minutes")) { // 2m option for demonstration video
+        duration = 2;
+      } else if (selectedDuration.contains("10 minutes")) {
         duration = 10;
-      } else if (selectedDuration.contains("30")) {
+      } else if (selectedDuration.contains("30 minutes")) {
         duration = 30;
       } else if (selectedDuration.contains("1 hour")) {
         duration = 60;
