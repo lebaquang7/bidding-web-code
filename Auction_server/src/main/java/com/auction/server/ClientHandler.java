@@ -1,5 +1,16 @@
 package com.auction.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.auction.server.services.AuctionManager;
 import com.auction.server.services.AuctionSession;
 import com.auction.server.services.BiddingService;
@@ -12,16 +23,6 @@ import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.NetworkRequest;
 import com.auction.shared.models.User;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -123,7 +124,7 @@ public class ClientHandler extends Thread {
           // Kiểm tra nếu có ảnh
           if (newItem.getImageBytes() != null && newItem.getImagePath() != null) {
             String userHome = System.getProperty("user.home");
-            File imageDir = new File(userHome + "server_storage/item_images");
+            File imageDir = new File(userHome + "/server_storage/item_images");
             if (!imageDir.exists()) imageDir.mkdirs();
 
             String uniqueFileName = System.currentTimeMillis() + "_" + newItem.getImagePath();
@@ -165,7 +166,7 @@ public class ClientHandler extends Thread {
         String fileName = (String) networkRequest.getData();
         try {
           String userHome = System.getProperty("user.home");
-          File imageFile = new File(userHome + "server_storage/item_images", fileName);
+          File imageFile = new File(userHome + "/server_storage/item_images", fileName);
 
           if (imageFile.exists()) {
             byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
