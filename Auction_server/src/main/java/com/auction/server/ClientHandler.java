@@ -122,8 +122,7 @@ public class ClientHandler extends Thread {
         try {
           // Kiểm tra nếu có ảnh
           if (newItem.getImageBytes() != null && newItem.getImagePath() != null) {
-            String userHome = System.getProperty("user.home");
-            File imageDir = new File(userHome + "/server_storage/item_images");
+            File imageDir = new File("server_storage/item_images");
             if (!imageDir.exists()) imageDir.mkdirs();
 
             String uniqueFileName = System.currentTimeMillis() + "_" + newItem.getImagePath();
@@ -164,8 +163,7 @@ public class ClientHandler extends Thread {
       if (networkRequest.getType() == NetworkRequest.requestType.GetItemImage) {
         String fileName = (String) networkRequest.getData();
         try {
-          String userHome = System.getProperty("user.home");
-          File imageFile = new File(userHome + "/server_storage/item_images", fileName);
+          File imageFile = new File("server_storage/item_images", fileName);
 
           if (imageFile.exists()) {
             byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
