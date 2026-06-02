@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
@@ -67,6 +68,28 @@ public class ItemsEventHandler {
       e.printStackTrace();
       return new ArrayList<>();
     }
+  }
+
+  public static AuctionStatus getAuctionStatus(Item item) {
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+      ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      // Gửi request yêu cầu lấy toàn bộ vật phẩm
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.GetAuctionState, null);
+      out.writeObject(request);
+      out.flush();
+
+      // Nhận kết quả từ ClientHandler trả về
+      Object response = in.readObject();
+      AuctionStatus itemStatus = ((HashMap<String,AuctionStatus>) response).get(item.getId());
+      return itemStatus;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return AuctionStatus.UNKNOWN;
   }
 
     // Lấy bid_history từ DB về

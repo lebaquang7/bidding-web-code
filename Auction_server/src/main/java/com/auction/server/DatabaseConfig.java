@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.auction.shared.models.Admin;
@@ -625,6 +626,31 @@ public class DatabaseConfig {
       return new ArrayList<>();
     }
     return bidHistory;
+  }
+
+  public static HashMap<String, AuctionStatus> getAuctionState() {
+    String sql = "SELECT * FROM items";
+    HashMap<String, AuctionStatus> itemStatusHashMap = new HashMap<>();
+    try (Connection conn = getConnection();
+    PreparedStatement ps = conn.prepareStatement(sql); 
+    ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+    AuctionStatus auctionStatus = AuctionStatus.UNKNOWN;
+    switch(rs.getString("status")) {
+      case "PENDING_APPROVAL" -> auctionStatus = AuctionStatus.PENDING_APPROVAL;
+      case "RUNNING" -> auctionStatus = AuctionStatus.RUNNING;
+      case "FINISHED" -> auctionStatus = AuctionStatus.FINISHED;
+      case "CANCELLED" -> auctionStatus = AuctionStatus.CANCELLED;
+      case "PAID" -> auctionStatus = AuctionStatus.PAID;
+    }
+    String itemId = rs.getString("id");
+    itemStatusHashMap.put(itemId, auctionStatus);
+  }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return new HashMap<>();
+    }
+    return itemStatusHashMap;
   }
 
   public static User findUserById(String id) {

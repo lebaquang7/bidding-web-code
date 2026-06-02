@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import com.auction.server.services.BiddingService;
 import com.auction.server.services.NotificationService;
 import com.auction.shared.models.Admin;
 import com.auction.shared.models.Auction;
+import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.BidStatus;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
@@ -252,6 +254,16 @@ public class ClientHandler extends Thread {
         try {
           List<BidTransaction> bidHistory = DatabaseConfig.getAllBidHistory();
           out.writeObject(bidHistory); 
+          out.flush();
+        } catch (IOException e) {
+          System.err.println("Lỗi gửi danh sách Bid History: " + e.getMessage());
+        }
+      }
+
+      if (networkRequest.getType() == NetworkRequest.requestType.GetAuctionState) {
+        try {
+          HashMap<String, AuctionStatus> itemStatusHashMap = DatabaseConfig.getAuctionState();
+          out.writeObject(itemStatusHashMap); 
           out.flush();
         } catch (IOException e) {
           System.err.println("Lỗi gửi danh sách Bid History: " + e.getMessage());

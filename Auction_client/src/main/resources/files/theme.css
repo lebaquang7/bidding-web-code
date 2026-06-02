@@ -171,8 +171,3 @@
     -stroke: #030303;
     -fx-stroke: -theme-border-color !important;
 }
-
-.auction-status-border {
-    -fx-auction-status-color: #ffffff;
-    -fx-fill: -fx-auction-state-color;
-}
