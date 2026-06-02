@@ -5,6 +5,7 @@ import com.auction.client.services.SceneHandler;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -21,7 +22,6 @@ public class RegisterController {
   }
 
   @FXML TextField usernameField;
-  @FXML TextField emailField;
   @FXML ChoiceBox<String> accountTypeChoiceBox;
   @FXML PasswordField passwordField;
   @FXML PasswordField passwordConfirmationField;
@@ -38,7 +38,6 @@ public class RegisterController {
   @FXML
   void registerAction(ActionEvent event) {
     String username = usernameField.getText();
-    String email = emailField.getText();
     String password = passwordField.getText();
     String confirmPassword = passwordConfirmationField.getText();
     String accountType = accountTypeChoiceBox.getValue();

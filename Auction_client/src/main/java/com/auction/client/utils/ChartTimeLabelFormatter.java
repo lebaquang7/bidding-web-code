@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
 import javafx.scene.chart.NumberAxis;
 import javafx.util.StringConverter;
 
@@ -21,8 +22,7 @@ public class ChartTimeLabelFormatter extends StringConverter<Number> {
   @Override
   public String toString(Number object) {
     long epochSecond = object.longValue();
-    // instant is not bound to timezone.
-    // TODO: use instant across all time variables
+    
     LocalDateTime time =
         LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.systemDefault());
 

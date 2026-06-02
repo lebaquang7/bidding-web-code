@@ -1,12 +1,14 @@
 package com.auction.client.controllers;
 
+import java.io.ByteArrayInputStream;
+
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Item;
-import java.io.ByteArrayInputStream;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,8 +66,6 @@ public class AuctionCardController {
                   });
             });
 
-    // changes color based on auction state. TODO: if possible, update realtime. if not, delete the
-    // comment.
     updateColorByAuctionState();
   }
 
@@ -87,25 +87,14 @@ public class AuctionCardController {
     AuctionStatus auctionState = ItemsEventHandler.getAuctionStatus(currentItem);
     String targetColor;
 
-    switch (auctionState) {
-      case RUNNING:
-        targetColor = "#47ff66";
-        break;
-      case FINISHED:
-        targetColor = "#45cbf0";
-        break;
-      case CANCELLED:
-        targetColor = "#f53535";
-        break;
-      case PAID:
-        targetColor = "#db35f5";
-        break;
-      case PENDING_APPROVAL:
-        targetColor = "#ff6600";
-        break;
-      default:
-        targetColor = "#7f8c8d";
-    }
+    targetColor = switch (auctionState) {
+          case RUNNING -> "#47ff66";
+          case FINISHED -> "#45cbf0";
+          case CANCELLED -> "#f53535";
+          case PAID -> "#db35f5";
+          case PENDING_APPROVAL -> "#ff6600";
+          default -> "#7f8c8d";
+      };
     statusCircle.setStyle("-fx-fill: " + targetColor + ";");
   }
 
