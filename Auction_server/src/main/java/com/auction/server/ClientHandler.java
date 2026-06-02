@@ -83,6 +83,7 @@ public class ClientHandler extends Thread {
           }
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi khi phản hồi đăng nhập: " + e.getMessage());
         }
       }
@@ -109,6 +110,7 @@ public class ClientHandler extends Thread {
           }
           out.flush(); // Đẩy kết quả về lại Client
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi khi phản hồi đăng ký: " + e.getMessage());
         }
       }
@@ -140,6 +142,7 @@ public class ClientHandler extends Thread {
           }
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi khi bán vật phẩm: " + e.getMessage());
         }
       }
@@ -151,6 +154,7 @@ public class ClientHandler extends Thread {
           out.writeObject(allItems); // Gửi nguyên List đối tượng về cho Client
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi gửi danh sách Item: " + e.getMessage());
         }
       }
@@ -169,6 +173,7 @@ public class ClientHandler extends Thread {
           }
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi khi gửi dữ liệu ảnh: " + e.getMessage());
         }
       }
@@ -190,6 +195,7 @@ public class ClientHandler extends Thread {
           }
 
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi khi phản hồi đặt giá: " + e.getMessage());
         }
       }
@@ -202,6 +208,7 @@ public class ClientHandler extends Thread {
         try {
           while (in.read() != -1) {}
         } catch (IOException e) {
+          e.printStackTrace();
           System.out.println("Kết nối Real-time đã bị ngắt bởi Client.");
         } finally {
           NotificationService.removeClient(this);
@@ -256,6 +263,7 @@ public class ClientHandler extends Thread {
           out.writeObject(bidHistory);
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi gửi danh sách Bid History: " + e.getMessage());
         }
       }
@@ -266,7 +274,26 @@ public class ClientHandler extends Thread {
           out.writeObject(itemStatusHashMap);
           out.flush();
         } catch (IOException e) {
+          e.printStackTrace();
           System.err.println("Lỗi gửi danh sách Bid History: " + e.getMessage());
+        }
+      }
+
+      if (networkRequest.getType() == NetworkRequest.requestType.DenyAuction) {
+        Map<String, Object> data = (Map<String, Object>) networkRequest.getData();
+        String itemId = (String) data.get("itemId");
+        User requester = (User) data.get("requester");
+
+        try {
+          if (requester instanceof Admin) {
+            String result = DatabaseConfig.deleteItemIfPending(itemId);
+            out.writeObject(result);
+          } else {
+            out.writeObject("unauthorized");
+          }
+          out.flush();
+        } catch (IOException e) {
+          e.printStackTrace();
         }
       }
 

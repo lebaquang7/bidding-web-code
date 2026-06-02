@@ -200,4 +200,26 @@ public class ItemsEventHandler {
       return "error";
     }
   }
+
+  public static String denyAuction(String itemId, User currentUser) {
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      Map<String, Object> requestData = new HashMap<>();
+      requestData.put("itemId", itemId);
+      requestData.put("requester", currentUser);
+
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.DenyAuction, requestData);
+      out.writeObject(request);
+      out.flush();
+
+      Object response = in.readObject();
+      return (response instanceof String) ? (String) response : "fail";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "fail";
+    }
+  }
 }
