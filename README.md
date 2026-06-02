@@ -16,7 +16,7 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
   - **Build tool:** Maven
   - **Plugin:** Maven Checkstyle, Diffplug spotless
 - Môi trương chạy: Window, Linux, Mac
-- Yêu cầu cài đặt: Máy cần cài đặt JDK 25+
+- Yêu cầu cài đặt: Máy cần cài đặt JDK 25+, Maven và đã cài đúng System environment variable
 ## 3 - Cấu trúc thư mục / Module chính
 - Các module chính: `Auction_client`, `Auction_server`, `Auction_shared`
 - Cấu trúc thư mục:  
@@ -28,7 +28,6 @@ bidding-web-code/
 │   ├── pom.xml                                  
 │   └── src/main/
 │       ├── java/
-│       │   ├── module-info.java
 │       │   └── com/auction/client/
 │       │       ├── controller/                  # Chứa các controller của javaFX view (MVC)
 │       │       ├── services/                    # Chứa các logic điều khiển sau controller (MVC), giao tiếp với server 
@@ -41,14 +40,12 @@ bidding-web-code/
 ├── Auction_server/
 │   ├── pom.xml
 │   └── src/main/java/
-│       ├── module-info.java
 │       └── com/auction/server/                  # Chứa các class của server
 │           └── services/
 │
 ├── Auction_shared/
 │   ├── pom.xml
 │   └── src/main/java/
-│       ├── module-info.java
 │       └── com/auction/shared/
 │           ├── factory/                         # Chứa các factory khởi tạo Item 
 │           └── model/                           # Chứa các lớp chính
@@ -58,9 +55,19 @@ bidding-web-code/
 └── server_storage/                              # Chứa những file được load bởi server
 ```
 ## 4. Câu lệnh dòng lệnh để chạy chương trình
-# TBD
+- Build và Package: Sử dụng terminal, chạy trên mọi hệ điều hành (Window/Linux/Mac). Mở terminal đến đường dẫn của thư mục `bidding-web-code` và chạy `mvn clean package`
+- Tiếp tục với #5
 ## 5. Hướng dẫn chạy Server/Client theo thứ tự cụ thể
-# TBD
+- Chạy server: Sau khi build (#4), mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+```
+cd Auction_server/target
+java -jar Auction_server-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+- Chạy client: Sau khi build (#4), mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+```
+cd Auction_client
+mvn javafx:run
+```
 ## 6. Danh sách chức năng đã hoàn thành: 
 - Chức năng bắt buộc:
   - Quản lý người dùng, sản phẩm đấu giá, phiên đấu giá ✅
