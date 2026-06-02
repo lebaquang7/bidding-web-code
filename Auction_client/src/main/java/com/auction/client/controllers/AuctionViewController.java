@@ -1,5 +1,8 @@
 package com.auction.client.controllers;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
@@ -18,8 +21,7 @@ import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-import java.math.BigDecimal;
-import java.util.List;
+
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

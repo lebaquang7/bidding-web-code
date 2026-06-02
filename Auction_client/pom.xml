@@ -49,12 +49,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.auction.client.MainApp</mainClass>
-                        </manifest>
-                    </archive>
+                    <mainClass>com.auction.client.MainApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
