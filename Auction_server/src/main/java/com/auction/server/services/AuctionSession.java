@@ -100,7 +100,6 @@ public class AuctionSession {
             timeData.put("sessionId", sessionId); // Để Client biết đây là thời gian của phiên nào
             timeData.put("value", remainingSeconds);
             NotificationService.broadcast(timeData);
-            System.out.println("Gửi thời gian còn lại: " + remainingSeconds);
           } else {
             if (countdownTask != null) {countdownTask.cancel(false);}
             endAuction();

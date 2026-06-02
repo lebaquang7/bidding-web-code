@@ -1,6 +1,7 @@
 package com.auction.client.services;
 
 import com.auction.client.controllers.AuctionViewController;
+import com.auction.client.controllers.ItemDetailsController;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
@@ -12,14 +13,14 @@ import java.net.Socket;
 import javafx.application.Platform;
 
 public class ClientNotificationListener extends Thread {
-  private static AuctionViewController currentController;
+  private static Object currentController;
   private Socket socket;
 
   public ClientNotificationListener() {
     this.setDaemon(true); // Tự tắt khi app đóng
   }
 
-  public static void setCurrentController(AuctionViewController controller) {
+  public static void setCurrentController(Object controller) {
     currentController = controller;
   }
 
@@ -43,7 +44,11 @@ public class ClientNotificationListener extends Thread {
         Object incoming = in.readObject();
 
         if (currentController != null) {
-          currentController.handleNotification(incoming);
+          if (currentController instanceof AuctionViewController avc) {
+            avc.handleNotification(incoming);
+          } else if (currentController instanceof ItemDetailsController idc) {
+            idc.handleNotification(incoming);
+          }
         }
 
         if (incoming instanceof BidTransaction) {
@@ -57,7 +62,7 @@ public class ClientNotificationListener extends Thread {
                   target.setCurrentPrice(tx.getBidAmount());
                 });
           } else {
-            System.out.println("Cảnh báo: Không tìm thấy Item ID" + tx.getItemId());
+            System.out.println("Không tìm thấy Item ID" + tx.getItemId());
           }
         }
       }

@@ -1,9 +1,12 @@
 package com.auction.client.controllers;
 
+import com.auction.client.services.AuctionBiddingService;
+import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
+import com.auction.client.utils.MiscTools;
 import com.auction.shared.models.Item;
 import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
@@ -46,9 +49,31 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
     // auctionWonButton.setVisible(false);
   }
 
+    public void handleNotification(Object message) {
+        Platform.runLater(() -> {
+            // Gọi hàm overload đã chốt trong AuctionBiddingService
+            AuctionBiddingService.processIncomingNotification(message, currentItem, this);
+        });
+    }
+
+    public void updateRemainingTime(int totalSeconds) {
+        timeRemainingLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
+        if (totalSeconds <= 10) {
+            timeRemainingLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        } else {
+            timeRemainingLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
+        }
+    }
+
+    public void handleAuctionEndEvent(String winnerName) {
+        timeRemainingLabel.setText("00:00");
+        winnerLabel.setText(winnerName);
+    }
+
   @Override
   public void setItem(Item item) {
-    this.currentItem = item;
+      ClientNotificationListener.setCurrentController(this);
+      this.currentItem = item;
 
     idLabel.setText(currentItem.getId());
     LabelHandler.setDetailedTooltip(idLabel);
@@ -82,8 +107,7 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
           .start();
     }
 
-    item.currentPriceProperty()
-        .addListener(
+    item.currentPriceProperty().addListener(
             (obs, oldVal, newVal) -> {
               Platform.runLater(
                   () -> {
@@ -95,3 +119,5 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
             });
   }
 }
+
+

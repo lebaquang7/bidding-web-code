@@ -117,8 +117,10 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
         placeBidErrorBox.setText("Giá chưa đạt bước giá tối thiểu quy định!");
       } else if (result == BidStatus.bidStatus.ALREADY_HIGHEST) {
         placeBidErrorBox.setText("Bạn đang là người giữ giá cao nhất!");
-      } else {
+      }else if (result == BidStatus.bidStatus.NOT_STARTED) {
         placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu");
+      } else {
+        placeBidErrorBox.setText("Phiên đấu giá chưa bắt đầu/ đã kết thúc");
       }
 
     } catch (NumberFormatException e) {
@@ -130,9 +132,10 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   public void setItem(Item item) {
     ClientNotificationListener.setCurrentController(this);
     this.currentItem = Inventory.getItemById(item.getId());
+
     if (this.currentItem == null) {
       this.currentItem = item;
-    } // Phòng hờ nếu Inventory rỗng
+    }
 
     // Hiển thị giá ban đầu
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, item.getCurrentPrice());
@@ -154,17 +157,14 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     AuctionViewController.updateChartPrice(item, priceChartYAxis);
 
     // listener for currency type changes
-    CurrencySelectorHandler.getInstance()
-        .getActiveCurrencyObjectProperty()
-        .addListener(
+    CurrencySelectorHandler.getInstance().getActiveCurrencyObjectProperty().addListener(
             (observable, oldVal, newVal) -> {
               updateChartBounds();
               updateChart();
             });
 
     // Cập nhật currentPrice realtime
-    item.currentPriceProperty()
-        .addListener(
+    item.currentPriceProperty().addListener(
             (obs, oldVal, newVal) -> {
               Platform.runLater(
                   () -> {

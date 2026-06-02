@@ -22,31 +22,35 @@ public class MainServer {
     List<Item> runningItems = DatabaseConfig.getAllItems();
 
     for (Item item : runningItems) {
-      String itemId = item.getId();
+      try {
+        String itemId = item.getId();
 
-      if (DatabaseConfig.isAuctionRunningInDB(itemId)) {
-        AuctionSession session = AuctionManager.getInstance().getAuctionSession(itemId);
-        if (session == null) {
-          Auction auctionDetails = new Auction(
-                  0,
-                  item,
-                  item.getStartingPrice(),
-                  null,
-                  null,
-                  null
-          );
-          session = new AuctionSession(
-                  itemId,
-                  item,
-                  auctionDetails,
-                  (long) item.getDurationTime() * 60
-          );
+        if (DatabaseConfig.isAuctionRunningInDB(itemId)) {
+          AuctionSession session = AuctionManager.getInstance().getAuctionSession(itemId);
+          if (session == null) {
+            Auction auctionDetails = new Auction(
+                    0,
+                    item,
+                    item.getStartingPrice(),
+                    null,
+                    null,
+                    null
+            );
+            session = new AuctionSession(
+                    itemId,
+                    item,
+                    auctionDetails,
+                    (long) item.getDurationTime() * 60
+            );
 
-          AuctionManager.getInstance().registerSession(itemId, session);
+            AuctionManager.getInstance().registerSession(itemId, session);
+          }
+
+          session.startAuction();
+          System.out.println("Đã khôi phục phiên cho Item: " + item.getItemName());
         }
-
-        session.startAuction();
-        System.out.println("-> Đã khôi phục phiên cho Item: " + item.getItemName());
+      } catch (Exception e) {
+        System.err.print("Lỗi khi khôi phục phiên của item" + item.getItemName());
       }
     }
   }
