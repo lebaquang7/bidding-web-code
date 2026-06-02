@@ -12,6 +12,7 @@ public class NetworkRequest implements Serializable {
     GetAllItems,
     SubscribeNotification,
     GetItemImage,
+    FetchBidHistory,
     InitializeAuction
   }
 

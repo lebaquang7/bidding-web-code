@@ -1,6 +1,5 @@
 package com.auction.server;
 
-import com.auction.shared.models.*;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +9,17 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Art;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Bidder;
+import com.auction.shared.models.Electronics;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.Seller;
+import com.auction.shared.models.User;
+import com.auction.shared.models.Vehicle;
 
 public class DatabaseConfig {
   // Kết nối với database
@@ -594,6 +604,27 @@ public class DatabaseConfig {
       e.printStackTrace();
     }
     return null;
+  }
+
+  public static List<BidTransaction> getAllBidHistory() {
+    String sql = "SELECT * FROM bid_history";
+    List<BidTransaction> bidHistory = new ArrayList<>();
+    try (Connection conn = getConnection();
+    PreparedStatement ps = conn.prepareStatement(sql); 
+    ResultSet rs = ps.executeQuery()) {
+    while (rs.next()) {
+      String itemId = rs.getString("item_Id");
+      String bidderId = rs.getString("bidder_Id");
+      BigDecimal bidAmount = rs.getBigDecimal("bid_amount");
+      LocalDateTime bidTime = rs.getTimestamp("bid_time").toLocalDateTime();
+      BidTransaction bidTransaction = new BidTransaction(itemId, bidderId, bidAmount, bidTime);
+      bidHistory.add(bidTransaction);
+    }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+    return bidHistory;
   }
 
   public static User findUserById(String id) {

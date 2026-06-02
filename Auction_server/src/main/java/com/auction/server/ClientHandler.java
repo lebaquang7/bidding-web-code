@@ -1,10 +1,5 @@
 package com.auction.server;
 
-import com.auction.server.services.AuctionManager;
-import com.auction.server.services.AuctionSession;
-import com.auction.server.services.BiddingService;
-import com.auction.server.services.NotificationService;
-import com.auction.shared.models.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,6 +8,18 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+
+import com.auction.server.services.AuctionManager;
+import com.auction.server.services.AuctionSession;
+import com.auction.server.services.BiddingService;
+import com.auction.server.services.NotificationService;
+import com.auction.shared.models.Admin;
+import com.auction.shared.models.Auction;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 
 // Lớp này giúp Server xử lý nhiều người cùng lúc (Multithreading)
 public class ClientHandler extends Thread {
@@ -240,8 +247,18 @@ public class ClientHandler extends Thread {
           e.printStackTrace();
         }
       }
+      
+      if (networkRequest.getType() == NetworkRequest.requestType.FetchBidHistory) {
+        try {
+          List<BidTransaction> bidHistory = DatabaseConfig.getAllBidHistory();
+          out.writeObject(bidHistory); 
+          out.flush();
+        } catch (IOException e) {
+          System.err.println("Lỗi gửi danh sách Bid History: " + e.getMessage());
+        }
+      }
 
-      // Yêu cầu AutoBid
+      // Yêu cầu AutoBid 
       if (networkRequest.getType() == NetworkRequest.requestType.Bid
           && networkRequest.getData() instanceof java.util.Map) {
         try {

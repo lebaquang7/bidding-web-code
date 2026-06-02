@@ -1,27 +1,34 @@
 package com.auction.client.controllers;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
 import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.ChartDataHandler;
 import com.auction.client.utils.ChartTimeLabelFormatter;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.client.utils.MiscTools;
 import com.auction.client.utils.UIElementHandler;
 import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-import java.math.BigDecimal;
+
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -77,7 +84,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
     try {
       BigDecimal bidAmount = new BigDecimal(placeBidBox.getText());
-      BigDecimal currentPrice = currentItem.getCurrentPrice();
+      BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
       BigDecimal incrementPercent = currentItem.getPriceIncrement();
       BigDecimal minBidRequired =
           currentPrice.add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
@@ -96,7 +103,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
       // Trả về enum BidStatus từ Server
       BidStatus.bidStatus result =
-          ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), bidAmount);
+          ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), CurrencySelectorHandler.getInstance().getVNDPrice(bidAmount));
       updateUiFromBidStatus(result);
 
       // 6. Xử lý UI dựa trên phản hồi của Server
@@ -143,14 +150,14 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     setupChartLayout(item);
 
     AuctionViewController.updateChartPrice(item, priceChartYAxis);
-    // TODO: UNCOMMENT WHEN ACTUAL CHART DATA IS MADE
-    // auctionViewPriceChart.setData(ChartDataHandler
-    // .setChartDisplay(AuctionManager.getInstance().getAuctionSession(item.getId()).getBidHistory()));
 
     // listener for currency type changes
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
-        .addListener((observable, oldVal, newVal) -> updateChartBounds());
+        .addListener((observable, oldVal, newVal) -> {
+          updateChartBounds();
+          updateChart();
+        });
 
     // Cập nhật currentPrice realtime
     item.currentPriceProperty()
@@ -162,6 +169,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
                     LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
                     AuctionViewController.updateChartPrice(item, priceChartYAxis);
                     updateChartBounds();
+                    updateChart();
                   });
             });
   }
@@ -178,6 +186,32 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
         CurrencySelectorHandler.getInstance().getConvertedPrice(item.getCurrentPrice());
     yAxis.setUpperBound(MiscTools.roundUp(updatedPrice.doubleValue()));
     yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
+  }
+
+  public static void updateChartTime(List<BidTransaction> bidHistory, NumberAxis xAxis) {
+    if (bidHistory == null || bidHistory.isEmpty()) {
+        return;
+    }
+
+    long lowerBound = bidHistory.stream()
+        .mapToLong(bt -> bt.getBidTime().atZone(java.time.ZoneId.systemDefault()).toInstant().getEpochSecond())
+        .min()
+        .getAsLong();
+
+    long upperBound = bidHistory.stream()
+        .mapToLong(bt -> bt.getBidTime().atZone(java.time.ZoneId.systemDefault()).toInstant().getEpochSecond())
+        .max()
+        .getAsLong();
+
+    // prevent x axis being 0 
+    if (lowerBound == upperBound) {
+        lowerBound -= 60;
+        upperBound += 60;
+    }
+
+    xAxis.setLowerBound(lowerBound);
+    xAxis.setUpperBound(upperBound);
+    xAxis.setTickUnit(Math.max(1, (upperBound - lowerBound) / 5)); 
   }
 
   /** Usage: pass on msg to auction bidding service to process */
@@ -212,10 +246,9 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     priceChartYAxis.setLabel("Price");
     priceChartXAxis.setAutoRanging(false);
     priceChartYAxis.setAutoRanging(false);
-    // TODO: track based on time. HALF COMPLETED, NEED FETCHIN TIME LINKED WITH ITEM
-    // X label format based on time
     priceChartXAxis.setTickLabelFormatter(new ChartTimeLabelFormatter(priceChartXAxis));
     updateChartBounds();
+    updateChart();
   }
 
   /** Usage: update chart bounds to fit price */
@@ -227,6 +260,13 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     double uproundedMaxPrice = MiscTools.roundUp(updatedPrice.doubleValue());
     priceChartYAxis.setUpperBound(uproundedMaxPrice);
     priceChartYAxis.setTickUnit(uproundedMaxPrice / 10);
+  }
+
+  private void updateChart() {
+    List<BidTransaction> bidHistory = ItemsEventHandler.fetchBidTransactionsForItem(currentItem);
+    updateChartTime(bidHistory, priceChartXAxis);
+    ObservableList<XYChart.Series<Number, Number>> chartData = ChartDataHandler.setChartDisplay(bidHistory);
+    priceChart.setData(chartData);
   }
 
   /** Usage: update UI when new bid is pushed */
