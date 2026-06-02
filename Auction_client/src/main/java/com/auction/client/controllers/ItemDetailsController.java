@@ -26,8 +26,6 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
   @FXML Label currentPriceLabel;
   @FXML Label winnerLabel;
   @FXML Label timeRemainingLabel;
-  @FXML Label auctionWonLabel;
-  @FXML Button auctionWonButton;
   @FXML ImageView imageView;
 
   private Item currentItem;
@@ -40,13 +38,6 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
   // details given. removes the auction when info in small panel is given.
   public void proceedToPayment(ActionEvent event) {
     SceneHandler.closeScene(event);
-  }
-
-  public void initialize() {
-    // TODO: Logic for hiding win label and button when auction havent been won and
-    // display when auction is won for user
-    // auctionWonLabel.setVisible(false);
-    // auctionWonButton.setVisible(false);
   }
 
     public void handleNotification(Object message) {
