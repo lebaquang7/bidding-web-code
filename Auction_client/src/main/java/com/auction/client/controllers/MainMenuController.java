@@ -20,7 +20,6 @@ public class MainMenuController {
   @FXML BorderPane mainBorderPane;
   @FXML Button sellItemButton;
   @FXML Button adminAuctionButton;
-  @FXML Button sellerListButton;
 
   public void initialize() {
     BorderPaneController.setMainLayout(mainBorderPane);
@@ -30,7 +29,6 @@ public class MainMenuController {
     if (!(AccountEventHandler.getCurrentUser() instanceof Seller
         || AccountEventHandler.getCurrentUser() instanceof Admin)) {
       sellItemButton.setVisible(false);
-      sellerListButton.setVisible(false);
     }
     if (!(AccountEventHandler.getCurrentUser() instanceof Admin)) {
       adminAuctionButton.setVisible(false);
@@ -48,11 +46,6 @@ public class MainMenuController {
   @FXML
   public void switchToSellItem(ActionEvent event) {
     BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellItemPane.fxml");
-  }
-
-  @FXML
-  public void switchToSellerList(ActionEvent event) {
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellerSubmitListPane.fxml");
   }
 
   @FXML
