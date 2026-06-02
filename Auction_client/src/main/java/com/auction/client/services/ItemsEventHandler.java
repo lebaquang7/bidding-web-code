@@ -224,9 +224,10 @@ public class ItemsEventHandler {
     }
   }
 
-  public static boolean registerAutoBid(String itemId, String userId, BigDecimal maxBid, BigDecimal increment) {
+  public static boolean registerAutoBid(
+      String itemId, String userId, BigDecimal maxBid, BigDecimal increment) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
-         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
@@ -237,8 +238,8 @@ public class ItemsEventHandler {
       requestData.put("maxBid", maxBid);
       requestData.put("increment", increment);
 
-      // YÊU CẦU: Khai báo thêm "RegisterAutoBid" vào enum requestType trong class NetworkRequest nhé!
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.valueOf("RegisterAutoBid"), requestData);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.valueOf("RegisterAutoBid"), requestData);
       out.writeObject(request);
       out.flush();
 
@@ -253,7 +254,7 @@ public class ItemsEventHandler {
 
   public static boolean cancelAutoBid(String itemId, String userId) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
-         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
@@ -261,8 +262,8 @@ public class ItemsEventHandler {
       requestData.put("itemId", itemId);
       requestData.put("userId", userId);
 
-      // YÊU CẦU: Khai báo thêm "CancelAutoBid" vào enum requestType trong class NetworkRequest nhé!
-      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.valueOf("CancelAutoBid"), requestData);
+      NetworkRequest request =
+          new NetworkRequest(NetworkRequest.requestType.valueOf("CancelAutoBid"), requestData);
       out.writeObject(request);
       out.flush();
 

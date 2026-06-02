@@ -8,7 +8,7 @@ public class Properties {
   // https://github.com/ZacharyDavidSaunders/InventoryManagementSystem/blob/master/src/InventoryManagementSystem/Properties.java
 
   private static final String APPLICATION_NAME = "Auction Client";
-  private static final String APPLICATION_VERSION = "INDEV v0.1";
+  private static final String APPLICATION_VERSION = "RELEASE v1.0.0";
   private static final String APPLICATION_NAME_AND_VERSION =
       APPLICATION_NAME + " (" + APPLICATION_VERSION + ")";
 

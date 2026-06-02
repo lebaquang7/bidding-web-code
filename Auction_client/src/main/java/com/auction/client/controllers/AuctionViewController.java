@@ -311,8 +311,10 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     String maxBidInput = autoBidderMaxBidBox.getText();
     String incrementInput = autoBidderBidIncrementBox.getText();
 
-    if (maxBidInput == null || maxBidInput.trim().isEmpty() ||
-            incrementInput == null || incrementInput.trim().isEmpty()) {
+    if (maxBidInput == null
+        || maxBidInput.trim().isEmpty()
+        || incrementInput == null
+        || incrementInput.trim().isEmpty()) {
       autoBidderErrorBox.setText("Vui lòng nhập đầy đủ Giá tối đa và Bước giá!");
       return;
     }
@@ -320,7 +322,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     try {
       BigDecimal maxBid = new BigDecimal(maxBidInput);
       BigDecimal increment = new BigDecimal(incrementInput);
-      BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
+      BigDecimal currentPrice =
+          CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
 
       if (maxBid.compareTo(currentPrice) <= 0) {
         autoBidderErrorBox.setText("Giá tối đa phải lớn hơn giá hiện tại!");
@@ -342,9 +345,9 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
       BigDecimal incrementVND = CurrencySelectorHandler.getInstance().getVNDPrice(increment);
 
       // Gọi qua ItemsEventHandler để ném xuống mạng
-      boolean isSuccess = ItemsEventHandler.registerAutoBid(
-              currentItem.getId(), currentUser.getId(), maxBidVND, incrementVND
-      );
+      boolean isSuccess =
+          ItemsEventHandler.registerAutoBid(
+              currentItem.getId(), currentUser.getId(), maxBidVND, incrementVND);
 
       if (isSuccess) {
         autoBidderErrorBox.setStyle("-fx-text-fill: green;");
