@@ -223,4 +223,55 @@ public class ItemsEventHandler {
       return "fail";
     }
   }
+
+  public static boolean registerAutoBid(String itemId, String userId, BigDecimal maxBid, BigDecimal increment) {
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      // Gói 4 thông số vào một Map để gửi đi cho gọn
+      Map<String, Object> requestData = new HashMap<>();
+      requestData.put("itemId", itemId);
+      requestData.put("userId", userId);
+      requestData.put("maxBid", maxBid);
+      requestData.put("increment", increment);
+
+      // YÊU CẦU: Khai báo thêm "RegisterAutoBid" vào enum requestType trong class NetworkRequest nhé!
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.valueOf("RegisterAutoBid"), requestData);
+      out.writeObject(request);
+      out.flush();
+
+      Object response = in.readObject();
+      return (response instanceof Boolean) ? (Boolean) response : false;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public static boolean cancelAutoBid(String itemId, String userId) {
+    try (Socket socket = new Socket("127.0.0.1", 1234);
+         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+      out.flush();
+      ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+      Map<String, Object> requestData = new HashMap<>();
+      requestData.put("itemId", itemId);
+      requestData.put("userId", userId);
+
+      // YÊU CẦU: Khai báo thêm "CancelAutoBid" vào enum requestType trong class NetworkRequest nhé!
+      NetworkRequest request = new NetworkRequest(NetworkRequest.requestType.valueOf("CancelAutoBid"), requestData);
+      out.writeObject(request);
+      out.flush();
+
+      Object response = in.readObject();
+      return (response instanceof Boolean) ? (Boolean) response : false;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 }

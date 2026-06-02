@@ -306,8 +306,80 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   // TODO: work on these
   @FXML
-  public void enableAutoBid(ActionEvent event) {}
+  public void enableAutoBid(ActionEvent event) {
+    autoBidderErrorBox.setStyle("-fx-text-fill: red;");
+    autoBidderErrorBox.setText("");
+
+    String maxBidInput = autoBidderMaxBidBox.getText();
+    String incrementInput = autoBidderBidIncrementBox.getText();
+
+    if (maxBidInput == null || maxBidInput.trim().isEmpty() ||
+            incrementInput == null || incrementInput.trim().isEmpty()) {
+      autoBidderErrorBox.setText("Vui lòng nhập đầy đủ Giá tối đa và Bước giá!");
+      return;
+    }
+
+    try {
+      BigDecimal maxBid = new BigDecimal(maxBidInput);
+      BigDecimal increment = new BigDecimal(incrementInput);
+      BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
+
+      if (maxBid.compareTo(currentPrice) <= 0) {
+        autoBidderErrorBox.setText("Giá tối đa phải lớn hơn giá hiện tại!");
+        return;
+      }
+      if (increment.compareTo(BigDecimal.ZERO) <= 0) {
+        autoBidderErrorBox.setText("Bước giá phải lớn hơn 0!");
+        return;
+      }
+
+      User currentUser = AccountEventHandler.getCurrentUser();
+      if (currentUser == null) {
+        autoBidderErrorBox.setText("Lỗi: Không tìm thấy thông tin phiên đăng nhập!");
+        return;
+      }
+
+      // Convert về VND trước khi gửi xuống Server
+      BigDecimal maxBidVND = CurrencySelectorHandler.getInstance().getVNDPrice(maxBid);
+      BigDecimal incrementVND = CurrencySelectorHandler.getInstance().getVNDPrice(increment);
+
+      // Gọi qua ItemsEventHandler để ném xuống mạng
+      boolean isSuccess = ItemsEventHandler.registerAutoBid(
+              currentItem.getId(), currentUser.getId(), maxBidVND, incrementVND
+      );
+
+      if (isSuccess) {
+        autoBidderErrorBox.setStyle("-fx-text-fill: green;");
+        autoBidderErrorBox.setText("Đã kích hoạt Auto-Bid thành công!");
+        autoBidderMaxBidBox.setDisable(true);
+        autoBidderBidIncrementBox.setDisable(true);
+      } else {
+        autoBidderErrorBox.setText("Lỗi: Server từ chối cấu hình Auto-Bid này.");
+      }
+    } catch (NumberFormatException e) {
+      autoBidderErrorBox.setText("Vui lòng chỉ nhập số hợp lệ!");
+    }
+  }
 
   @FXML
-  public void stopAutoBid(ActionEvent event) {}
+  public void stopAutoBid(ActionEvent event) {
+    autoBidderErrorBox.setStyle("-fx-text-fill: red;");
+    autoBidderErrorBox.setText("");
+
+    User currentUser = AccountEventHandler.getCurrentUser();
+    if (currentUser == null) return;
+
+    boolean isSuccess = ItemsEventHandler.cancelAutoBid(currentItem.getId(), currentUser.getId());
+
+    if (isSuccess) {
+      autoBidderErrorBox.setStyle("-fx-text-fill: green;");
+      autoBidderErrorBox.setText("Đã tắt hệ thống Auto-Bid.");
+      autoBidderMaxBidBox.setDisable(false);
+      autoBidderBidIncrementBox.setDisable(false);
+      autoBidderMaxBidBox.clear();
+      autoBidderBidIncrementBox.clear();
+    } else {
+      autoBidderErrorBox.setText("Lỗi: Không thể tắt Auto-Bid lúc này.");
+    }
+  }
 }

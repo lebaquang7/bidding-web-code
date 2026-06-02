@@ -32,7 +32,6 @@ public class AuctionSession {
   private final ScheduledExecutorService scheduler =
       Executors
           .newSingleThreadScheduledExecutor(); // Dùng để quản lý thời gian của phiên đấu giá và
-
   public void setCurrentState(AuctionStatus currentState) {
     this.currentState = currentState;
   }
@@ -137,20 +136,21 @@ public class AuctionSession {
 
       if (highestBidder == null) {
         this.currentState = AuctionStatus.CANCELLED;
-        System.out.println(
-            "[Phiên đấu giá "
-                + sessionId
-                + "]: đã kết thúc mà không có người thắng. Mặt hàng: "
-                + auctionItem.getItemName()
-                + " sẽ được rút khỏi đấu giá.");
+        DatabaseConfig.updateAuctionStatus(sessionId, currentState);
+        System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc mà không có người thắng. Mặt hàng: " + auctionItem.getItemName() + " sẽ được rút khỏi đấu giá.");
+
+        Map<String, Object> endData = new HashMap<>();
+        endData.put("type", "END_AUCTION");
+        endData.put("sessionId", sessionId);
+        endData.put("winnerName", "NO_WINNER");
+        NotificationService.broadcast(endData);
+
+        shutdownScheduler();
+        return true;
       }
 
       System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc.");
-      System.out.println(
-          "Người thắng: "
-              + highestBidder.getUserName()
-              + " với giá: "
-              + auctionItem.getCurrentPrice());
+      System.out.println("Người thắng: " + highestBidder.getUserName() + " với giá: " + auctionItem.getCurrentPrice());
 
       Map<String, Object> endData = new HashMap<>();
       endData.put("type", "END_AUCTION");
@@ -163,20 +163,30 @@ public class AuctionSession {
     }
   }
 
+  private volatile boolean schedulerShutdown = false;
+
+  // Method chung để shutdown an toàn scheduler, tránh việc bị gọi nhiều lần hoặc khi đã shutdown rồi
+  private void shutdownScheduler() {
+    if (!schedulerShutdown && !scheduler.isShutdown()) {
+      scheduler.shutdown();
+      schedulerShutdown = true;
+    }
+  }
+
   /**
    * Nếu người thắng không thanh toán trong thời gian quy định, hoặc nếu phiên đấu giá bị hủy bỏ bởi
    * admin, thì sẽ chuyển trạng thái sang CANCELLED và thông báo cho tất cả người tham gia.
    */
-  public boolean cancle() {
+  public boolean cancel() {
     synchronized (lock) {
-      if (this.currentState != AuctionStatus.RUNNING
-          && this.currentState != AuctionStatus.FINISHED) {
+      if (this.currentState != AuctionStatus.RUNNING && this.currentState != AuctionStatus.FINISHED) {
         return false;
       }
 
       this.currentState = AuctionStatus.CANCELLED;
+      DatabaseConfig.updateAuctionStatus(sessionId, currentState);
       System.out.println("[Phiên đấu giá " + sessionId + "]: đã bị hủy bỏ.");
-      scheduler.shutdown();
+      shutdownScheduler();
       return true;
     }
   }
@@ -199,17 +209,13 @@ public class AuctionSession {
 
       if (isSuccess) {
         this.currentState = AuctionStatus.PAID;
+        DatabaseConfig.updateAuctionStatus(sessionId, currentState);
         System.out.println(" [Phiên " + sessionId + "] Đã nhận thanh toán. Giao dịch thành công!");
-        scheduler.shutdown();
+        shutdownScheduler();
         return true;
       }
 
-      System.out.println(
-          " [Phiên "
-              + sessionId
-              + "] Thanh toán thất bại. Người thắng "
-              + highestBidder.getUserName()
-              + " không đủ tiền để thanh toán.");
+      System.out.println(" [Phiên " + sessionId + "] Thanh toán thất bại. Người thắng " + highestBidder.getUserName() + " không đủ tiền để thanh toán.");
       return false;
     }
   }
@@ -222,13 +228,9 @@ public class AuctionSession {
     synchronized (lock) {
       if (this.currentState == AuctionStatus.FINISHED) {
         this.currentState = AuctionStatus.CANCELLED;
-        System.out.println(
-            "[Phiên đấu giá "
-                + sessionId
-                + "]: đã kết thúc nhưng người thắng "
-                + highestBidder.getUserName()
-                + " không thanh toán trong thời gian quy định. Phiên đấu giá bị hủy bỏ.");
-        scheduler.shutdown();
+        DatabaseConfig.updateAuctionStatus(sessionId, currentState);
+        System.out.println("[Phiên đấu giá " + sessionId + "]: đã kết thúc nhưng người thắng " + highestBidder.getUserName() + " không thanh toán trong thời gian quy định. Phiên đấu giá bị hủy bỏ.");
+        shutdownScheduler();
       }
     }
   }
