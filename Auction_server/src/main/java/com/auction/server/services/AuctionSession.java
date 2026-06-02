@@ -69,7 +69,12 @@ public class AuctionSession {
                 auctionItem.getEndTime()
         );
 
-        this.remainingSeconds = durationInSeconds;
+        long durationInSeconds = Duration.between(
+                LocalDateTime.now(),
+                auctionItem.getEndTime()
+        ).getSeconds();
+
+        this.remainingSeconds = Math.max(0, durationInSeconds);
       }
 
       if (this.remainingSeconds <= 0) {
@@ -84,7 +89,6 @@ public class AuctionSession {
       boolean dbUpdated = DatabaseConfig.updateAuctionStatus(this.sessionId, AuctionStatus.RUNNING);
 
       if (dbUpdated) {
-        this.remainingSeconds = durationInSeconds;
         this.currentState = AuctionStatus.RUNNING;
 
         if (auctionDetails != null) {
@@ -104,7 +108,7 @@ public class AuctionSession {
             if (countdownTask != null) {countdownTask.cancel(false);}
             endAuction();
           }
-        }, 1, 1, TimeUnit.SECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
         System.out.println("[Phiên " + sessionId + "] Đã bắt đầu countdown.");
 
         System.out.println("[Phiên " + sessionId + "] Đã mở bán thành công.");
