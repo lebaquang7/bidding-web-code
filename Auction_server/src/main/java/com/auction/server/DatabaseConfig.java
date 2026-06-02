@@ -249,6 +249,36 @@ public class DatabaseConfig {
     }
   }
 
+  // Xóa vật phẩm nếu Admin từ chối bán
+  public static String deleteItemIfPending(String itemId) {
+    String checkSql = "SELECT status FROM items WHERE id = ?";
+    String deleteSql = "DELETE FROM items WHERE id = ?";
+
+    try (Connection conn = getConnection();
+         PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+
+      psCheck.setString(1, itemId);
+      ResultSet rs = psCheck.executeQuery();
+
+      if (rs.next()) {
+        String status = rs.getString("status");
+
+        if ("PENDING_APPROVAL".equalsIgnoreCase(status)) {
+          try (PreparedStatement psDelete = conn.prepareStatement(deleteSql)) {
+            psDelete.setString(1, itemId);
+            int rows = psDelete.executeUpdate();
+            return (rows > 0) ? "success" : "fail";
+          }
+        } else {
+          return status.toLowerCase();
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return "fail";
+  }
+
   // Hàm lấy tất cả vật phẩm trong DB để đưa lên giao diện
   public static List<Item> getAllItems() {
     List<Item> items = new ArrayList<>();

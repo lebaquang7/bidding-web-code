@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -90,7 +91,30 @@ public class AdminCardController {
   // TODO: make this button denies a published auction from coming to the actual
   // auction list
   @FXML
-  public void denyAuction(ActionEvent event) {}
+  public void denyAuction(ActionEvent event) {
+    User currentUser = AccountEventHandler.getCurrentUser();
+    String result = ItemsEventHandler.denyAuction(currentItem.getId(), currentUser);
+
+    if (result.equals("success")) {
+      AlertMessageController.showInfo("Thành công: ", "", "Vật phẩm đã được xóa khỏi hệ thống.");
+
+      Platform.runLater(() -> {
+        if (nameLabel.getScene() != null) {
+          Node cardNode = nameLabel.getParent();
+          if (cardNode.getParent() instanceof javafx.scene.layout.Pane) {
+            ((javafx.scene.layout.Pane) cardNode.getParent()).getChildren().remove(cardNode);
+          }
+        }
+      });
+
+    } else if (result.equals("running") || result.equals("finished")) {
+      AlertMessageController.showError("Lỗi", "", "Phiên đấu giá đã được khởi tạo hoặc đã kết thúc nên không hủy được.");
+    } else if (result.equals("unauthorized")) {
+      AlertMessageController.showError("Lỗi", "", "Bạn không có quyền Admin để thực hiện thao tác này.");
+    } else {
+      AlertMessageController.showError("Lỗi", "", "Không thể xóa vật phẩm do lỗi hệ thống.");
+    }
+  }
 
   @FXML
   public void openImageView(MouseEvent event) {
