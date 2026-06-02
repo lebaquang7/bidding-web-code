@@ -1,14 +1,12 @@
 package com.auction.client.controllers;
 
-import java.io.ByteArrayInputStream;
-
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.AuctionStatus;
 import com.auction.shared.models.Item;
-
+import java.io.ByteArrayInputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -66,7 +64,8 @@ public class AuctionCardController {
                   });
             });
 
-    //changes color based on auction state. TODO: if possible, update realtime. if not, delete the comment.
+    // changes color based on auction state. TODO: if possible, update realtime. if not, delete the
+    // comment.
     updateColorByAuctionState();
   }
 

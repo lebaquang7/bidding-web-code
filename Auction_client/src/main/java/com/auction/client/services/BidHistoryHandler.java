@@ -1,5 +1,3 @@
 package com.auction.client.services;
 
-public class BidHistoryHandler {
-
-}
+public class BidHistoryHandler {}

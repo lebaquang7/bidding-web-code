@@ -1,8 +1,5 @@
 package com.auction.client.controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
@@ -21,7 +18,8 @@ import com.auction.shared.models.Bidder;
 import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
-
+import java.math.BigDecimal;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -84,7 +82,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
     try {
       BigDecimal bidAmount = new BigDecimal(placeBidBox.getText());
-      BigDecimal currentPrice = CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
+      BigDecimal currentPrice =
+          CurrencySelectorHandler.getInstance().getConvertedPrice(currentItem.getCurrentPrice());
       BigDecimal incrementPercent = currentItem.getPriceIncrement();
       BigDecimal minBidRequired =
           currentPrice.add(currentPrice.multiply(incrementPercent).divide(new BigDecimal("100")));
@@ -103,7 +102,10 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
       // Trả về enum BidStatus từ Server
       BidStatus.bidStatus result =
-          ItemsEventHandler.placeBid(currentItem.getId(), currentUser.getId(), CurrencySelectorHandler.getInstance().getVNDPrice(bidAmount));
+          ItemsEventHandler.placeBid(
+              currentItem.getId(),
+              currentUser.getId(),
+              CurrencySelectorHandler.getInstance().getVNDPrice(bidAmount));
       updateUiFromBidStatus(result);
 
       // 6. Xử lý UI dựa trên phản hồi của Server
@@ -154,10 +156,11 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     // listener for currency type changes
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
-        .addListener((observable, oldVal, newVal) -> {
-          updateChartBounds();
-          updateChart();
-        });
+        .addListener(
+            (observable, oldVal, newVal) -> {
+              updateChartBounds();
+              updateChart();
+            });
 
     // Cập nhật currentPrice realtime
     item.currentPriceProperty()
@@ -190,28 +193,40 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   public static void updateChartTime(List<BidTransaction> bidHistory, NumberAxis xAxis) {
     if (bidHistory == null || bidHistory.isEmpty()) {
-        return;
+      return;
     }
 
-    long lowerBound = bidHistory.stream()
-        .mapToLong(bt -> bt.getBidTime().atZone(java.time.ZoneId.systemDefault()).toInstant().getEpochSecond())
-        .min()
-        .getAsLong();
+    long lowerBound =
+        bidHistory.stream()
+            .mapToLong(
+                bt ->
+                    bt.getBidTime()
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toInstant()
+                        .getEpochSecond())
+            .min()
+            .getAsLong();
 
-    long upperBound = bidHistory.stream()
-        .mapToLong(bt -> bt.getBidTime().atZone(java.time.ZoneId.systemDefault()).toInstant().getEpochSecond())
-        .max()
-        .getAsLong();
+    long upperBound =
+        bidHistory.stream()
+            .mapToLong(
+                bt ->
+                    bt.getBidTime()
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toInstant()
+                        .getEpochSecond())
+            .max()
+            .getAsLong();
 
-    // prevent x axis being 0 
+    // prevent x axis being 0
     if (lowerBound == upperBound) {
-        lowerBound -= 60;
-        upperBound += 60;
+      lowerBound -= 60;
+      upperBound += 60;
     }
 
     xAxis.setLowerBound(lowerBound);
     xAxis.setUpperBound(upperBound);
-    xAxis.setTickUnit(Math.max(1, (upperBound - lowerBound) / 5)); 
+    xAxis.setTickUnit(Math.max(1, (upperBound - lowerBound) / 5));
   }
 
   /** Usage: pass on msg to auction bidding service to process */
@@ -265,7 +280,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   private void updateChart() {
     List<BidTransaction> bidHistory = ItemsEventHandler.fetchBidTransactionsForItem(currentItem);
     updateChartTime(bidHistory, priceChartXAxis);
-    ObservableList<XYChart.Series<Number, Number>> chartData = ChartDataHandler.setChartDisplay(bidHistory);
+    ObservableList<XYChart.Series<Number, Number>> chartData =
+        ChartDataHandler.setChartDisplay(bidHistory);
     priceChart.setData(chartData);
   }
 

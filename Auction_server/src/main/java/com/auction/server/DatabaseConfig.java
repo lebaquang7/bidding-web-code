@@ -1,16 +1,5 @@
 package com.auction.server;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.auction.shared.models.Admin;
 import com.auction.shared.models.Art;
 import com.auction.shared.models.AuctionStatus;
@@ -21,6 +10,16 @@ import com.auction.shared.models.Item;
 import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
 import com.auction.shared.models.Vehicle;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class DatabaseConfig {
   // Kết nối với database
@@ -611,16 +610,16 @@ public class DatabaseConfig {
     String sql = "SELECT * FROM bid_history";
     List<BidTransaction> bidHistory = new ArrayList<>();
     try (Connection conn = getConnection();
-    PreparedStatement ps = conn.prepareStatement(sql); 
-    ResultSet rs = ps.executeQuery()) {
-    while (rs.next()) {
-      String itemId = rs.getString("item_Id");
-      String bidderId = rs.getString("bidder_Id");
-      BigDecimal bidAmount = rs.getBigDecimal("bid_amount");
-      LocalDateTime bidTime = rs.getTimestamp("bid_time").toLocalDateTime();
-      BidTransaction bidTransaction = new BidTransaction(itemId, bidderId, bidAmount, bidTime);
-      bidHistory.add(bidTransaction);
-    }
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        String itemId = rs.getString("item_Id");
+        String bidderId = rs.getString("bidder_Id");
+        BigDecimal bidAmount = rs.getBigDecimal("bid_amount");
+        LocalDateTime bidTime = rs.getTimestamp("bid_time").toLocalDateTime();
+        BidTransaction bidTransaction = new BidTransaction(itemId, bidderId, bidAmount, bidTime);
+        bidHistory.add(bidTransaction);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       return new ArrayList<>();
@@ -632,20 +631,20 @@ public class DatabaseConfig {
     String sql = "SELECT * FROM items";
     HashMap<String, AuctionStatus> itemStatusHashMap = new HashMap<>();
     try (Connection conn = getConnection();
-    PreparedStatement ps = conn.prepareStatement(sql); 
-    ResultSet rs = ps.executeQuery()) {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-    AuctionStatus auctionStatus = AuctionStatus.UNKNOWN;
-    switch(rs.getString("status")) {
-      case "PENDING_APPROVAL" -> auctionStatus = AuctionStatus.PENDING_APPROVAL;
-      case "RUNNING" -> auctionStatus = AuctionStatus.RUNNING;
-      case "FINISHED" -> auctionStatus = AuctionStatus.FINISHED;
-      case "CANCELLED" -> auctionStatus = AuctionStatus.CANCELLED;
-      case "PAID" -> auctionStatus = AuctionStatus.PAID;
-    }
-    String itemId = rs.getString("id");
-    itemStatusHashMap.put(itemId, auctionStatus);
-  }
+        AuctionStatus auctionStatus = AuctionStatus.UNKNOWN;
+        switch (rs.getString("status")) {
+          case "PENDING_APPROVAL" -> auctionStatus = AuctionStatus.PENDING_APPROVAL;
+          case "RUNNING" -> auctionStatus = AuctionStatus.RUNNING;
+          case "FINISHED" -> auctionStatus = AuctionStatus.FINISHED;
+          case "CANCELLED" -> auctionStatus = AuctionStatus.CANCELLED;
+          case "PAID" -> auctionStatus = AuctionStatus.PAID;
+        }
+        String itemId = rs.getString("id");
+        itemStatusHashMap.put(itemId, auctionStatus);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       return new HashMap<>();
