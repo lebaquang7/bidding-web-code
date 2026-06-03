@@ -7,6 +7,7 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
   - Giao diện người dùng (GUI) với các chức năng hỗ trợ phiên đấu giá, hỗ trợ thay đổi nền và đơn vị tiền tệ được hiển thị.
   - Giao diện hỗ trợ cập nhật dữ liệu phiên đấu giá theo thời gian thực (realtime update), biểu đồ giá theo thời gian (live price chart).
   - Server có khả năng xử lý các yêu cầu đấu giá đồng thời (concurrent bidding)
+  - Hỗ trợ tính năng auto bid với thang tăng khi bid và trần giá 
   - ...
 ## 2 - Công nghệ sử dụng, môi trường chạy, yêu cầu cài đặt
 - Công nghệ sử dụng:
@@ -76,7 +77,7 @@ mvn javafx:run
   - Giao diện người dùng ✅
   - CI/CD chạy xanh ✅
 - Chức năng nâng cao:
-  - Auto Bidding 
+  - Auto Bidding ✅
   - Concurrent Bidding ✅
   - Realtime Update ✅
   - Realtime Price Curve ✅
