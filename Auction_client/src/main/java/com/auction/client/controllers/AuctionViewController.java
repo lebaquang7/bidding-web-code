@@ -260,7 +260,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   public void handleAuctionEndEvent(String winnerName) {
     bidderFeatureBox.setDisable(true);
     remainingTimeLabel.setText("00:00");
-    placeBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
+    placeBidErrorBox.setText(winnerName + " đã thắng phiên đấu giá.");
   }
 
   /** Usage: initialize chart layout */
@@ -308,7 +308,6 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     }
   }
 
-  // TODO: work on these
   @FXML
   public void enableAutoBid(ActionEvent event) {
     try {
