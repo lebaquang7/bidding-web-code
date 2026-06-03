@@ -300,7 +300,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
    */
   public void handleAuctionEndEvent(String winnerName) {
     remainingTimeLabel.setText("00:00");
-    placeBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
+    placeBidErrorBox.setText(winnerName + " đã thắng phiên đấu giá.");
   }
 
   /**

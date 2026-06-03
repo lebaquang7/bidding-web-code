@@ -41,7 +41,6 @@ public class ClientNotificationListener extends Thread {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-      // Gửi tín hiệu "đăng ký đường dây nóng"
       NetworkRequest subReq =
           new NetworkRequest(NetworkRequest.requestType.SubscribeNotification, null);
       out.writeObject(subReq);
@@ -68,6 +67,10 @@ public class ClientNotificationListener extends Thread {
                 () -> {
                   target.setCurrentPrice(tx.getBidAmount());
                 });
+
+            synchronized (this) {
+              this.notifyAll();
+            }
           } else {
             System.out.println("Không tìm thấy Item ID" + tx.getItemId());
           }

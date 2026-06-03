@@ -1,5 +1,6 @@
 package com.auction.client.services;
 
+import com.auction.client.MainApp;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
 import java.math.BigDecimal;
@@ -11,7 +12,6 @@ public class AutoBidWorker implements Runnable {
   private final BigDecimal maxBid;
   private final BigDecimal increment;
   private volatile boolean running = true;
-  private final Object lock = new Object();
 
   /**
    * Constructor
@@ -31,15 +31,16 @@ public class AutoBidWorker implements Runnable {
   /** Dừng worker */
   public void stop() {
     running = false;
-    synchronized (lock) {
-      lock.notifyAll(); // Đánh thức để thoát vòng lặp
-    }
+    wakeUp();
   }
 
   /** Gọi worker */
   public void wakeUp() {
-    synchronized (lock) {
-      lock.notifyAll();
+    Object lock = MainApp.getNotificationListener();
+    if (lock != null) {
+      synchronized (lock) {
+        lock.notifyAll();
+      }
     }
   }
 
@@ -47,15 +48,18 @@ public class AutoBidWorker implements Runnable {
   @Override
   public void run() {
     while (running) {
-      synchronized (lock) {
-        try {
-          lock.wait(5000);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          break;
+      Object lock = MainApp.getNotificationListener();
+      if (lock != null) {
+        synchronized (lock) {
+          try {
+            lock.wait(5000);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            break;
+          }
         }
+        if (!running) break;
       }
-      if (!running) break;
 
       // Kiểm tra nếu autobid thấp hơn giá tối thiểu thì chọn giá tối thiểu thay
       BigDecimal currentPrice = item.getCurrentPrice();
