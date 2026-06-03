@@ -121,17 +121,18 @@ public class ClientHandler extends Thread {
 
         try {
           // Kiểm tra nếu có ảnh
-          if (newItem.getImageBytes() != null && newItem.getImagePath() != null) {
-            String userHome = System.getProperty("user.home");
-            File imageDir = new File(userHome + "/server_storage/item_images");
-            if (!imageDir.exists()) imageDir.mkdirs();
+          if (newItem.getImageBytes() != null) {
+            File directory = new File("server_images");
+            if (!directory.exists()) directory.mkdirs();
 
-            String uniqueFileName = System.currentTimeMillis() + "_" + newItem.getImagePath();
-            File fileToSave = new File(imageDir, uniqueFileName);
+            String serverPath = "server_images/" + System.currentTimeMillis() + "_" + newItem.getImagePath();
 
-            Files.write(fileToSave.toPath(), newItem.getImageBytes());
-
-            newItem.setImagePath(uniqueFileName);
+            try {
+              Files.write(new File(serverPath).toPath(), newItem.getImageBytes());
+              newItem.setImagePath(serverPath);
+            } catch (IOException e) {
+              System.err.println("Lỗi ghi file ảnh: " + e.getMessage());
+            }
           }
 
           boolean success = DatabaseConfig.saveNewItem(newItem);
@@ -162,14 +163,17 @@ public class ClientHandler extends Thread {
 
       // Yêu cầu lấy dữ liệu ảnh (mảng byte) từ server_storage
       if (networkRequest.getType() == NetworkRequest.requestType.GetItemImage) {
-        String fileName = (String) networkRequest.getData();
+        String imagePath = (String) networkRequest.getData();
         try {
-          String userHome = System.getProperty("user.home");
-          File imageFile = new File(userHome + "/server_storage/item_images", fileName);
-
-          if (imageFile.exists()) {
-            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-            out.writeObject(imageBytes);
+          if (imagePath != null && !imagePath.isEmpty()) {
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+              byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+              out.writeObject(imageBytes);
+            } else {
+              System.err.println("Không tìm thấy file: " + imagePath);
+              out.writeObject(null);
+            }
           } else {
             out.writeObject(null);
           }
@@ -281,6 +285,7 @@ public class ClientHandler extends Thread {
         }
       }
 
+      // Hủy phiên đấu giá
       if (networkRequest.getType() == NetworkRequest.requestType.DenyAuction) {
         Map<String, Object> data = (Map<String, Object>) networkRequest.getData();
         String itemId = (String) data.get("itemId");
