@@ -592,19 +592,19 @@ public class DatabaseConfig {
     }
   }
 
-  public static boolean updateItemEndTime(String itemId, LocalDateTime newEndTime) {
+  public static void updateItemEndTime(String itemId, LocalDateTime newEndTime) {
     String sql = "UPDATE items SET end_time = ? WHERE id = ?";
 
     try (Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-      pstmt.setTimestamp(1, java.sql.Timestamp.valueOf(newEndTime));
+      pstmt.setTimestamp(1, Timestamp.valueOf(newEndTime));
       pstmt.setString(2, itemId);
 
-      return pstmt.executeUpdate() > 0;
+      pstmt.executeUpdate();
     } catch (SQLException e) {
       System.err.println("Lỗi cập nhật thời gian: " + e.getMessage());
-      return false;
+      e.printStackTrace();
     }
   }
 

@@ -150,9 +150,10 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   @Override
   public void setItem(Item item) {
+    ClientNotificationListener.setCurrentController(this);
     this.currentItem = Inventory.getItemById(item.getId());
 
-    if (this.currentItem != null) {
+    if (this.currentItem == null) {
       this.currentItem = item;
     }
 

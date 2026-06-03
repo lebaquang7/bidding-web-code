@@ -7,8 +7,11 @@ import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.client.utils.MiscTools;
+import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,7 +88,11 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
   @Override
   public void setItem(Item item) {
     ClientNotificationListener.setCurrentController(this);
-    this.currentItem = item;
+    this.currentItem = Inventory.getItemById(item.getId());
+    LocalDateTime now = LocalDateTime.now();
+    String bidderName = currentItem.getHighestBidderName();
+
+    timeRemainingLabel.setText("00:00");
 
     idLabel.setText(currentItem.getId());
     LabelHandler.setDetailedTooltip(idLabel);
@@ -101,6 +108,16 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
 
     CurrencySelectorHandler.bindPriceLabel(currentPriceLabel, currentItem.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(currentPriceLabel, 15, 12, 10, 1);
+
+    if (bidderName == null || bidderName.trim().isEmpty()) {
+      winnerLabel.setText("------");
+    } else {
+      if (currentItem.getEndTime() != null && now.isBefore(currentItem.getEndTime())) {
+        winnerLabel.setText("------");
+      } else {
+        winnerLabel.setText(bidderName);
+      }
+    }
 
     if (currentItem.getImageBytes() != null) {
       imageView.setImage(new Image(new ByteArrayInputStream(currentItem.getImageBytes())));
