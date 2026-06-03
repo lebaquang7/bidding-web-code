@@ -44,7 +44,7 @@ public class Electronics extends Item {
     return model;
   }
 
-  public void setModel(String module) {
+  public void setModel(String model) {
     this.model = model;
   }
 

@@ -173,6 +173,14 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, currentItem.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
 
+    String bidderName = item.getHighestBidderName();
+    if (bidderName == null || bidderName.isEmpty()) {
+      highestBidderLabel.setText("------");
+    } else {
+      highestBidderLabel.setText(bidderName);
+    }
+    LabelHandler.scaleFontSizeToFit(highestBidderLabel, 20, 12, 8, 1);
+
     // Setup biểu đồ tg thực
     setupChartLayout(item);
 
@@ -291,6 +299,17 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     } else {
       remainingTimeLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
     }
+  }
+
+  public void updateHighestBidderUI(String bidderName) {
+    Platform.runLater(
+        () -> {
+          if (highestBidderLabel != null) {
+            String displayName =
+                (bidderName != null && !bidderName.isEmpty()) ? bidderName : "------";
+            highestBidderLabel.setText(displayName);
+          }
+        });
   }
 
   /**

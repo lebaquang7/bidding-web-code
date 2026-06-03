@@ -10,6 +10,7 @@ import com.auction.shared.models.Seller;
 import com.auction.shared.models.User;
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -120,7 +121,7 @@ public class MainMenuSellItemPaneController {
 
       if (selectedImageFile != null) {
         byte[] imageBytes =
-            java.nio.file.Files.readAllBytes(
+            Files.readAllBytes(
                 selectedImageFile.toPath()); // Chuyển file sang byte để gửi qua socket
         newItem.setImageBytes(imageBytes);
         newItem.setImagePath(selectedImageFile.getName()); // Lưu tên file để Server biết định dạng

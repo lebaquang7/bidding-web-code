@@ -173,6 +173,19 @@ public class AuctionSession {
     }
   }
 
+  public void extendDuration(long additionalSeconds) {
+    synchronized (lock) {
+      this.remainingSeconds += additionalSeconds;
+      if (this.auctionItem != null && this.auctionItem.getEndTime() != null) {
+        this.auctionItem.setEndTime(this.auctionItem.getEndTime().plusSeconds(additionalSeconds));
+      }
+    }
+  }
+
+  public long getRemainingSeconds() {
+    return this.remainingSeconds;
+  }
+
   private volatile boolean schedulerShutdown = false;
 
   // Method chung để shutdown an toàn scheduler, tránh việc bị gọi nhiều lần hoặc khi đã shutdown

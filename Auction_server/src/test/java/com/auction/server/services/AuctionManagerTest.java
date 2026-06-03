@@ -37,11 +37,15 @@ public class AuctionManagerTest {
   @Test
   @DisplayName("TC-SERVER-02: Thuật toán Anti-Sniping gia hạn thời gian kết thúc thành công")
   void testApplyAntiSniping_TriggerExtension() {
+    AuctionSession mockSession = Mockito.mock(AuctionSession.class);
     Item mockItem = Mockito.mock(Item.class);
+    mockItem.setEndTime(LocalDateTime.now().plusSeconds(15));
 
     // Mô phỏng phiên đấu giá sắp kết thúc trong vòng 15 giây
-    LocalDateTime dangerEndTime = LocalDateTime.now().plusSeconds(15);
-    Mockito.when(mockItem.getEndTime()).thenReturn(dangerEndTime);
+    Mockito.when(mockSession.getRemainingSeconds()).thenReturn(15L);
+    Mockito.when(mockSession.getAuctionItem()).thenReturn(mockItem);
+
+    AuctionManager.getInstance().registerSession("item_snipe", mockSession);
 
     mockedDbConfig.when(() -> DatabaseConfig.getItemById(Mockito.anyString())).thenReturn(mockItem);
 

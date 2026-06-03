@@ -1,6 +1,8 @@
 package com.auction.server.services;
 
+import com.auction.server.DatabaseConfig;
 import com.auction.shared.models.Item;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,38 +34,32 @@ public class AuctionManager {
     activeAuctions.put(itemId, session);
   }
 
-  public void startNewAuction(String auctionId, Item item) {
-    // Code logic tạo phiên đấu giá và nhét vào activeAuctions
-    System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
-  }
-
   public void applyAntiSniping(String itemId) {
+    AuctionSession session = activeAuctions.get(itemId);
+
+    if (session == null) return;
+
     try {
-      com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
+      Item item = DatabaseConfig.getItemById(itemId);
       if (item == null || item.getEndTime() == null) {
         return;
       }
 
-      long now = System.currentTimeMillis();
-      long triggerZone = 30 * 1000;
-      long extensionTime = 60 * 1000;
+      long triggerZone = 60;
+      long extensionTime = 60;
 
-      long endTimeMillis =
-          item.getEndTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
-      long timeRemaining = endTimeMillis - now;
+      long timeRemaining = session.getRemainingSeconds();
 
+      // Kiểm tra nếu còn dưới 1 phút kích hoạt
       if (timeRemaining > 0 && timeRemaining <= triggerZone) {
-        long newEndTimeMillis = endTimeMillis + extensionTime;
+        // Gia hạn trong RAM (Session sẽ tự gửi TIME_UPDATE mới về Client)
+        session.extendDuration(extensionTime);
 
-        java.time.LocalDateTime newEndTime =
-            java.time.LocalDateTime.ofInstant(
-                java.time.Instant.ofEpochMilli(newEndTimeMillis), java.time.ZoneId.systemDefault());
-        item.setEndTime(newEndTime);
+        // Đồng bộ xuống Database để néu khởi tạo lại vẫn cập nhật được
+        LocalDateTime newEndTime = session.getAuctionItem().getEndTime();
+        DatabaseConfig.updateItemEndTime(itemId, newEndTime);
 
-        System.out.println("[Anti-Sniping] Gia hạn 1 phút cho: " + itemId);
-
-        com.auction.server.DatabaseConfig.updateItemEndTime(itemId, newEndTime);
-        com.auction.server.services.NotificationService.broadcast(item);
+        System.out.println("[Anti-Sniping] Gia hạn thêm 1p cho " + itemId);
       }
     } catch (Exception e) {
       System.err.println("Lỗi chạy Anti-sniping: " + e.getMessage());

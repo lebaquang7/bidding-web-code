@@ -21,6 +21,7 @@ public abstract class Item extends Entity {
   private int durationTime; // Phút
   private LocalDateTime endTime;
   private LocalDateTime startTime;
+  private String highestBidderName;
 
   private static final long serialVersionUID = 1L;
 
@@ -115,6 +116,14 @@ public abstract class Item extends Entity {
 
   public void setHighestBidderId(String highestBidderId) {
     this.highestBidderId = highestBidderId;
+  }
+
+  public String getHighestBidderName() {
+    return highestBidderName;
+  }
+
+  public void setHighestBidderName(String highestBidderName) {
+    this.highestBidderName = highestBidderName;
   }
 
   public BigDecimal getPriceIncrement() {

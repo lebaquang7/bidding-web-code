@@ -28,7 +28,7 @@ public class ManualClientTestRunner {
       Class<?> mainCtrl = MainMenuController.class;
       Class<?> auctionCtrl = AuctionViewController.class;
 
-      if (loginCtrl != null && registerCtrl != null && mainCtrl != null) {
+      if (loginCtrl != null && registerCtrl != null && mainCtrl != null && auctionCtrl != null) {
         System.out.println(
             "[PASSED] TC01: Cấu trúc liên kết các lớp Controller (Đăng nhập, Đăng ký, Menu) khớp 100%.");
       }
