@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 public class AdminCardController {
   // mostly copied from auctionCardController
@@ -102,8 +103,8 @@ public class AdminCardController {
           () -> {
             if (nameLabel.getScene() != null) {
               Node cardNode = nameLabel.getParent();
-              if (cardNode.getParent() instanceof javafx.scene.layout.Pane) {
-                ((javafx.scene.layout.Pane) cardNode.getParent()).getChildren().remove(cardNode);
+              if (cardNode.getParent() instanceof Pane) {
+                ((Pane) cardNode.getParent()).getChildren().remove(cardNode);
               }
             }
           });
