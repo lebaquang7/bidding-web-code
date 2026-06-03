@@ -1,77 +1,78 @@
 package com.auction.client.services;
 
-import com.auction.client.services.ItemsEventHandler;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.User;
 import java.math.BigDecimal;
-import javafx.application.Platform;
 
 public class AutoBidWorker implements Runnable {
-    private final Item item;
-    private final User user;
-    private final BigDecimal maxBid;
-    private final BigDecimal increment;
-    private volatile boolean running = true;
-    private final Object lock = new Object();
+  private final Item item;
+  private final User user;
+  private final BigDecimal maxBid;
+  private final BigDecimal increment;
+  private volatile boolean running = true;
+  private final Object lock = new Object();
 
-    public AutoBidWorker(Item item, User user, BigDecimal maxBid, BigDecimal increment) {
-        this.item = item;
-        this.user = user;
-        this.maxBid = maxBid;
-        this.increment = increment;
+  public AutoBidWorker(Item item, User user, BigDecimal maxBid, BigDecimal increment) {
+    this.item = item;
+    this.user = user;
+    this.maxBid = maxBid;
+    this.increment = increment;
+  }
+
+  public void stop() {
+    running = false;
+    synchronized (lock) {
+      lock.notifyAll(); // Đánh thức để thoát vòng lặp
     }
+  }
 
-    public void stop() {
-        running = false;
-        synchronized (lock) {
-            lock.notifyAll(); // Đánh thức để thoát vòng lặp
+  public void wakeUp() {
+    synchronized (lock) {
+      lock.notifyAll();
+    }
+  }
+
+  @Override
+  public void run() {
+    while (running) {
+      synchronized (lock) {
+        try {
+          lock.wait(5000);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
         }
-    }
+      }
+      if (!running) break;
 
-    public void wakeUp() {
-        synchronized (lock) {
-            lock.notifyAll();
+      // Kiểm tra nếu autobid thấp hơn giá tối thiểu thì chọn giá tối thiểu thay
+      BigDecimal currentPrice = item.getCurrentPrice();
+      BigDecimal minRequiredBid = AuctionBiddingService.calculateMinimumRequiredBid(item);
+      BigDecimal userSuggestedBid = currentPrice.add(increment);
+      BigDecimal finalBid = userSuggestedBid.max(minRequiredBid);
+
+      if (userSuggestedBid.compareTo(minRequiredBid) < 0) {
+        System.out.println(
+            "Bước giá bạn chọn ("
+                + increment
+                + ") thấp hơn quy định. Bot tự động nâng lên mức tối thiểu: "
+                + minRequiredBid.subtract(currentPrice));
+      }
+
+      // so sánh với maxbid
+      boolean isNotHighestBidder =
+          item.getHighestBidderId() == null || !item.getHighestBidderId().equals(user.getId());
+      boolean isWithinBudget = finalBid.compareTo(maxBid) <= 0;
+
+      if (isNotHighestBidder) {
+        if (isWithinBudget) {
+          System.out.println("Đã đặt giá: " + finalBid + " (Min required: " + minRequiredBid + ")");
+          ItemsEventHandler.placeBid(item.getId(), user.getId(), finalBid);
+        } else {
+          System.out.println("Giá tối thiểu vượt quá ngân sách");
+          stop();
         }
+      }
     }
-
-    @Override
-    public void run() {
-        while (running) {
-            synchronized (lock) {
-                try {
-                    lock.wait(5000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-            if (!running) break;
-
-            // Kiểm tra nếu autobid thấp hơn giá tối thiểu thì chọn giá tối thiểu thay
-            BigDecimal currentPrice = item.getCurrentPrice();
-            BigDecimal minRequiredBid = AuctionBiddingService.calculateMinimumRequiredBid(item);
-            BigDecimal userSuggestedBid = currentPrice.add(increment);
-            BigDecimal finalBid = userSuggestedBid.max(minRequiredBid);
-
-            if (userSuggestedBid.compareTo(minRequiredBid) < 0) {
-                System.out.println("Bước giá bạn chọn (" + increment +
-                        ") thấp hơn quy định. Bot tự động nâng lên mức tối thiểu: " +
-                        minRequiredBid.subtract(currentPrice));
-            }
-
-            // so sánh với maxbid
-            boolean isNotHighestBidder = item.getHighestBidderId() == null || !item.getHighestBidderId().equals(user.getId());
-            boolean isWithinBudget = finalBid.compareTo(maxBid) <= 0;
-
-            if (isNotHighestBidder) {
-                if (isWithinBudget) {
-                    System.out.println("Đã đặt giá: " + finalBid + " (Min required: " + minRequiredBid + ")");
-                    ItemsEventHandler.placeBid(item.getId(), user.getId(), finalBid);
-                } else {
-                    System.out.println("Giá tối thiểu vượt quá ngân sách");
-                    stop();
-                }
-            }
-        }
-    }
+  }
 }

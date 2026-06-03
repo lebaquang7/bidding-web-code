@@ -43,7 +43,7 @@ public class MainApp extends Application {
         FXMLLoader.load(
             getClass()
                 .getResource(
-                    "/views/login_view.fxml")); // load Login View as root node,
+                    "/com/auction/client/views/login_view.fxml")); // load Login View as root node,
     // with directory to
     // login_view.fxml
     Scene scene = new Scene(root, initialStageX, initialStageY); // create scene with root

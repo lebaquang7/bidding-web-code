@@ -1,7 +1,12 @@
 package com.auction.client.controllers;
 
 import com.auction.client.MainApp;
-import com.auction.client.services.*;
+import com.auction.client.services.AccountEventHandler;
+import com.auction.client.services.AuctionBiddingService;
+import com.auction.client.services.AutoBidWorker;
+import com.auction.client.services.ClientNotificationListener;
+import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.services.SceneHandler;
 import com.auction.client.utils.ChartDataHandler;
 import com.auction.client.utils.ChartTimeLabelFormatter;
 import com.auction.client.utils.CurrencySelectorHandler;
@@ -307,8 +312,12 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   @FXML
   public void enableAutoBid(ActionEvent event) {
     try {
-      BigDecimal maxBidVND = new BigDecimal(autoBidderMaxBidBox.getText());
-      BigDecimal incrementVND = new BigDecimal(autoBidderBidIncrementBox.getText());
+      BigDecimal maxBidVND =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(new BigDecimal(autoBidderMaxBidBox.getText()));
+      BigDecimal incrementVND =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(new BigDecimal(autoBidderBidIncrementBox.getText()));
       User currentUser = AccountEventHandler.getCurrentUser();
 
       if (currentUser == null || currentItem == null) return;
