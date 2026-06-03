@@ -7,6 +7,16 @@ import com.auction.shared.models.Vehicle;
 import java.math.BigDecimal;
 
 public class ItemFactory {
+  // Class xử lý việc tạo sản phẩm
+  /**
+   * Usage: Tạo sản phẩm
+   *
+   * @param type Loại sản phẩm
+   * @param name Tên sản phẩm
+   * @param description Description sản phẩm
+   * @param startingPrice Giá khởi điểm sản phẩm
+   * @return
+   */
   public static Item createItem(
       String type, String name, String description, BigDecimal startingPrice) {
     BigDecimal currentPrice = startingPrice;

@@ -13,6 +13,7 @@ import java.net.Socket;
 import javafx.application.Platform;
 
 public class ClientNotificationListener extends Thread {
+  // Class xử lý notification giữa server và client
   private static Object currentController;
   private Socket socket;
 
@@ -20,10 +21,16 @@ public class ClientNotificationListener extends Thread {
     this.setDaemon(true); // Tự tắt khi app đóng
   }
 
+  /**
+   * Usage: cài đặt controller hiện tại
+   *
+   * @param controller
+   */
   public static void setCurrentController(Object controller) {
     currentController = controller;
   }
 
+  /** Usage: Xử lý thông tin nhận từ server */
   @Override
   public void run() {
     // Tạo một kết nối luôn mở để nhận cập nhật về giá vật phẩm, etc
@@ -74,6 +81,7 @@ public class ClientNotificationListener extends Thread {
     }
   }
 
+  /** Usage: Dừng listener */
   public void stopListener() {
     try {
       currentController = null;

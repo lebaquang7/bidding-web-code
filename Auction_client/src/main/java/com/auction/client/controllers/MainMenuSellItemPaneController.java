@@ -3,6 +3,7 @@ package com.auction.client.controllers;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ItemFactory;
 import com.auction.client.services.ItemsEventHandler;
+import com.auction.client.utils.AlertMessageHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.Seller;
@@ -11,24 +12,31 @@ import java.io.File;
 import java.math.BigDecimal;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 public class MainMenuSellItemPaneController {
+  // Controller class cho màn hình bán sản phẩm
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_sellItemPane.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML TextField itemNameField;
   @FXML TextField itemDescriptionField;
   @FXML TextField startingPriceField;
   @FXML TextField priceIncrementField;
-  @FXML private Button uploadImageButton;
 
-  @FXML private ComboBox<String> itemTypeComboBox;
-  @FXML private ComboBox<String> itemAuctionDuration;
+  @FXML ComboBox<String> itemTypeComboBox;
+  @FXML ComboBox<String> itemAuctionDuration;
   private File selectedImageFile; // Lưu file ảnh
 
-  @FXML
+  /** Usage: tự động chạy khi controller được gọi */
   public void initialize() {
+    // Thêm phẩn từ cho combobox
     if (itemTypeComboBox != null) {
       itemTypeComboBox.getItems().addAll("Artwork", "Electronics", "Vehicle");
       itemTypeComboBox.getSelectionModel().selectFirst();
@@ -39,7 +47,7 @@ public class MainMenuSellItemPaneController {
       itemAuctionDuration.setValue("2 minutes");
     }
 
-    // set prompt text based on currency type.
+    // Đặt nội dung prompt dựa trên loại tiền được chọn
     double convertedPrice =
         CurrencySelectorHandler.getInstance()
             .getConvertedPrice(BigDecimal.valueOf(100000))
@@ -51,16 +59,21 @@ public class MainMenuSellItemPaneController {
   }
 
   @FXML
+  /**
+   * Usage: Đăng bán sản phẩm khi nhấn nút
+   *
+   * @param event
+   */
   private void handleSubmitItem(ActionEvent event) {
     try {
       if (itemTypeComboBox.getValue() == null) {
-        AlertMessageController.showError("Lỗi", "", "Chưa chọn loại vật phẩm");
+        AlertMessageHandler.showError("Lỗi", "", "Chưa chọn loại vật phẩm");
         return;
       }
 
       int duration = 2;
       String selectedDuration = itemAuctionDuration.getValue();
-      if (selectedDuration.contains("2 minutes")) { // 2m option for demonstration video
+      if (selectedDuration.contains("2 minutes")) { // Lựa chọn 2 phút cho video trình bày
         duration = 2;
       } else if (selectedDuration.contains("10 minutes")) {
         duration = 10;
@@ -76,7 +89,7 @@ public class MainMenuSellItemPaneController {
           CurrencySelectorHandler.getInstance()
               .getVNDPrice(BigDecimal.valueOf(Double.valueOf((startingPriceField.getText()))));
       if (startingPrice.doubleValue() < 100000) {
-        AlertMessageController.showError(
+        AlertMessageHandler.showError(
             "Lỗi",
             "",
             ("Giá khởi đầu không được phép nhỏ hơn"
@@ -88,7 +101,7 @@ public class MainMenuSellItemPaneController {
       }
       double percentage = Double.parseDouble(priceIncrementField.getText());
       if (percentage < 1 || percentage > 10) {
-        AlertMessageController.showError(
+        AlertMessageHandler.showError(
             "Lỗi", "", "Bước tăng giá không được phép nhỏ hơn 1% hoặc lớn hơn 10%");
         return;
       }
@@ -96,10 +109,10 @@ public class MainMenuSellItemPaneController {
 
       User currentUser = AccountEventHandler.getCurrentUser();
       if (currentUser == null) {
-        AlertMessageController.showError("Lỗi: ", "", "Không tìm thấy thông tin người dùng");
+        AlertMessageHandler.showError("Lỗi: ", "", "Không tìm thấy thông tin người dùng");
         return;
       } else if (!(currentUser instanceof Seller)) {
-        AlertMessageController.showError("Lỗi: ", "", "Bạn không phải Seller");
+        AlertMessageHandler.showError("Lỗi: ", "", "Bạn không phải Seller");
       }
 
       String typeOfItem = itemTypeComboBox.getValue();
@@ -118,21 +131,25 @@ public class MainMenuSellItemPaneController {
 
       String result = ItemsEventHandler.sellItem(newItem);
       if ("success".equals(result)) {
-        AlertMessageController.showInfo(
-            "Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
+        AlertMessageHandler.showInfo("Thành công!", "", "Đưa vật phẩm lên sàn đấu giá thành công");
         clearFields();
       } else {
-        AlertMessageController.showError("Lỗi", "", "Đăng bán thất bại");
+        AlertMessageHandler.showError("Lỗi", "", "Đăng bán thất bại");
       }
 
     } catch (NumberFormatException e) {
-      AlertMessageController.showError("Lỗi", "", "Giá tiền không hợp lệ");
+      AlertMessageHandler.showError("Lỗi", "", "Giá tiền không hợp lệ");
     } catch (Exception e) {
-      AlertMessageController.showError("Lỗi", "", "Có lỗi xảy ra: " + e.getMessage());
+      AlertMessageHandler.showError("Lỗi", "", "Có lỗi xảy ra: " + e.getMessage());
     }
   }
 
   @FXML
+  /**
+   * Usage: Đăng hình ảnh khi nhấn nút
+   *
+   * @param event
+   */
   private void handleUploadImage(ActionEvent event) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Chọn ảnh vật phẩm");
@@ -148,7 +165,7 @@ public class MainMenuSellItemPaneController {
     if (file != null) {
       // Kiểm tra dung lượng giới hạn 10MB
       if (file.length() > 10 * 1024 * 1024) {
-        AlertMessageController.showError("Lỗi", "", "Ảnh phải có dung lượng dưới 10MB");
+        AlertMessageHandler.showError("Lỗi", "", "Ảnh phải có dung lượng dưới 10MB");
         return;
       }
 
@@ -157,6 +174,7 @@ public class MainMenuSellItemPaneController {
     }
   }
 
+  /** Usage: Dọn các trường thông tin */
   private void clearFields() {
     itemNameField.clear();
     itemDescriptionField.clear();

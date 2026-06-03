@@ -3,6 +3,7 @@ package com.auction.client.controllers;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
+import com.auction.client.utils.AlertMessageHandler;
 import com.auction.client.utils.CurrencySelectorHandler;
 import com.auction.client.utils.LabelHandler;
 import com.auction.shared.models.Item;
@@ -19,14 +20,28 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 public class AdminCardController {
-  // mostly copied from auctionCardController
+  // Hầu hết giống với file AuctionCardController.java, nhưng cho thẻ sản phẩm hiện trong admin
+  // panel
+  // Controller class hiển thị các thẻ sản phẩm nhỏ trong Admin - Auction View
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW =
+      "/com/auction/client/views/mainMenu_adminAuctionCard.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML Label nameLabel;
   @FXML Label priceLabel;
   @FXML ImageView imageView;
 
-  // each auction card holds the current item
   private Item currentItem;
 
+  /**
+   * Usage: Truyền vào card các dữ liệu của sản phẩm
+   *
+   * @param item Sản phẩm được truyền vào
+   */
   public void setData(Item item) {
     currentItem = item;
 
@@ -68,36 +83,48 @@ public class AdminCardController {
             });
   }
 
+  /**
+   * Usage: Mở panel thông tin sản phẩm khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
   public void goToItemDetails(ActionEvent event) {
-    SceneHandler.switchToItemView(
-        "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
+    SceneHandler.switchToItemView(ItemDetailsController.getPATH_TO_VIEW(), event, currentItem);
   }
 
+  /**
+   * Usage: Khởi tạo phiên đấu giá khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
   public void initializeAuction(ActionEvent event) {
     User currentUser = AccountEventHandler.getCurrentUser();
     String result = ItemsEventHandler.initializeAuction(currentItem.getId(), currentUser);
 
     if (result.equals("success")) {
-      AlertMessageController.showInfo(
+      AlertMessageHandler.showInfo(
           "Thành công", "", currentItem.getItemName() + " đã được đấu giá.");
     } else if (result.equals("unauthorized")) {
-      AlertMessageController.showError("Lỗi", "", "Bạn không phải Admin.");
+      AlertMessageHandler.showError("Lỗi", "", "Bạn không phải Admin.");
     } else {
-      AlertMessageController.showError("Lỗi", "", "Không thể khởi tạo phiên đấu giá.");
+      AlertMessageHandler.showError("Lỗi", "", "Không thể khởi tạo phiên đấu giá.");
     }
   }
 
-  // TODO: make this button denies a published auction from coming to the actual
-  // auction list
+  /**
+   * Usage: Từ chối phiên đấu giá khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
   public void denyAuction(ActionEvent event) {
     User currentUser = AccountEventHandler.getCurrentUser();
     String result = ItemsEventHandler.denyAuction(currentItem.getId(), currentUser);
 
     if (result.equals("success")) {
-      AlertMessageController.showInfo("Thành công: ", "", "Vật phẩm đã được xóa khỏi hệ thống.");
+      AlertMessageHandler.showInfo("Thành công: ", "", "Vật phẩm đã được xóa khỏi hệ thống.");
 
       Platform.runLater(
           () -> {
@@ -110,16 +137,21 @@ public class AdminCardController {
           });
 
     } else if (result.equals("running") || result.equals("finished")) {
-      AlertMessageController.showError(
+      AlertMessageHandler.showError(
           "Lỗi", "", "Phiên đấu giá đã được khởi tạo hoặc đã kết thúc nên không hủy được.");
     } else if (result.equals("unauthorized")) {
-      AlertMessageController.showError(
+      AlertMessageHandler.showError(
           "Lỗi", "", "Bạn không có quyền Admin để thực hiện thao tác này.");
     } else {
-      AlertMessageController.showError("Lỗi", "", "Không thể xóa vật phẩm do lỗi hệ thống.");
+      AlertMessageHandler.showError("Lỗi", "", "Không thể xóa vật phẩm do lỗi hệ thống.");
     }
   }
 
+  /**
+   * Usage: Khi nhấn vào hình ảnh, mở một panel nhỏ hiện hình ảnh phóng to
+   *
+   * @param event
+   */
   @FXML
   public void openImageView(MouseEvent event) {
     SceneHandler.switchToImageView(event, imageView.getImage());

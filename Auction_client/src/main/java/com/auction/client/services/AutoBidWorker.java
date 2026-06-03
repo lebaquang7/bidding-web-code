@@ -5,6 +5,7 @@ import com.auction.shared.models.User;
 import java.math.BigDecimal;
 
 public class AutoBidWorker implements Runnable {
+  // Usage: Worker cho auto bid
   private final Item item;
   private final User user;
   private final BigDecimal maxBid;
@@ -12,6 +13,14 @@ public class AutoBidWorker implements Runnable {
   private volatile boolean running = true;
   private final Object lock = new Object();
 
+  /**
+   * Constructor
+   *
+   * @param item
+   * @param user
+   * @param maxBid
+   * @param increment
+   */
   public AutoBidWorker(Item item, User user, BigDecimal maxBid, BigDecimal increment) {
     this.item = item;
     this.user = user;
@@ -19,6 +28,7 @@ public class AutoBidWorker implements Runnable {
     this.increment = increment;
   }
 
+  /** Dừng worker */
   public void stop() {
     running = false;
     synchronized (lock) {
@@ -26,12 +36,14 @@ public class AutoBidWorker implements Runnable {
     }
   }
 
+  /** Gọi worker */
   public void wakeUp() {
     synchronized (lock) {
       lock.notifyAll();
     }
   }
 
+  /** Usage: Chạy khi worker được call */
   @Override
   public void run() {
     while (running) {

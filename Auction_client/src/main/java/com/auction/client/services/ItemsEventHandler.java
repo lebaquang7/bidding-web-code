@@ -18,7 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemsEventHandler {
-  // Sell item
+  // Class xử lý những sự kiện liên quan đến sản phẩm giữa client và server
+
+  /**
+   * Usage: Gửi yêu cầu bán sản phẩm
+   *
+   * @param newItem Sản phẩm
+   * @return
+   */
   public static String sellItem(Item newItem) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -39,7 +46,11 @@ public class ItemsEventHandler {
     }
   }
 
-  // Lấy item từ DB về
+  /**
+   * Usage: Lấy danh sách Item từ Database về
+   *
+   * @return
+   */
   public static List<Item> fetchAllItems() {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -70,6 +81,12 @@ public class ItemsEventHandler {
     }
   }
 
+  /**
+   * Usage: Lấy trạng thái phiên đấu giá của 1 sản phẩm
+   *
+   * @param item Sản phẩm
+   * @return
+   */
   public static AuctionStatus getAuctionStatus(Item item) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
@@ -92,7 +109,12 @@ public class ItemsEventHandler {
     return AuctionStatus.UNKNOWN;
   }
 
-  // Lấy bid_history từ DB về
+  /**
+   * Usage: Lấy danh sách lịch sử bid từ server cho 1 item nhất định
+   *
+   * @param item Sản phẩm
+   * @return
+   */
   public static List<BidTransaction> fetchBidTransactionsForItem(Item item) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -122,6 +144,14 @@ public class ItemsEventHandler {
     return new ArrayList<>();
   }
 
+  /**
+   * Usage: Đặt bid cho 1 sản phẩm
+   *
+   * @param itemId ID sản phẩm
+   * @param userId ID người dùng
+   * @param amount Lượng tiền đặt
+   * @return
+   */
   public static BidStatus.bidStatus placeBid(String itemId, String userId, BigDecimal amount) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -153,6 +183,12 @@ public class ItemsEventHandler {
     }
   }
 
+  /**
+   * Usage: Tải hình ảnh.
+   *
+   * @param imagePath Đường dẫn đến hình ảnh.
+   * @return
+   */
   public static byte[] downloadItemImage(String imagePath) {
     if (imagePath == null || imagePath.isEmpty()) return null;
 
@@ -177,6 +213,13 @@ public class ItemsEventHandler {
     return null;
   }
 
+  /**
+   * Usage: Khởi động phiên đấu giá
+   *
+   * @param itemId ID sản phẩm
+   * @param currentUser Người dùng hiện tại
+   * @return
+   */
   public static String initializeAuction(String itemId, User currentUser) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -201,6 +244,13 @@ public class ItemsEventHandler {
     }
   }
 
+  /**
+   * Usage: Từ chối khởi động phiên đấu giá
+   *
+   * @param itemId ID sản phẩm
+   * @param currentUser Người dùng hiện tại
+   * @return
+   */
   public static String denyAuction(String itemId, User currentUser) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
@@ -224,6 +274,15 @@ public class ItemsEventHandler {
     }
   }
 
+  /**
+   * Usage: Đăng kí auto bid
+   *
+   * @param itemId ID sản phẩm
+   * @param userId ID người dùng
+   * @param maxBid Auto bid - bid tối đa
+   * @param increment Auto bid - thang tăng mỗi lần auto
+   * @return
+   */
   public static boolean registerAutoBid(
       String itemId, String userId, BigDecimal maxBid, BigDecimal increment) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
@@ -252,6 +311,13 @@ public class ItemsEventHandler {
     }
   }
 
+  /**
+   * Usage: Dừng auto bid
+   *
+   * @param itemId ID sản phẩm
+   * @param userId ID người dùng
+   * @return
+   */
   public static boolean cancelAutoBid(String itemId, String userId) {
     try (Socket socket = new Socket("127.0.0.1", 1234);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {

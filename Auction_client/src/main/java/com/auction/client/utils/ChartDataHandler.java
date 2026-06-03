@@ -7,6 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 
 public class ChartDataHandler {
+  // Class xử lý dữ liệu biểu đồ
+  /**
+   * Usage: Đặt dữ liệu biểu đồ
+   *
+   * @param bidHistory Lịch sử bid
+   * @return
+   */
   public static ObservableList<XYChart.Series<Number, Number>> setChartDisplay(
       List<BidTransaction> bidHistory) {
     XYChart.Series<Number, Number> itemPriceChart = new XYChart.Series<>();

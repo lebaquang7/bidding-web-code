@@ -17,13 +17,27 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 public class AuctionCardController {
+  // Controller class của các thẻ sản phẩm nhỏ trong Auction List
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_auctionCard.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML Label nameLabel;
   @FXML Label priceLabel;
   @FXML ImageView imageView;
+  @FXML Circle statusCircle;
 
-  // each auction card holds the current item
+  // Mỗi thẻ đấu giá giữ thông tin của sản phẩm hiện tại
   private Item currentItem;
 
+  /**
+   * Usage: Truyền thông tin vào thẻ sản phẩm, khởi tạo sản phẩm
+   *
+   * @param item Sản phẩm truyền vào
+   */
   public void setData(Item item) {
     currentItem = item;
 
@@ -51,7 +65,7 @@ public class AuctionCardController {
           .start();
     }
 
-    // Tự cập nhật giá
+    // Tự cập nhật giá với listener.
     item.currentPriceProperty()
         .addListener(
             (obs, oldVal, newVal) -> {
@@ -64,23 +78,31 @@ public class AuctionCardController {
                   });
             });
 
+    // Cập nhật màu của chấm hiển thị trạng thái phiên đấu
     updateColorByAuctionState();
   }
 
+  /**
+   * Usage: Mở panel thông tin sản phẩm khi nhán nút
+   *
+   * @param event
+   */
   @FXML
   public void goToItemDetails(ActionEvent event) {
-    SceneHandler.switchToItemView(
-        "/com/auction/client/views/itemDetails_view.fxml", event, currentItem);
+    SceneHandler.switchToItemView(ItemDetailsController.getPATH_TO_VIEW(), event, currentItem);
   }
 
+  /**
+   * Usage: Mở panel đấu giá khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
   public void goToAuction(ActionEvent event) {
-    SceneHandler.switchToItemView(
-        "/com/auction/client/views/auction_view.fxml", event, currentItem);
+    SceneHandler.switchToItemView(AuctionViewController.getPATH_TO_VIEW(), event, currentItem);
   }
 
-  @FXML private Circle statusCircle;
-
+  /** Usage: Cập nhật màu hiển thị trạng thái đấu giá */
   public void updateColorByAuctionState() {
     AuctionStatus auctionState = ItemsEventHandler.getAuctionStatus(currentItem);
     String targetColor;
@@ -97,6 +119,11 @@ public class AuctionCardController {
     statusCircle.setStyle("-fx-fill: " + targetColor + ";");
   }
 
+  /**
+   * Usage: Khi nhấn vào hình ảnh, mở một popup phóng to hình ảnh
+   *
+   * @param event
+   */
   @FXML
   public void openImageView(MouseEvent event) {
     SceneHandler.switchToImageView(event, imageView.getImage());

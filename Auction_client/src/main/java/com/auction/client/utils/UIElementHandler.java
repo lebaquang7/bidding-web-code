@@ -3,9 +3,9 @@ package com.auction.client.utils;
 import javafx.scene.Node;
 
 public class UIElementHandler {
+  // Class quản lý thành phần UI
   /**
-   * Makes node 1 visible, while hiding node 2 via managed and visible Do use bidirectional binding
-   * if value of node 1 and 2 need to be tied Usage: pwd hide/show checkbox, etc
+   * Usage: hiện node1, ẩn node2. Dùng bidirectional binding nếu cần trữ dữ liệu giữa 2 node.
    *
    * @param node1
    * @param node2
@@ -18,7 +18,7 @@ public class UIElementHandler {
   }
 
   /**
-   * usage: make node invisible and non managed.
+   * Usage: Tắt phần tử UI
    *
    * @param node
    */

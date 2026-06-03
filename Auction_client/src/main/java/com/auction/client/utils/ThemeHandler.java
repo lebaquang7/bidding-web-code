@@ -6,12 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 public class ThemeHandler {
+  // Singleton Class quản lý chức năng thay đổi màu nền
   private static ThemeHandler instance;
   private static final Set<Scene> activeScenes = new HashSet<>();
   private static String activeTheme = "Default"; // default to basic javafx theme
   private final String THEME_CSS_PATH = getClass().getResource("/files/theme.css").toExternalForm();
 
-  // singleton stuff
   private ThemeHandler() {}
   ;
 
@@ -22,14 +22,13 @@ public class ThemeHandler {
     return instance;
   }
 
-  // getter for active theme
+  // getter
   public String getActiveTheme() {
     return activeTheme;
   }
 
   /**
-   * Usage: switch root theme based on given theme strings. if nothing found, defaults to standard
-   * light theme
+   * Usage: Đổi theme cho root dựa trên theme được chọn
    *
    * @param theme
    * @param root
@@ -48,14 +47,14 @@ public class ThemeHandler {
   }
 
   /**
-   * usage: set theme to active scenes stored in activeScenes
+   * usage: Cài đặt theme cho mọi scene lưu trong activeScenes
    *
    * @param theme
    */
   public void setTheme(String theme) {
     ConfigFileHandler.setProperty("theme", theme);
     activeTheme = theme;
-    // cleanup inactive scenes
+    // Dọn scene không dùng đến
     activeScenes.removeIf(scene -> scene.getWindow() == null);
     for (Scene scn : activeScenes) {
       applyTheme(theme, scn.getRoot());
@@ -63,7 +62,7 @@ public class ThemeHandler {
   }
 
   /**
-   * Usage: add a scene when created, to the scene hashset
+   * Usage: Thêm scene vào danh sách activeScenes
    *
    * @param scene
    */

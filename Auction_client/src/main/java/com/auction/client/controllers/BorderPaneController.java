@@ -6,17 +6,22 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 
 public class BorderPaneController {
-  // Class handling switching specific border pane views
+  // Controller class xử lý thay đổi border pane trong màn hình chính
   private static BorderPane mainLayout;
 
+  /**
+   * Usage: Đặt màn hình chính
+   *
+   * @param layout
+   */
   public static void setMainLayout(BorderPane layout) {
     mainLayout = layout;
   }
 
   /**
-   * Usage: switch center pane to pane mentioned in fxmlPath
+   * Usage: Thay đổi center của border pane thành pane cần thiết
    *
-   * @param fxmlPath
+   * @param fxmlPath Đường dẫn đến panel cần thay đổi
    */
   public static void setCenter(String fxmlPath) {
     try {

@@ -16,15 +16,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class SceneHandler {
-  private static Stage stage; // Declare stage-scene-root (used for switching scenes)
+  // Class xử lý chuyển màn hình
+  private static Stage stage;
   private static Scene scene;
   private static Parent root;
 
   /**
-   * Usage: switch to scene mentioned in location, upon activation of actionEvent.
+   * Usage: Chuyển đến scene được nhắc đến trong Location
    *
-   * @param location
-   * @param event
+   * @param location Địa điểm của scene cần thiết
+   * @param event Sự kiện khởi đầu
    */
   public static void switchToScene(URL location, ActionEvent event) {
     try {
@@ -39,16 +40,16 @@ public class SceneHandler {
     stage.show();
   }
 
+  // Interface cho những class load vào thông tin của 1 sản phẩm
   public interface ItemLoadable {
     void setItem(Item item);
   }
 
   /**
-   * usage: switch to view of individual auction item cards
-   * (itemDetailsController/auctionViewController)
+   * usage: Chuyển đến view của một sản phẩm có chứa thông tin sản phẩm
    *
    * @param event
-   * @param item
+   * @param item Thông tin sản phẩm
    */
   public static <T extends ItemLoadable> void switchToItemView(
       String target, ActionEvent event, Item item) {
@@ -77,7 +78,7 @@ public class SceneHandler {
   }
 
   /**
-   * Usage: switch to image view controller
+   * Usage: Chuyển đến image view
    *
    * @param event
    * @param image
@@ -85,8 +86,7 @@ public class SceneHandler {
   public static void switchToImageView(MouseEvent event, Image image) {
     try {
       FXMLLoader loader =
-          new FXMLLoader(
-              SceneHandler.class.getResource("/com/auction/client/views/imageView.fxml"));
+          new FXMLLoader(SceneHandler.class.getResource(ImageViewController.getPATH_TO_VIEW()));
       Parent popupRoot = loader.load();
 
       ImageViewController controller = loader.getController();
@@ -105,7 +105,7 @@ public class SceneHandler {
   }
 
   /**
-   * Usage: close the scene.
+   * Usage: Đóng scene
    *
    * @param event
    */

@@ -10,9 +10,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class AccountEventHandler {
-
+  // Class xử lý dịch vụ liên quan đến tài khoản
   private static User currentUser;
 
+  // Getter - setters
   public static void setCurrentUser(User user) {
     currentUser = user;
   }
@@ -21,7 +22,13 @@ public class AccountEventHandler {
     return currentUser;
   }
 
-  // Xác thực đăng nhập
+  /**
+   * Usage: Xác thực thông tin đăng nhập
+   *
+   * @param name Tên người dùng
+   * @param password Mật khẩu người dùng
+   * @return
+   */
   public static String validateAccount(String name, String password) {
     // Sử dụng bidder tạm thời để tìm kiếm User trong database
     // Nếu tìm được người dùng sẽ tự trả về đúng kiểu
@@ -33,13 +40,13 @@ public class AccountEventHandler {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-      // 1. Gửi yêu cầu Login
+      // Gửi yêu cầu Login
       NetworkRequest request =
           new NetworkRequest(NetworkRequest.requestType.Login, loginRequestData);
       out.writeObject(request);
       out.flush();
 
-      // 2. Đợi phản hồi từ Server
+      // Đợi phản hồi từ Server
       Object response = in.readObject();
 
       if (response instanceof User) {
@@ -58,7 +65,12 @@ public class AccountEventHandler {
     }
   }
 
-  // Đăng ký
+  /**
+   * Usage: gửi yêu cầu đăng kí
+   *
+   * @param newUser Người dùng
+   * @return
+   */
   public static String registerAccount(User newUser) {
     // new Socket("192.168.x.x", port)
     try (Socket socket = new Socket("127.0.0.1", 1234);
