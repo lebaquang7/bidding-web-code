@@ -13,11 +13,11 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
 - Công nghệ sử dụng:
   - **Ngôn ngữ:** Java (target JDK 25)
   - **GUI:** JavaFX 13
-  - **Server:** MySQL/Apache
+  - **Server:** MySQL/Apache (XAMPP)
   - **Build tool:** Maven
   - **Plugin:** Maven Checkstyle, Diffplug spotless
 - Môi trương chạy: Window, Linux, Mac
-- Yêu cầu cài đặt: Máy cần cài đặt JDK 25+, Maven và đã cài đúng System environment variable
+- Yêu cầu cài đặt: Máy cần cài đặt JDK 25+, XAMPP, Maven và đã cài đúng System environment variable.
 ## 3 - Cấu trúc thư mục / Module chính
 - Các module chính: `Auction_client`, `Auction_server`, `Auction_shared`
 - Cấu trúc thư mục:  
@@ -59,7 +59,7 @@ bidding-web-code/
 - Build và Package: Sử dụng terminal, chạy trên mọi hệ điều hành (Window/Linux/Mac). Mở terminal đến đường dẫn của thư mục `bidding-web-code` và chạy `mvn clean package`
 - Tiếp tục với #5
 ## 5. Hướng dẫn chạy Server/Client theo thứ tự cụ thể
-- Chạy server: Sau khi build (#4), mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+- Chạy server: Sau khi build (#4), chạy Apache và MySQL qua XAMPP (khởi tạo local database), rồi mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
 ```
 cd Auction_server/target
 java -jar Auction_server-1.0-SNAPSHOT-jar-with-dependencies.jar
