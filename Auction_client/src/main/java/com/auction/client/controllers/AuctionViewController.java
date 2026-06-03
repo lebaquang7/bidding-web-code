@@ -48,6 +48,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   @FXML Label remainingTimeLabel;
   @FXML Label placeBidErrorBox;
   @FXML Label autoBidderErrorBox;
+  @FXML Label highestBidderLabel;
 
   @FXML TextField placeBidBox;
   @FXML TextField autoBidderMaxBidBox;
