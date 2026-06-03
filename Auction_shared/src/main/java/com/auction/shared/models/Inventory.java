@@ -7,7 +7,7 @@ public class Inventory {
   private static List<Item> allItems = new ArrayList<>();
 
   public static Item getItemById(String id) {
-    if (allItems == null) return null; // Bảo vệ thêm một lớp nữa
+    if (allItems == null) return null;
 
     return allItems.stream().filter(item -> item.getId().equals(id)).findFirst().orElse(null);
   }

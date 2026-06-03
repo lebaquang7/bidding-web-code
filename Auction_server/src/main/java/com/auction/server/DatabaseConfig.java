@@ -764,6 +764,8 @@ public class DatabaseConfig {
 
         if (user != null) {
           user.setId(id);
+          user.setUsername(username);
+          user.setPassword(pass);
         }
         return user;
       }

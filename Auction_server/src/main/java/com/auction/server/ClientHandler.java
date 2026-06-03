@@ -197,6 +197,12 @@ public class ClientHandler extends Thread {
           out.flush();
 
           if (status == BidStatus.bidStatus.SUCCESS) {
+            String userId = bidData.getBidderId();
+
+            User user = DatabaseConfig.findUserById(userId);
+            if (user != null) {
+              bidData.setBidderName(user.getUserName());
+            }
             NotificationService.broadcast(bidData);
           }
 

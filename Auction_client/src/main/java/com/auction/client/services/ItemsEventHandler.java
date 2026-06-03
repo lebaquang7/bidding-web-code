@@ -2,12 +2,8 @@ package com.auction.client.services;
 
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
-import com.auction.shared.models.AuctionStatus;
-import com.auction.shared.models.BidStatus;
-import com.auction.shared.models.BidTransaction;
-import com.auction.shared.models.Item;
-import com.auction.shared.models.NetworkRequest;
-import com.auction.shared.models.User;
+import com.auction.shared.models.*;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -69,7 +65,7 @@ public class ItemsEventHandler {
       if (response instanceof List<?>) {
         List<Item> items = (List<Item>) response;
 
-        com.auction.shared.models.Inventory.setAllItems(items);
+        Inventory.setAllItems(items);
 
         return items;
       }

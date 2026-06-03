@@ -11,6 +11,7 @@ public class BidTransaction implements Serializable {
   private String bidderId;
   private BigDecimal bidAmount;
   private LocalDateTime bidTime;
+  private String bidderName;
 
   // Constructor dùng khi Client gửi yêu cầu đặt giá (Request)
   public BidTransaction(String itemId, String bidderId, BigDecimal bidAmount) {
@@ -18,6 +19,7 @@ public class BidTransaction implements Serializable {
     this.bidderId = bidderId;
     this.bidAmount = bidAmount;
     this.bidTime = LocalDateTime.now();
+    this.bidderName = "";
   }
 
   // Constructor đầy đủ (Dùng khi lấy dữ liệu lịch sử từ DB lên)
@@ -33,16 +35,16 @@ public class BidTransaction implements Serializable {
   public String getItemId() {
     return itemId;
   }
-
   public String getBidderId() {
     return bidderId;
   }
 
-  public BigDecimal getBidAmount() {
-    return bidAmount;
-  }
+  public BigDecimal getBidAmount() {return bidAmount;}
 
   public LocalDateTime getBidTime() {
     return bidTime;
   }
+
+  public String getBidderName() {return bidderName;}
+  public void setBidderName(String bidderName) {this.bidderName = bidderName;}
 }

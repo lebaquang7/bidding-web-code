@@ -150,7 +150,6 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
 
   @Override
   public void setItem(Item item) {
-    ClientNotificationListener.setCurrentController(this);
     this.currentItem = Inventory.getItemById(item.getId());
 
     if (this.currentItem == null) {
@@ -172,6 +171,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     LabelHandler.scaleFontSizeToFit(startingBidLabel, 20, 12, 8, 1);
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, currentItem.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
+    highestBidderLabel.setText("------");
+    LabelHandler.scaleFontSizeToFit(highestBidderLabel, 20, 12, 8, 1);
 
     // Setup biểu đồ tg thực
     setupChartLayout(item);
@@ -293,6 +294,16 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     }
   }
 
+  public void updateHighestBidderUI(String bidderName) {
+    Platform.runLater(() -> {
+      if (highestBidderLabel != null) {
+        String displayName = (bidderName != null && !bidderName.isEmpty())
+                ? bidderName
+                : "------";
+        highestBidderLabel.setText(displayName);
+      }
+    });
+  }
   /**
    * Usage: Ghi người thắng khi phiên kết thúc.
    *
