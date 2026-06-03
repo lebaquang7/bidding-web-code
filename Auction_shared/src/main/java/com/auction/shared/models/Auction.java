@@ -8,7 +8,6 @@ public class Auction implements Serializable {
   private int id;
   private Item item;
   private BigDecimal currentPrice;
-  private BigDecimal startPrice;
   private User seller;
   private User highestBidder;
   private LocalDateTime startTime;
@@ -24,7 +23,6 @@ public class Auction implements Serializable {
       LocalDateTime endTime) {
     this.id = id;
     this.item = item;
-    this.startPrice = startPrice;
     this.currentPrice = startPrice;
     this.seller = seller;
     this.startTime = startTime;

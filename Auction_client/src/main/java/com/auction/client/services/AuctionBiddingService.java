@@ -4,10 +4,9 @@ import com.auction.client.controllers.AuctionViewController;
 import com.auction.client.controllers.ItemDetailsController;
 import com.auction.shared.models.BidTransaction;
 import com.auction.shared.models.Item;
-import javafx.application.Platform;
-
 import java.math.BigDecimal;
 import java.util.Map;
+import javafx.application.Platform;
 
 public class AuctionBiddingService {
   // Class xử lý thông tin đấu giá
@@ -49,9 +48,10 @@ public class AuctionBiddingService {
         currentItem.setHighestBidderId(tx.getBidderId());
         String highestBidderName = tx.getBidderName();
 
-        Platform.runLater(() -> {
-          controller.updateHighestBidderUI(highestBidderName);
-        });
+        Platform.runLater(
+            () -> {
+              controller.updateHighestBidderUI(highestBidderName);
+            });
       }
     } else if (message instanceof Map) {
       Map<String, Object> data = (Map<String, Object>) message;

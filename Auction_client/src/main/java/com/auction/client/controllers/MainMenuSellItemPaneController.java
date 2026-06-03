@@ -11,7 +11,6 @@ import com.auction.shared.models.User;
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;

@@ -3,7 +3,6 @@ package com.auction.client.services;
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
 import com.auction.shared.models.*;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;

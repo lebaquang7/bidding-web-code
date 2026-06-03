@@ -11,7 +11,6 @@ import com.auction.shared.models.Inventory;
 import com.auction.shared.models.Item;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

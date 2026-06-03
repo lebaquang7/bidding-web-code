@@ -55,6 +55,7 @@ public abstract class Item extends Entity {
   public String getImagePath() {
     return imagePath;
   }
+
   public void setImagePath(String imagePath) {
     this.imagePath = imagePath;
   }
@@ -62,16 +63,23 @@ public abstract class Item extends Entity {
   public byte[] getImageBytes() {
     return imageBytes;
   }
+
   public void setImageBytes(byte[] imageBytes) {
     this.imageBytes = imageBytes;
   }
 
-  public String getItemName() {return name;}
-  public void setName(String name) {this.name = name;}
+  public String getItemName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public String getDescription() {
     return description;
   }
+
   public void setDescription(String description) {
     this.description = description;
   }
@@ -89,6 +97,7 @@ public abstract class Item extends Entity {
   public BigDecimal getCurrentPrice() {
     return currentPrice.get();
   }
+
   public void setCurrentPrice(BigDecimal price) {
     this.currentPrice.set(price);
   }
@@ -96,6 +105,7 @@ public abstract class Item extends Entity {
   public String getSellerId() {
     return sellerId;
   }
+
   public void setSellerId(String id) {
     this.sellerId = id;
   }
@@ -103,14 +113,23 @@ public abstract class Item extends Entity {
   public String getHighestBidderId() {
     return highestBidderId;
   }
-  public void setHighestBidderId(String highestBidderId) {this.highestBidderId = highestBidderId;}
 
-  public String getHighestBidderName() {return highestBidderName;}
-  public void setHighestBidderName(String highestBidderName) {this.highestBidderName = highestBidderName;}
+  public void setHighestBidderId(String highestBidderId) {
+    this.highestBidderId = highestBidderId;
+  }
+
+  public String getHighestBidderName() {
+    return highestBidderName;
+  }
+
+  public void setHighestBidderName(String highestBidderName) {
+    this.highestBidderName = highestBidderName;
+  }
 
   public BigDecimal getPriceIncrement() {
     return priceIncrement;
   }
+
   public void setPriceIncrement(BigDecimal priceIncrement) {
     this.priceIncrement = priceIncrement;
   }
@@ -118,6 +137,7 @@ public abstract class Item extends Entity {
   public int getDurationTime() {
     return durationTime;
   }
+
   public void setDurationTime(int durationTime) {
     this.durationTime = durationTime;
   }

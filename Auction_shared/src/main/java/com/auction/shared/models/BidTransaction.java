@@ -35,16 +35,24 @@ public class BidTransaction implements Serializable {
   public String getItemId() {
     return itemId;
   }
+
   public String getBidderId() {
     return bidderId;
   }
 
-  public BigDecimal getBidAmount() {return bidAmount;}
+  public BigDecimal getBidAmount() {
+    return bidAmount;
+  }
 
   public LocalDateTime getBidTime() {
     return bidTime;
   }
 
-  public String getBidderName() {return bidderName;}
-  public void setBidderName(String bidderName) {this.bidderName = bidderName;}
+  public String getBidderName() {
+    return bidderName;
+  }
+
+  public void setBidderName(String bidderName) {
+    this.bidderName = bidderName;
+  }
 }

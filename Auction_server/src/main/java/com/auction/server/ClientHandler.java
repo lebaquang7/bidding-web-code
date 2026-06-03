@@ -125,7 +125,8 @@ public class ClientHandler extends Thread {
             File directory = new File("server_images");
             if (!directory.exists()) directory.mkdirs();
 
-            String serverPath = "server_images/" + System.currentTimeMillis() + "_" + newItem.getImagePath();
+            String serverPath =
+                "server_images/" + System.currentTimeMillis() + "_" + newItem.getImagePath();
 
             try {
               Files.write(new File(serverPath).toPath(), newItem.getImageBytes());

@@ -302,15 +302,16 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   }
 
   public void updateHighestBidderUI(String bidderName) {
-    Platform.runLater(() -> {
-      if (highestBidderLabel != null) {
-        String displayName = (bidderName != null && !bidderName.isEmpty())
-                ? bidderName
-                : "------";
-        highestBidderLabel.setText(displayName);
-      }
-    });
+    Platform.runLater(
+        () -> {
+          if (highestBidderLabel != null) {
+            String displayName =
+                (bidderName != null && !bidderName.isEmpty()) ? bidderName : "------";
+            highestBidderLabel.setText(displayName);
+          }
+        });
   }
+
   /**
    * Usage: Ghi người thắng khi phiên kết thúc.
    *
