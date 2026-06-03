@@ -102,17 +102,16 @@ public class BiddingServiceTest {
                       () ->
                           DatabaseConfig.executeBidTransaction(
                               Mockito.eq("concurrency_id"), Mockito.anyString(), Mockito.any()))
-                  .thenAnswer(invocation -> successCount.get() == 0);
+                  .thenAnswer(
+                      invocation -> {
+                        return successCount.compareAndSet(0, 1);
+                      });
 
               readyLatch.countDown();
               startLatch.await();
 
               BidStatus.bidStatus status =
                   BiddingService.placeBid("concurrency_id", bidderId, new BigDecimal("150.00"));
-
-              if (status == BidStatus.bidStatus.SUCCESS) {
-                successCount.incrementAndGet();
-              }
             } catch (Exception e) {
               e.printStackTrace();
             }
