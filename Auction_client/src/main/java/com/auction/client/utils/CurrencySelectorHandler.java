@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
 public class CurrencySelectorHandler {
-  // Singleton stuffs, since this only needs one instance
+  // Singleton class xử lý thông tin liên quan đến đơn vị tiền tệ
   private static CurrencySelectorHandler instance = null;
 
   private CurrencySelectorHandler() {}
@@ -23,9 +23,10 @@ public class CurrencySelectorHandler {
     return instance;
   }
 
-  // SimpleObjectProperty wrap a class value so it can be observed
+  // Dùng SimpleObjectProperty để có thể observe trạng thái của active currency
   private final SimpleObjectProperty<String> activeCurrency = new SimpleObjectProperty<>("VND");
 
+  // Getter setters
   public SimpleObjectProperty<String> getActiveCurrencyObjectProperty() {
     return activeCurrency;
   }
@@ -40,10 +41,10 @@ public class CurrencySelectorHandler {
   }
 
   /**
-   * Usage: convert price to specific currency type
+   * Usage: Chuyển giá từ VND sang đơn vị tiền tệ của giá tiền đang được chọn
    *
-   * @param price
-   * @return
+   * @param price Giá ở VND
+   * @return Giá ở đơn vị được chọn
    */
   public BigDecimal getConvertedPrice(BigDecimal price) {
     BigDecimal convertedPrice;
@@ -53,19 +54,18 @@ public class CurrencySelectorHandler {
           convertedPrice =
               price.divide(
                   Properties.getUSD_TO_VND_RATE(),
-                  2,
-                  RoundingMode.HALF_UP); // divide by rate, with 2 decimal places
+                  2, // 2 chữ số thập phân
+                  RoundingMode.HALF_UP);
       default -> convertedPrice = price;
     }
     return convertedPrice;
   }
 
   /**
-   * Usage: convert price in specific currency type back to VND, since VND is the standard currency
-   * used in storage
+   * Usage: Chuyển giá từ đơn vị được chọn sang tiền VND
    *
-   * @param price
-   * @return
+   * @param price Giá thành ở đơn vị được chọn
+   * @return Giá ở VND
    */
   public BigDecimal getVNDPrice(BigDecimal price) {
     BigDecimal convertedPrice;
@@ -78,10 +78,10 @@ public class CurrencySelectorHandler {
   }
 
   /**
-   * Bind labels that displays price with currency type. Bind still functions after method finishes
+   * Bind label với loại đơn vị tiền tệ nhằm tự cập nhật khi đơn vị thay đổi
    *
    * @param label
-   * @param price
+   * @param price Giá thành
    */
   public static void bindPriceLabel(Label label, BigDecimal price) {
     Tooltip tooltip = new Tooltip();
@@ -91,33 +91,32 @@ public class CurrencySelectorHandler {
           String currencyUnit = CurrencySelectorHandler.getInstance().getActiveCurrency();
           BigDecimal convertedPrice =
               CurrencySelectorHandler.getInstance().getConvertedPrice(price);
-          tooltip.setText(convertedPrice.toString() + " " + currencyUnit);
+          tooltip.setText(
+              convertedPrice.toString() + " " + currencyUnit); // Tooltip để thấy tất cả giá
           label.setText(
               String.format(
                   "%s %s",
                   CurrencySelectorHandler.abbreviateCurrency(convertedPrice), currencyUnit));
-          // ^ custom formatting, display first variable (price) with two decimals max
-          // (abbreviated,
-          // tooltip reveals full), then second variable (currency unit)
+          // ^ custom formatting, hiện giá với 2 chữ số thập phân, đơn vị tiền tệ
         };
     updateUI.run();
-    // runs once upon start
+    // Chạy 1 lần khi chương trình bắt đầu
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
         .addListener((observable) -> Platform.runLater(updateUI));
-    // Listens to active currency object property changing and runs updateUI
+    // Listener nếu cài đặt thay đổi
   }
 
-  // constants for conversion
+  // Hằng số chuyển đổi đơn vị tiền tệ
   private static final BigDecimal TRILLION = new BigDecimal("1000000000000");
   private static final BigDecimal BILLION = new BigDecimal("1000000000");
   private static final BigDecimal MILLION = new BigDecimal("1000000");
   private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
   /**
-   * Usage: format big price into abbreviated price strings
+   * Usage: Format giá thành dài dưới dạng ngắn hơn
    *
-   * @param price
+   * @param price Giá thành
    * @return
    */
   public static String abbreviateCurrency(BigDecimal price) {

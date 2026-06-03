@@ -14,8 +14,14 @@ import javafx.scene.control.Pagination;
 import javafx.scene.layout.GridPane;
 
 public class MainMenuAdminPaneController {
-  // mostly similar to auctionview controller but for admins to initialize
-  // auctions
+  // Giống với MainMenuAuctionListPane, nhưng cho admin quản lý sản phẩm
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_adminPane.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML GridPane gridPane;
   @FXML Pagination pagination;
 
@@ -24,6 +30,7 @@ public class MainMenuAdminPaneController {
   private static final int ITEMS_PER_PAGE = 6;
   private static final int COLUMN_COUNT = 2;
 
+  /** Usage: Tự chạy khi controller được gọi */
   public void initialize() {
     refreshItems();
 
@@ -42,6 +49,7 @@ public class MainMenuAdminPaneController {
             });
   }
 
+  /** Usage: tải lại các sản phẩm trên màn hình */
   public void refreshItems() {
     List<Item> fetchedItems = ItemsEventHandler.fetchAllItems();
 
@@ -55,11 +63,18 @@ public class MainMenuAdminPaneController {
     renderItem(itemList, 0);
   }
 
+  /** Usage: cập nhật số trang trong pagination (danh sách trang sản phẩm) */
   private void updatePagination() {
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
     pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
+  /**
+   * Usage: Render các sản phẩm dưới dạng thẻ hiện sản phẩm
+   *
+   * @param list Danh sách sản phẩm
+   * @param paginationIndex Số trang được chọn
+   */
   public void renderItem(List<Item> list, int paginationIndex) {
     gridPane.getChildren().clear();
 
@@ -76,8 +91,7 @@ public class MainMenuAdminPaneController {
       try {
         Item item = itemListSublist.get(i);
         FXMLLoader loader =
-            new FXMLLoader(
-                getClass().getResource("/com/auction/client/views/mainMenu_adminAuctionCard.fxml"));
+            new FXMLLoader(getClass().getResource(AdminCardController.getPATH_TO_VIEW()));
 
         Parent card = loader.load();
 

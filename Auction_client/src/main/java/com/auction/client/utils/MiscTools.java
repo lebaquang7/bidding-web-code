@@ -1,7 +1,14 @@
 package com.auction.client.utils;
 
 public class MiscTools {
-  // round up numbers to nearest rounded of 1-2-5 series
+  // Công cụ phụ trợ
+
+  /**
+   * Usage: Làm tròn số lên số gần nhất (1-2-5 series)
+   *
+   * @param number
+   * @return
+   */
   public static double roundUp(double number) {
     if (number <= 0) return 0;
 
@@ -25,7 +32,12 @@ public class MiscTools {
     return roundedNormalized * magnitude;
   }
 
-  /** Usage: format time in second, to minutes */
+  /**
+   * Usage: format thời gian ở dạng giây sang dạng phút
+   *
+   * @param totalSeconds
+   * @return
+   */
   public static String formatSecondsToMinutes(int totalSeconds) {
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;

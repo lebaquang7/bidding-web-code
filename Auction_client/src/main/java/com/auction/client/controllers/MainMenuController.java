@@ -10,7 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 
 public class MainMenuController {
-  // Path to the view this controller is affiliated with
+  // Controller Class cho màn hình chính
+  // Đường dẫn đến view của controller này
   private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_view.fxml";
 
   public static String getPATH_TO_VIEW() {
@@ -21,11 +22,12 @@ public class MainMenuController {
   @FXML Button sellItemButton;
   @FXML Button adminAuctionButton;
 
+  /** Usage: chạy khi controller được gọi */
   public void initialize() {
     BorderPaneController.setMainLayout(mainBorderPane);
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
+    BorderPaneController.setCenter(MainMenuAuctionListPaneController.getPATH_TO_VIEW());
 
-    // hides buttons depending on user type
+    // Ẩn nút dựa trên loại người dùng
     if (!(AccountEventHandler.getCurrentUser() instanceof Seller
         || AccountEventHandler.getCurrentUser() instanceof Admin)) {
       sellItemButton.setVisible(false);
@@ -35,29 +37,53 @@ public class MainMenuController {
     }
   }
 
-  // Size of center pane: 700 W, 600 H (full pane + side pane is 900 W, 600 H)
-  // (for reference when
-  // creating side panes)
+  // Kích cỡ trang trung tâm: 600H, 700W
+
+  /**
+   * Usage: Chuyển đến màn hình danh sách sản phẩm
+   *
+   * @param event
+   */
   @FXML
   public void switchToAuctionList(ActionEvent event) {
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_auctionListPane.fxml");
+    BorderPaneController.setCenter(MainMenuAuctionListPaneController.getPATH_TO_VIEW());
   }
 
+  /**
+   * Usage: Chuyển đến màn hình bán sản phẩm
+   *
+   * @param event
+   */
   @FXML
   public void switchToSellItem(ActionEvent event) {
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_sellItemPane.fxml");
+    BorderPaneController.setCenter(MainMenuSellItemPaneController.getPATH_TO_VIEW());
   }
 
+  /**
+   * Usage: Chuyển đến màn hình cài đặt
+   *
+   * @param event
+   */
   @FXML
   public void switchToSettings(ActionEvent event) {
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_settingsPane.fxml");
+    BorderPaneController.setCenter(MainMenuSettingPaneController.getPATH_TO_VIEW());
   }
 
+  /**
+   * Usage: Chuyển đến màn hình chức năng admin
+   *
+   * @param event
+   */
   @FXML
   public void switchToAdminFunctions(ActionEvent event) {
-    BorderPaneController.setCenter("/com/auction/client/views/mainMenu_adminPane.fxml");
+    BorderPaneController.setCenter(MainMenuAdminPaneController.getPATH_TO_VIEW());
   }
 
+  /**
+   * Usage: Đăng xuất
+   *
+   * @param event
+   */
   @FXML
   public void logOut(ActionEvent event) {
     SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);

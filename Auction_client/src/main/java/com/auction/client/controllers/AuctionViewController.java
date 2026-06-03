@@ -3,6 +3,7 @@ package com.auction.client.controllers;
 import com.auction.client.MainApp;
 import com.auction.client.services.AccountEventHandler;
 import com.auction.client.services.AuctionBiddingService;
+import com.auction.client.services.AutoBidManager;
 import com.auction.client.services.ClientNotificationListener;
 import com.auction.client.services.ItemsEventHandler;
 import com.auction.client.services.SceneHandler;
@@ -32,6 +33,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 public class AuctionViewController implements SceneHandler.ItemLoadable {
+  // Controller class cho màn hình đấu giá.
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/auction_view.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
 
   @FXML VBox bidderFeatureBox;
   @FXML Label itemNameLabel;
@@ -40,6 +48,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   @FXML Label remainingTimeLabel;
   @FXML Label placeBidErrorBox;
   @FXML Label autoBidderErrorBox;
+  @FXML Label highestBidderLabel;
 
   @FXML TextField placeBidBox;
   @FXML TextField autoBidderMaxBidBox;
@@ -52,11 +61,17 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   private Item currentItem;
 
   public void initialize() {
+    // Tắt phần màn hình cho chức năng đấu giá nếu người dùng không phải là bidder
     if (!(AccountEventHandler.getCurrentUser() instanceof Bidder)) {
       UIElementHandler.disableElement(bidderFeatureBox);
     }
   }
 
+  /**
+   * Usage: Đóng màn hình khi nhần nút
+   *
+   * @param event
+   */
   @FXML
   public void goBackToList(ActionEvent event) {
     if (MainApp.getNotificationListener() != null) {
@@ -66,15 +81,20 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     SceneHandler.closeScene(event);
   }
 
+  /**
+   * Usage: Đặt bid khi nhấn nút.
+   *
+   * @param event
+   */
   @FXML
   public void placeBid(ActionEvent event) {
-    // 1. Xóa thông báo lỗi/thành công cũ
+    // Xóa thông báo cũ
     placeBidErrorBox.setStyle("-fx-text-fill: red;");
     placeBidErrorBox.setText("");
 
     String bidInput = placeBidBox.getText();
 
-    // 2. Kiểm tra rỗng
+    // Kiểm tra rỗng
     if (bidInput == null || bidInput.trim().isEmpty()) {
       placeBidErrorBox.setText("Vui lòng nhập số tiền muốn trả!");
       return;
@@ -93,7 +113,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
         return;
       }
 
-      // 4. Lấy thông tin User hiện tại đang đăng nhập
+      // Lấy thông tin User hiện tại đang đăng nhập
       User currentUser = AccountEventHandler.getCurrentUser();
       if (currentUser == null) {
         placeBidErrorBox.setText("Lỗi: Không tìm thấy thông tin phiên đăng nhập!");
@@ -108,7 +128,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
               CurrencySelectorHandler.getInstance().getVNDPrice(bidAmount));
       updateUiFromBidStatus(result);
 
-      // 6. Xử lý UI dựa trên phản hồi của Server
+      // Xử lý UI dựa trên phản hồi của Server
       if (result == BidStatus.bidStatus.SUCCESS) {
         placeBidErrorBox.setStyle("-fx-text-fill: green;");
         placeBidErrorBox.setText("Đặt giá thành công!");
@@ -137,26 +157,29 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
       this.currentItem = item;
     }
 
-    // Hiển thị giá ban đầu
+    // Nối label hiển thị giá với bộ chuyển đổi giá theo đơn vị tiền tệ
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, item.getCurrentPrice());
 
-    // init labels
+    // Khởi động label tên
     itemNameLabel.setText(currentItem.getItemName());
     LabelHandler.setDetailedTooltip(itemNameLabel);
-    // init time label
+    // Khởi động label thời gian
     remainingTimeLabel.setText("00:00");
     remainingTimeLabel.setStyle("-fx-text-fill: -theme-text-color; -fx-font-weight: normal;");
 
+    // Nối label với bộ chuyển đổi tiền, tự đổi kích cỡ label nếu ko vừa
     CurrencySelectorHandler.bindPriceLabel(startingBidLabel, currentItem.getStartingPrice());
     LabelHandler.scaleFontSizeToFit(startingBidLabel, 20, 12, 8, 1);
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, currentItem.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
 
+    // Setup biểu đồ tg thực
     setupChartLayout(item);
 
+    // Cập nhật biểu đồ dựa theo giá
     AuctionViewController.updateChartPrice(item, priceChartYAxis);
 
-    // listener for currency type changes
+    // Listener cho thay đổi đơn vị tiền tệ
     CurrencySelectorHandler.getInstance()
         .getActiveCurrencyObjectProperty()
         .addListener(
@@ -165,26 +188,28 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
               updateChart();
             });
 
-    // Cập nhật currentPrice realtime
+    // Listener cho giá thành sản phẩm
     item.currentPriceProperty()
         .addListener(
             (obs, oldVal, newVal) -> {
-              Platform.runLater(
-                  () -> {
-                    CurrencySelectorHandler.bindPriceLabel(currentBidLabel, newVal);
-                    LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
-                    AuctionViewController.updateChartPrice(item, priceChartYAxis);
-                    updateChartBounds();
-                    updateChart();
-                  });
+              Platform
+                  .runLater( // Sử dụng Platform.runLater() để xử lý những phần có thay đổi riêng từ
+                      // server
+                      () -> {
+                        CurrencySelectorHandler.bindPriceLabel(currentBidLabel, newVal);
+                        LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
+                        AuctionViewController.updateChartPrice(item, priceChartYAxis);
+                        updateChartBounds();
+                        updateChart();
+                      });
             });
   }
 
   /**
-   * Usage: update Y axis's chart position based on price.
+   * Usage: Thay đổi biên Y của biểu đồ dựa trên giá hiện tại
    *
-   * @param item
-   * @param yAxis
+   * @param item Sản phẩm
+   * @param yAxis Trục Y
    */
   public static void updateChartPrice(Item item, NumberAxis yAxis) {
     yAxis.setLowerBound(0);
@@ -194,11 +219,18 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     yAxis.setTickUnit(MiscTools.roundUp(updatedPrice.doubleValue()) / 10);
   }
 
+  /**
+   * Usage: Thay đổi biên X của biểu đồ dựa trên danh sách lịch sử phiên đấu giá
+   *
+   * @param bidHistory Danh sách lịch sử BidTransaction
+   * @param xAxis Trục X
+   */
   public static void updateChartTime(List<BidTransaction> bidHistory, NumberAxis xAxis) {
     if (bidHistory == null || bidHistory.isEmpty()) {
       return;
     }
 
+    // Lấy thời gian từ bidHistory
     long lowerBound =
         bidHistory.stream()
             .mapToLong(
@@ -221,9 +253,8 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
             .max()
             .getAsLong();
 
-    // prevent empty x axis if bounds are similar
+    // Trong trường hợp lower bound = upper bound thì thay đổi biên để vừa màn hình
     if (lowerBound == upperBound) {
-      lowerBound -= 60;
       upperBound += 60;
     }
 
@@ -232,15 +263,27 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     xAxis.setTickUnit(Math.max(1, (upperBound - lowerBound) / 5));
   }
 
-  /** Usage: pass on msg to auction bidding service to process */
+  /**
+   * Usage: Gửi notification đến auction bidding service để xử lý
+   *
+   * @param message
+   */
   public void handleNotification(Object message) {
     Platform.runLater(
         () -> {
           AuctionBiddingService.processIncomingNotification(message, currentItem, this);
+
+          if (message instanceof BidTransaction) {
+            AutoBidManager.wakeUpWorker();
+          }
         });
   }
 
-  /** Usage: update remaining time label */
+  /**
+   * Usage: cập nhật hiển thị cho label thời gian còn lại
+   *
+   * @param totalSeconds thời gian còn lại
+   */
   public void updateRemainingTime(int totalSeconds) {
     remainingTimeLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
     if (totalSeconds <= 10) {
@@ -250,14 +293,21 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     }
   }
 
-  /** Usage: disable feature box, print winner on auction win */
+  /**
+   * Usage: Ghi người thắng khi phiên kết thúc.
+   *
+   * @param winnerName tên người thắng
+   */
   public void handleAuctionEndEvent(String winnerName) {
-    bidderFeatureBox.setDisable(true);
     remainingTimeLabel.setText("00:00");
-    placeBidErrorBox.setText("PHIÊN KẾT THÚC. NGƯỜI THẮNG: " + winnerName);
+    placeBidErrorBox.setText(winnerName + " đã thắng phiên đấu giá.");
   }
 
-  /** Usage: initialize chart layout */
+  /**
+   * Usage: Khởi động nội dung biểu đồ
+   *
+   * @param item
+   */
   private void setupChartLayout(Item item) {
     priceChart.setTitle("Auction price for Item " + item.getItemName());
     priceChartXAxis.setLabel("Time");
@@ -269,7 +319,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     updateChart();
   }
 
-  /** Usage: update chart bounds to fit price */
+  /** Usage: cập nhật biên của biểu đồ để chứa giá sản phẩm */
   private void updateChartBounds() {
     if (currentItem == null) return;
     priceChartYAxis.setLowerBound(0);
@@ -280,6 +330,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     priceChartYAxis.setTickUnit(uproundedMaxPrice / 10);
   }
 
+  /** Usage: Cập nhật biểu đồ */
   private void updateChart() {
     List<BidTransaction> bidHistory = ItemsEventHandler.fetchBidTransactionsForItem(currentItem);
     updateChartTime(bidHistory, priceChartXAxis);
@@ -288,7 +339,11 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     priceChart.setData(chartData);
   }
 
-  /** Usage: update UI when new bid is pushed */
+  /**
+   * Usage: Cập nhật UI khi có bid mới được đẩy
+   *
+   * @param status
+   */
   private void updateUiFromBidStatus(BidStatus.bidStatus status) {
     switch (status) {
       case SUCCESS -> {
@@ -302,10 +357,52 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     }
   }
 
-  // TODO: work on these
+  /**
+   * Usage: Khởi động trình auto bid khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
-  public void enableAutoBid(ActionEvent event) {}
+  public void enableAutoBid(ActionEvent event) {
+    try {
+      BigDecimal maxBidVND =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(new BigDecimal(autoBidderMaxBidBox.getText()));
+      BigDecimal incrementVND =
+          CurrencySelectorHandler.getInstance()
+              .getVNDPrice(new BigDecimal(autoBidderBidIncrementBox.getText()));
+      User currentUser = AccountEventHandler.getCurrentUser();
 
+      if (currentUser == null || currentItem == null) return;
+
+      AutoBidManager.AutoBidState result =
+          AutoBidManager.startAutoBid(currentItem, currentUser, maxBidVND, incrementVND);
+
+      autoBidderErrorBox.setText(result.getMessage());
+      autoBidderErrorBox.setStyle("-fx-text-fill: " + result.getStyleClass() + ";");
+
+      autoBidderMaxBidBox.setDisable(true);
+      autoBidderBidIncrementBox.setDisable(true);
+
+    } catch (NumberFormatException e) {
+      autoBidderErrorBox.setStyle("-fx-text-fill: red;");
+      autoBidderErrorBox.setText("Vui lòng nhập số hợp lệ!");
+    }
+  }
+
+  /**
+   * Usage: Dừng auto bid khi nhấn nút
+   *
+   * @param event
+   */
   @FXML
-  public void stopAutoBid(ActionEvent event) {}
+  public void stopAutoBid(ActionEvent event) {
+    AutoBidManager.stopAutoBid();
+
+    autoBidderErrorBox.setStyle("-fx-text-fill: blue;");
+    autoBidderErrorBox.setText("Đã tắt hệ thống Auto-Bid.");
+
+    autoBidderMaxBidBox.setDisable(false);
+    autoBidderBidIncrementBox.setDisable(false);
+  }
 }

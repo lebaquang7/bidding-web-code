@@ -13,7 +13,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class RegisterController {
-  // Path to the view this controller is affiliated with
+  // Controller class cho màn hình đăng kí
+  // Đường dẫn đến view của controller này
   private static final String PATH_TO_VIEW = "/com/auction/client/views/register_view.fxml";
 
   public static String getPATH_TO_VIEW() {
@@ -26,7 +27,7 @@ public class RegisterController {
   @FXML PasswordField passwordConfirmationField;
   @FXML Label errorPrompt;
 
-  @FXML
+  /** Usage: Chạy khi controller được gọi */
   public void initialize() {
     if (accountTypeChoiceBox != null) {
       accountTypeChoiceBox.getItems().addAll("Bidder", "Seller");
@@ -35,6 +36,11 @@ public class RegisterController {
   }
 
   @FXML
+  /**
+   * Usage: Chạy khi nhấn nút đăng kí. Gửi yêu cầu đăng kí.
+   *
+   * @param event
+   */
   void registerAction(ActionEvent event) {
     String username = usernameField.getText();
     String password = passwordField.getText();
@@ -86,6 +92,7 @@ public class RegisterController {
   }
 
   @FXML
+  /** Usage: Chạy khi nhấn nút login. Quay lại màn hình đăng nhập. */
   public void switchToLogin(ActionEvent event) {
     SceneHandler.switchToScene(getClass().getResource(LoginController.getPATH_TO_VIEW()), event);
   }

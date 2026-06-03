@@ -5,8 +5,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
 public class LabelHandler {
+  // Class xử lý các hoạt động liên quan đến label thông tin
   /**
-   * Usage: set tooltip for text. Useful for long texts which gets partly cut off by javafx.
+   * Usage: Đặt tooltip cho các label để hiện toàn bộ nội dung nếu label không đủ chứa
    *
    * @param label
    */
@@ -15,13 +16,13 @@ public class LabelHandler {
   }
 
   /**
-   * Usage: decrease label font size in case text in label is too large to fit
+   * Usage: Giảm cỡ chữ của label nếu quá dài
    *
    * @param label
-   * @param baseSize
-   * @param minSize
-   * @param thresholdChars max threshold of characters before decreasing font size
-   * @param decreaseRate rate of font size decline per char
+   * @param baseSize Cỡ chữ cơ bản
+   * @param minSize Cỡ chữ tối thiểu
+   * @param thresholdChars Số chữ tối đa trước khi giảm
+   * @param decreaseRate Mức giảm cỡ font
    */
   public static void scaleFontSizeToFit(
       Label label, double baseSize, double minSize, int thresholdChars, double decreaseRate) {

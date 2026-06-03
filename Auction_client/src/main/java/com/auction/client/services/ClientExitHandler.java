@@ -6,8 +6,9 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class ClientExitHandler {
+  // Class xử lý hoạt động khi người dùng đóng client
   /**
-   * Usage: When user presses X, will prompt before closing the client.
+   * Usage: Khi người dùng nhấn X, đóng client với confirmation prompt
    *
    * @param event
    */

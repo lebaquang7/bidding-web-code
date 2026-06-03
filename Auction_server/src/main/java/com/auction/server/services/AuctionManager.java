@@ -1,8 +1,6 @@
 package com.auction.server.services;
 
 import com.auction.shared.models.Item;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,75 +35,6 @@ public class AuctionManager {
   public void startNewAuction(String auctionId, Item item) {
     // Code logic tạo phiên đấu giá và nhét vào activeAuctions
     System.out.println("Bắt đầu phiên đấu giá cho mặt hàng: " + item.getItemName());
-  }
-
-  private Map<String, Map<String, com.auction.shared.models.BidTransaction>> autoBidRegistry =
-      new java.util.concurrent.ConcurrentHashMap<>();
-
-  public static class AutoBidConfig {
-    public String itemId;
-    public String bidderId;
-    public java.math.BigDecimal maxBid;
-    public java.math.BigDecimal increment;
-
-    public AutoBidConfig(
-        String itemId,
-        String bidderId,
-        java.math.BigDecimal maxBid,
-        java.math.BigDecimal increment) {
-      this.itemId = itemId;
-      this.bidderId = bidderId;
-      this.maxBid = maxBid;
-      this.increment = increment;
-    }
-  }
-
-  private final Map<String, List<AutoBidConfig>> activeAutoBids = new ConcurrentHashMap<>();
-
-  public void registerAutoBid(
-      String itemId, String bidderId, BigDecimal maxBid, BigDecimal increment) {
-    activeAutoBids
-        .computeIfAbsent(itemId, k -> new java.util.concurrent.CopyOnWriteArrayList<>())
-        .add(new AutoBidConfig(itemId, bidderId, maxBid, increment));
-    System.out.println(
-        "[Hệ thống] Đã cài đặt Bot Auto-Bid cho user:" + bidderId + " | Item: " + itemId);
-  }
-
-  // Engine tự động quét và đấu giá đè nhau
-  public void triggerAutoBid(String itemId) {
-    java.util.List<AutoBidConfig> configs = activeAutoBids.get(itemId);
-    if (configs == null || configs.isEmpty()) return;
-
-    boolean priceChanged;
-    do {
-      priceChanged = false;
-      // Lấy dữ liệu mới nhất từ DB
-      com.auction.shared.models.Item item = com.auction.server.DatabaseConfig.getItemById(itemId);
-      if (item == null) return;
-
-      for (AutoBidConfig bot : configs) {
-        // Tránh việc Bot tự trả giá đè lên chính mình
-        if (bot.bidderId.equals(item.getHighestBidderId())) continue;
-        java.math.BigDecimal nextBid = item.getCurrentPrice().add(bot.increment);
-
-        if (nextBid.compareTo(bot.maxBid) <= 0) {
-          com.auction.shared.models.BidStatus.bidStatus status =
-              com.auction.server.services.BiddingService.placeBid(itemId, bot.bidderId, nextBid);
-
-          if (status == com.auction.shared.models.BidStatus.bidStatus.SUCCESS) {
-            priceChanged = true;
-            System.out.println(
-                "[Auto-Bid] Bot [" + bot.bidderId + "] tự động nâng giá lên: " + nextBid);
-
-            com.auction.shared.models.BidTransaction botBidNotification =
-                new com.auction.shared.models.BidTransaction(itemId, bot.bidderId, nextBid);
-            com.auction.server.services.NotificationService.broadcast(botBidNotification);
-
-            break;
-          }
-        }
-      }
-    } while (priceChanged); // Lặp lại cho đến khi không còn Bot nào trả giá nữa
   }
 
   public void applyAntiSniping(String itemId) {

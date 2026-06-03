@@ -3,12 +3,11 @@ package com.auction.client;
 import java.math.BigDecimal;
 
 public class Properties {
-  // Consolidated constant values used across the app
-  // based on
+  // Thông tin sử dụng chung cho cả app
   // https://github.com/ZacharyDavidSaunders/InventoryManagementSystem/blob/master/src/InventoryManagementSystem/Properties.java
 
   private static final String APPLICATION_NAME = "Auction Client";
-  private static final String APPLICATION_VERSION = "INDEV v0.1";
+  private static final String APPLICATION_VERSION = "RELEASE v1.0.0";
   private static final String APPLICATION_NAME_AND_VERSION =
       APPLICATION_NAME + " (" + APPLICATION_VERSION + ")";
 
@@ -30,13 +29,10 @@ public class Properties {
     return APPLICATION_IMAGE_DIRECTORY;
   }
 
-  // Consolidated exchange rate between currencies and VND, used for Currency Selector setting
-  // (Models/CurrencySelectorHandler.java).
+  // Thông tin tỉ số quy đổi đong vị tiền tệ, dùng ở CurrencySelector handler
   private static final BigDecimal USD_TO_VND_RATE = new BigDecimal("26300");
 
   public static BigDecimal getUSD_TO_VND_RATE() {
     return USD_TO_VND_RATE;
   }
-
-  // Consolidated window size config value
 }

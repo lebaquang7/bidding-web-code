@@ -9,12 +9,13 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ConfigFileHandler {
+  // Class xử lý việc lưu thông tin persistent của client (cài đặt theme, tiền tệ) vào máy
   private static final String FOLDER_DIR_NAME = "Auction_Client";
   private static final String CONFIG_FILE_NAME = "config.txt";
   private static Path configFilePath;
   private static Properties properties = new Properties();
 
-  // initialize directory and load
+  // Khởi động đường dẫn, load
   static {
     String userHome = System.getProperty("user.home");
     configFilePath = Paths.get(userHome, FOLDER_DIR_NAME, CONFIG_FILE_NAME);
@@ -22,7 +23,7 @@ public class ConfigFileHandler {
   }
 
   /**
-   * Usage: store a properties key, value pair, for storing persistent configurations
+   * Usage: Lưu cặp K-V cài đặt, dùng để lưu trữ cài đặt để dùng lại sau này
    *
    * @param key
    * @param value
@@ -33,7 +34,7 @@ public class ConfigFileHandler {
   }
 
   /**
-   * Usage: get a properties k/v pair, for loading persistent configs
+   * Usage: Lấy cặp K-V từ file cài đặt ra, dùng để lấy dữ liệu cài đặt
    *
    * @param key
    * @param defaultValue
@@ -43,9 +44,10 @@ public class ConfigFileHandler {
     return properties.getProperty(key, defaultValue);
   }
 
+  /** Usage: Lưu file */
   private static void save() {
     try {
-      // makes sure directory exists before writing
+      // Chắc chắn đường dẫn tồn tại trước khi viết
       Files.createDirectories(configFilePath.getParent());
 
       try (BufferedWriter writer = Files.newBufferedWriter(configFilePath)) {
@@ -56,9 +58,10 @@ public class ConfigFileHandler {
     }
   }
 
+  /** Usage: Mở file và load */
   private static void load() {
     if (!Files.exists(configFilePath)) {
-      return; // if no file, doesnt execute further
+      return; // Nếu không có file, dừng lại
     }
 
     try (BufferedReader reader = Files.newBufferedReader(configFilePath)) {

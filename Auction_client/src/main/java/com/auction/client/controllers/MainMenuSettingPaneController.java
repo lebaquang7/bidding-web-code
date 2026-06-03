@@ -10,16 +10,24 @@ import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 
 public class MainMenuSettingPaneController {
+  // Controller Class cho màn hình chức năng cài đặt
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/mainMenu_settingsPane.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML ChoiceBox<String> currencyUnitSettingBox;
   @FXML ChoiceBox<String> themeSettingBox;
 
+  /** Usage: Tự chạy khi controller được gọi */
   public void initialize() {
-    // Currency unit setting handling
+    // Danh sách loại đơn vị tiền tệ
     ObservableList<String> currencyUnitSetting = FXCollections.observableArrayList("VND", "USD");
-    // Converter so that the choicebox displays long name from internal name
+    // Converter để choicebox hiển thị tên dài từ tên đơn vị trong dữ liệu
     currencyUnitSettingBox.setConverter(
         new StringConverter<String>() {
-          // Display long name from short internal name
           @Override
           public String toString(String shortCurrencyName) {
             return switch (shortCurrencyName) {
@@ -29,7 +37,6 @@ public class MainMenuSettingPaneController {
             };
           }
 
-          // Extract short name from long name
           @Override
           public String fromString(String longCurrencyName) {
             if (longCurrencyName == null
@@ -44,7 +51,7 @@ public class MainMenuSettingPaneController {
         });
     currencyUnitSettingBox.setItems(currencyUnitSetting);
     currencyUnitSettingBox.setValue(ConfigFileHandler.getProperty("currencyType", "VND"));
-    // listener for choice box
+    // Listener để nghe thay đổi từ lựa chọn trong choicebox
     currencyUnitSettingBox
         .getSelectionModel()
         .selectedItemProperty()
@@ -53,7 +60,7 @@ public class MainMenuSettingPaneController {
               CurrencySelectorHandler.getInstance().setActiveCurrency(newValue);
             });
 
-    // Custom theme handling
+    // Cài đặt màu hình nền
     ObservableList<String> themeSetting =
         FXCollections.observableArrayList("Default", "Dark", "Modern Blue", "Mint");
     themeSettingBox.setItems(themeSetting);

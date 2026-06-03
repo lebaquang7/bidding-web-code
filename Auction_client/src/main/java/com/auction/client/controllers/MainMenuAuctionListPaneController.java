@@ -14,6 +14,15 @@ import javafx.scene.control.Pagination;
 import javafx.scene.layout.GridPane;
 
 public class MainMenuAuctionListPaneController {
+  // Usage: Controller cho màn hình danh sách sản phẩm.
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW =
+      "/com/auction/client/views/mainMenu_auctionListPane.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
+
   @FXML GridPane gridPane;
   @FXML Pagination pagination;
 
@@ -23,22 +32,20 @@ public class MainMenuAuctionListPaneController {
   private static final int ITEMS_PER_PAGE = 6;
   private static final int COLUMN_COUNT = 2;
 
+  /** Usage: Chạy khi controller được gọi */
   public void initialize() {
-    // 1. Lấy dữ liệu thật từ Server thay vì placeholder
+    // Lấy dữ liệu từ Server
     refreshItems();
 
-    // 2. Lắng nghe thay đổi của trang hiện tại trên Pagination
+    // Lắng nghe thay đổi của trang hiện tại trên Pagination
     pagination
         .currentPageIndexProperty()
         .addListener(
             (observable, oldIndex, newIndex) -> {
               renderItem(itemList, newIndex.intValue());
             });
-    // java.util.ArrayList<Item> serverItems =
-    // com.auction.client.Models.AccountEventHandler.getAllItems();
-    // itemList.setAll(serverItems);
 
-    // 3. Lắng nghe thay đổi của danh sách phần tử (nếu có cập nhật danh sách)
+    // Lắng nghe thay đổi của danh sách phần tử (nếu có cập nhật danh sách)
     itemList.addListener(
         (ListChangeListener<Item>)
             change -> {
@@ -47,7 +54,7 @@ public class MainMenuAuctionListPaneController {
             });
   }
 
-  /** Gọi Server để lấy danh sách vật phẩm mới nhất và cập nhật UI */
+  /** Usage: Gọi Server để lấy danh sách vật phẩm mới nhất và cập nhật UI */
   public void refreshItems() {
     List<Item> fetchedItems = ItemsEventHandler.fetchAllItems();
 
@@ -61,14 +68,19 @@ public class MainMenuAuctionListPaneController {
     renderItem(itemList, 0);
   }
 
-  /** Cập nhật số lượng trang dựa trên kích thước danh sách thực tế */
+  /** Usage: Cập nhật số lượng trang dựa trên kích thước danh sách thực tế */
   private void updatePagination() {
     // Sử dụng (double) để tránh lỗi chia số nguyên (Integer Division)
     int pageCount = (int) Math.ceil((double) itemList.size() / ITEMS_PER_PAGE);
     pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
   }
 
-  /** Hiển thị danh sách vật phẩm lên GridPane dựa trên chỉ mục trang */
+  /**
+   * Usage Hiển thị danh sách vật phẩm lên GridPane dựa trên chỉ mục trang
+   *
+   * @param list Danh sách sản phẩm
+   * @param paginationIndex Chỉ mục trang
+   */
   public void renderItem(List<Item> list, int paginationIndex) {
     // Xóa các card cũ trên giao diện
     gridPane.getChildren().clear();
@@ -87,8 +99,7 @@ public class MainMenuAuctionListPaneController {
       try {
         Item item = itemListSublist.get(i);
         FXMLLoader loader =
-            new FXMLLoader(
-                getClass().getResource("/com/auction/client/views/mainMenu_auctionCard.fxml"));
+            new FXMLLoader(getClass().getResource(AuctionCardController.getPATH_TO_VIEW()));
 
         Parent card = loader.load();
 
@@ -96,7 +107,7 @@ public class MainMenuAuctionListPaneController {
         AuctionCardController controller = loader.getController();
         controller.setData(item);
 
-        // Tính toán vị trí cột và dòng (2 cột, nhiều dòng)
+        // Tính toán vị trí cột và dòng (3 cột, 2 dòng)
         int columnIndex = i / COLUMN_COUNT;
         int rowIndex = i % COLUMN_COUNT;
 

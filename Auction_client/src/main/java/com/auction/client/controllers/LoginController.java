@@ -12,20 +12,24 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController {
-  // Path to the view this controller is affiliated with
+  // Đường dẫn đến view của controller này
   private static final String PATH_TO_VIEW = "/com/auction/client/views/login_view.fxml";
 
   public static String getPATH_TO_VIEW() {
     return PATH_TO_VIEW;
   }
 
-  @FXML TextField usernameField; // load fxml UI elements
+  @FXML TextField usernameField; // Load thành phần của UI trong fxml
   @FXML PasswordField passwordField;
   @FXML TextField shownPwdTextField;
   @FXML CheckBox showPwdCheckbox;
   @FXML Label errorPrompt;
 
-  /** Usage: called when user presses the login button. */
+  /**
+   * Usage: chạy khi người dùng nhấn nút đăng nhập (login)
+   *
+   * @param event
+   */
   @FXML
   public void loginAction(ActionEvent event) {
     String username = usernameField.getText();
@@ -33,14 +37,10 @@ public class LoginController {
 
     String result = AccountEventHandler.validateAccount(username, password);
 
-    switch (result) { // switch (essentially mass if-else) over end cases
-      case "loginSuccessful" -> { // if login successful, switch to main menu.
+    switch (result) {
+      case "loginSuccessful" -> {
         ClientNotificationListener listener = new ClientNotificationListener();
         listener.start();
-
-        System.out.println("Path: " + MainMenuController.getPATH_TO_VIEW());
-        System.out.println(
-            "Resource: " + getClass().getResource(MainMenuController.getPATH_TO_VIEW()));
         SceneHandler.switchToScene(
             getClass().getResource(MainMenuController.getPATH_TO_VIEW()), event);
       }
@@ -57,31 +57,30 @@ public class LoginController {
   }
 
   /**
-   * Usage: called when user presses the register button.
+   * Usage: Chuyển trang khi người dùng nhấn nút đăng kí (register)
    *
    * @param event
    */
   @FXML
   public void switchToRegister(ActionEvent event) {
-    SceneHandler.switchToScene(
-        getClass().getResource("/com/auction/client/views/register_view.fxml"), event);
+    SceneHandler.switchToScene(getClass().getResource(RegisterController.getPATH_TO_VIEW()), event);
   }
 
   /**
-   * @param event Usage: Called when user presses the show password checkbox.
+   * Usage: Chạy khi người dùng nhấn nút hiện mật khẩu (show password)
+   *
+   * @param event
    */
   @FXML
   public void showPwd(ActionEvent event) {
     shownPwdTextField
         .textProperty()
-        .bindBidirectional(
-            passwordField.textProperty()); // bidirectional binding with pwd field text
+        .bindBidirectional(passwordField.textProperty()); // Nối 2 chiều với trường mật khẩu
 
+    // Chuyển trạng thái giữa 2 phần màn hình
     if (showPwdCheckbox.isSelected() == true) {
-      // make pwd shown
       UIElementHandler.switchElement(shownPwdTextField, passwordField);
     } else {
-      // reverse
       UIElementHandler.switchElement(passwordField, shownPwdTextField);
     }
   }

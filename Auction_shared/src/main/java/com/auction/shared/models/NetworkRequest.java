@@ -15,6 +15,8 @@ public class NetworkRequest implements Serializable {
     GetAuctionState,
     FetchBidHistory,
     InitializeAuction,
+    RegisterAutoBid,
+    CancelAutoBid,
     DenyAuction
   }
 

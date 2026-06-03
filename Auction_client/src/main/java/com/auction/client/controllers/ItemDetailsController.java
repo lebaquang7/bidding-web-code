@@ -17,6 +17,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class ItemDetailsController implements SceneHandler.ItemLoadable {
+  // Controller class cho màn hình hiển thị thông tin sản phẩm
+  // Đường dẫn đến view của controller này
+  private static final String PATH_TO_VIEW = "/com/auction/client/views/itemDetails_view.fxml";
+
+  public static String getPATH_TO_VIEW() {
+    return PATH_TO_VIEW;
+  }
 
   @FXML Label idLabel;
   @FXML Label itemNameLabel;
@@ -29,10 +36,20 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
 
   private Item currentItem;
 
+  /**
+   * Usage: Đóng màn hình khi nhấn thoát
+   *
+   * @param event
+   */
   public void goBackToList(ActionEvent event) {
     SceneHandler.closeScene(event);
   }
 
+  /**
+   * Usage: Xử lý thông tin
+   *
+   * @param message
+   */
   public void handleNotification(Object message) {
     Platform.runLater(
         () -> {
@@ -41,6 +58,11 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
         });
   }
 
+  /**
+   * Usage: Cập nhật thời gian còn lại
+   *
+   * @param totalSeconds Thời gian còn lại
+   */
   public void updateRemainingTime(int totalSeconds) {
     timeRemainingLabel.setText(MiscTools.formatSecondsToMinutes(totalSeconds));
     if (totalSeconds <= 10) {
@@ -50,6 +72,11 @@ public class ItemDetailsController implements SceneHandler.ItemLoadable {
     }
   }
 
+  /**
+   * Usage: Thay đổi màn hình khi phiên kết thúc
+   *
+   * @param winnerName Tên người thắng phiên
+   */
   public void handleAuctionEndEvent(String winnerName) {
     timeRemainingLabel.setText("00:00");
     winnerLabel.setText(winnerName);

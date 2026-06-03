@@ -8,16 +8,25 @@ import javafx.scene.chart.NumberAxis;
 import javafx.util.StringConverter;
 
 public class ChartTimeLabelFormatter extends StringConverter<Number> {
+  // Class định dạng dữ liệu thời gian cho biểu đồ
   private NumberAxis xAxis;
 
-  // format definitions
+  // Định nghĩa cách hiện thời gian
   private final DateTimeFormatter shortFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
   private final DateTimeFormatter longFormat = DateTimeFormatter.ofPattern("dd/MM HH:mm");
 
+  /**
+   * Usage: Đặt trục cho định dạng thời gian
+   *
+   * @param xAxis
+   */
   public ChartTimeLabelFormatter(NumberAxis xAxis) {
     this.xAxis = xAxis;
   }
 
+  /*
+   * Usage: Dùng để định dạng thời gian ở dạng giây ra biểu đồ
+   */
   @Override
   public String toString(Number object) {
     long epochSecond = object.longValue();
@@ -29,7 +38,7 @@ public class ChartTimeLabelFormatter extends StringConverter<Number> {
     double upperBound = xAxis.getUpperBound();
     double timeRange = upperBound - lowerBound;
 
-    // if time in second in whole chart is higher than 1 day
+    // nếu thời gian trong khoảng biểu đồ lớn hơn 1 ngày
     if (timeRange > 86400) {
       return time.format(longFormat); // display dd/MM hh:mm
     } else {
@@ -37,7 +46,7 @@ public class ChartTimeLabelFormatter extends StringConverter<Number> {
     }
   }
 
-  // unused, implement just to fulfill abstract requirements
+  /** Không dùng đến, chỉ implement cho yêu cầu implement của StringConverter */
   @Override
   public Number fromString(String string) {
     return 0;
