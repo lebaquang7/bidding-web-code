@@ -152,7 +152,7 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
   public void setItem(Item item) {
     this.currentItem = Inventory.getItemById(item.getId());
 
-    if (this.currentItem == null) {
+    if (this.currentItem != null) {
       this.currentItem = item;
     }
 
@@ -171,7 +171,13 @@ public class AuctionViewController implements SceneHandler.ItemLoadable {
     LabelHandler.scaleFontSizeToFit(startingBidLabel, 20, 12, 8, 1);
     CurrencySelectorHandler.bindPriceLabel(currentBidLabel, currentItem.getCurrentPrice());
     LabelHandler.scaleFontSizeToFit(currentBidLabel, 20, 12, 8, 1);
-    highestBidderLabel.setText("------");
+
+    String bidderName = item.getHighestBidderName();
+    if (bidderName == null || bidderName.isEmpty()) {
+      highestBidderLabel.setText("------");
+    } else {
+      highestBidderLabel.setText(bidderName);
+    }
     LabelHandler.scaleFontSizeToFit(highestBidderLabel, 20, 12, 8, 1);
 
     // Setup biểu đồ tg thực

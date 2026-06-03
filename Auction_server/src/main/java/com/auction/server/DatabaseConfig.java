@@ -378,6 +378,12 @@ public class DatabaseConfig {
         }
 
         if (item != null) {
+          User user = DatabaseConfig.findUserById(highestBidderId);
+          if (user != null) {
+            String highestBidderName = user.getUserName();
+            item.setHighestBidderName(highestBidderName);
+          }
+
           item.setId(id);
           item.setSellerId(sellerId);
           item.setHighestBidderId(highestBidderId);
