@@ -1,5 +1,7 @@
 # bidding-web-code - Auction System
 Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá trực tuyến
+ 
+Nhóm 2 - Thành viên: Lê Bá Minh Quang, Trần Duy Nguyễn, Đào Duy Thành, Nguyễn Gia Huy
 ## 1 - Mô tả bài toán, phạm vi hệ thống
 - Mô tả: Hệ thống Auction System giải quyết bài toán thiết kế hệ thống đấu giá tài sản trực tuyến giữa các người dùng (client) khác nhau, được kết nối với nhau qua máy chủ (server)
 - Phạm vi hệ thống:
@@ -90,4 +92,5 @@ mvn javafx:run
   - Đổi màu nền cho client (theme) ✅
   - Đổi đơn vị tiền tệ, tự động cập nhật đơn vị tiền tệ trong client ✅
 ## 7. Link báo cáo PDF, video demo 
-# TBD
+- [PDF](https://drive.google.com/file/u/1/d/19e8_RyWbLDRjeFy8_6FACud0AeVEtgCR/view)
+- [Video Demo](https://drive.google.com/file/d/17tE2LbYrVr26LJsAItPlyo5uABnXjrA-/view)
