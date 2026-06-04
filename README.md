@@ -23,7 +23,7 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
 - Các module chính: `Auction_client`, `Auction_server`, `Auction_shared`
 - Cấu trúc thư mục:  
 ```
-bidding-web-code/
+bidding-web-code-main/
 ├── .github/workflow/                            # Chứa file CI/CD (GitHub Actions)
 ├── pom.xml                                      # pom.xml chung, chứa checkstyle, spotless plugin
 ├── Auction_client/                              # Module chứa các thành phần cấu thành client (GUI, giao tiếp với server)
@@ -57,17 +57,17 @@ bidding-web-code/
 └── server_storage/                              # Chứa những file được load bởi server
 ```
 ## 4. Câu lệnh dòng lệnh để chạy chương trình
-- Nếu máy đang chạy Client không phải là máy đang chạy Server, mở và chỉnh sửa trường ID và Port trong `bidding-web-code/Auction_shared/src/main/java/com/auction/shared/model/NetworkConfig.json` trước khi build và chạy client để phù hợp với địa chỉ IP của server. (Port cần chưa bị chiếm dụng bởi app khác. Có thể cần thay đổi cài đặt tường lửa nếu port bị chặn.)
-- Build và Package: Sử dụng terminal, chạy trên mọi hệ điều hành (Window/Linux/Mac). Mở terminal đến đường dẫn của thư mục `bidding-web-code` và chạy `mvn clean package`
-- Khởi tạo Database: Sử dụng XAMPP để chạy Apache và MySQL, mở trang Admin của MySQL và nhập bảng từ đường dẫn `../bidding-web-code/database/auction_system.sql`
+- Nếu máy đang chạy Client không phải là máy đang chạy Server, mở và chỉnh sửa trường ID và Port trong `bidding-web-code-main/Auction_shared/src/main/java/com/auction/shared/model/NetworkConfig.json` trước khi build và chạy client để phù hợp với địa chỉ IP của server. (Port cần chưa bị chiếm dụng bởi app khác. Có thể cần thay đổi cài đặt tường lửa nếu port bị chặn.)
+- Build và Package: Sử dụng terminal, chạy trên mọi hệ điều hành (Window/Linux/Mac). Mở terminal đến đường dẫn của thư mục `bidding-web-code-main` và chạy `mvn clean package`
+- Khởi tạo Database: Sử dụng XAMPP để chạy Apache và MySQL, mở trang Admin của MySQL và nhập bảng từ đường dẫn `../bidding-web-code-main/database/auction_system.sql`
 - Tiếp tục với #5
 ## 5. Hướng dẫn chạy Server/Client theo thứ tự cụ thể
-- Chạy server: Sau khi build (#4) và khởi tạo database, mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+- Chạy server: Sau khi build (#4) và khởi tạo database, mở một terminal mới đến đường dẫn `bidding-web-code-main`, và chạy:
 ```
 cd Auction_server/target
 java -jar Auction_server-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-- Chạy client: Sau khi build (#4) và chạy server, mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+- Chạy client: Sau khi build (#4) và chạy server, mở một terminal mới đến đường dẫn `bidding-web-code-main`, và chạy:
 ```
 cd Auction_client
 mvn javafx:run
