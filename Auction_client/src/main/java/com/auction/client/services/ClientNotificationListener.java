@@ -3,7 +3,6 @@ package com.auction.client.services;
 import com.auction.client.controllers.AuctionViewController;
 import com.auction.client.controllers.ItemDetailsController;
 import com.auction.shared.models.*;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

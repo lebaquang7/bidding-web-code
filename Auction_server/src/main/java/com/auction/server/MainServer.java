@@ -5,7 +5,6 @@ import com.auction.server.services.AuctionSession;
 import com.auction.shared.models.Auction;
 import com.auction.shared.models.Item;
 import com.auction.shared.models.NetworkConfig;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

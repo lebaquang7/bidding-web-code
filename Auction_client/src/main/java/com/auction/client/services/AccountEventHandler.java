@@ -36,8 +36,9 @@ public class AccountEventHandler {
     User loginRequestData = new Bidder(name, password, null, null, 0);
 
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket(NetworkConfig.SERVER_IP, NetworkConfig.PORT); // Kết nối tới Server
-         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+    try (Socket socket =
+            new Socket(NetworkConfig.SERVER_IP, NetworkConfig.PORT); // Kết nối tới Server
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
