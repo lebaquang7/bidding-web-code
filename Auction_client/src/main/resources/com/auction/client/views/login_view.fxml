@@ -34,7 +34,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button layoutX="330.0" layoutY="322.0" mnemonicParsing="false" onAction="#switchToRegister" prefHeight="26.0" prefWidth="76.0" text="Register">
+      <Button layoutX="330.0" layoutY="322.0" mnemonicParsing="false" onAction="#switchToRegister" prefHeight="31.0" prefWidth="90.0" text="Register">
          <font>
             <Font size="15.0" />
          </font>

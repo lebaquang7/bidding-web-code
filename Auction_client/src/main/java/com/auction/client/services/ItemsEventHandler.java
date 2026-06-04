@@ -2,7 +2,14 @@ package com.auction.client.services;
 
 import static com.auction.shared.models.NetworkRequest.requestType.SellItem;
 
-import com.auction.shared.models.*;
+import com.auction.client.Properties;
+import com.auction.shared.models.AuctionStatus;
+import com.auction.shared.models.BidStatus;
+import com.auction.shared.models.BidTransaction;
+import com.auction.shared.models.Inventory;
+import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkRequest;
+import com.auction.shared.models.User;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -23,7 +30,7 @@ public class ItemsEventHandler {
    */
   public static String sellItem(Item newItem) {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -48,7 +55,7 @@ public class ItemsEventHandler {
    */
   public static List<Item> fetchAllItems() {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
       out.flush();
@@ -83,7 +90,7 @@ public class ItemsEventHandler {
    * @return
    */
   public static AuctionStatus getAuctionStatus(Item item) {
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
       out.flush();
@@ -112,7 +119,7 @@ public class ItemsEventHandler {
    */
   public static List<BidTransaction> fetchBidTransactionsForItem(Item item) {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
       out.flush();
@@ -149,7 +156,7 @@ public class ItemsEventHandler {
    */
   public static BidStatus.bidStatus placeBid(String itemId, String userId, BigDecimal amount) {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
       out.flush();
@@ -188,7 +195,7 @@ public class ItemsEventHandler {
     if (imagePath == null || imagePath.isEmpty()) return null;
 
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -217,7 +224,7 @@ public class ItemsEventHandler {
    */
   public static String initializeAuction(String itemId, User currentUser) {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -247,7 +254,7 @@ public class ItemsEventHandler {
    * @return
    */
   public static String denyAuction(String itemId, User currentUser) {
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -280,7 +287,7 @@ public class ItemsEventHandler {
    */
   public static boolean registerAutoBid(
       String itemId, String userId, BigDecimal maxBid, BigDecimal increment) {
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -314,7 +321,7 @@ public class ItemsEventHandler {
    * @return
    */
   public static boolean cancelAutoBid(String itemId, String userId) {
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

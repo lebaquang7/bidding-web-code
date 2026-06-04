@@ -2,6 +2,7 @@ package com.auction.client.services;
 
 import static com.auction.shared.models.NetworkRequest.requestType.Register;
 
+import com.auction.client.Properties;
 import com.auction.shared.models.Bidder;
 import com.auction.shared.models.NetworkRequest;
 import com.auction.shared.models.User;
@@ -35,7 +36,9 @@ public class AccountEventHandler {
     User loginRequestData = new Bidder(name, password, null, null, 0);
 
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("localhost", 1234); // Kết nối tới Server
+    try (Socket socket =
+            new Socket(
+                Properties.getSERVER_IP(), Properties.getSERVER_PORT()); // Kết nối tới Server
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -73,7 +76,7 @@ public class AccountEventHandler {
    */
   public static String registerAccount(User newUser) {
     // new Socket("192.168.x.x", port)
-    try (Socket socket = new Socket("127.0.0.1", 1234);
+    try (Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

@@ -35,4 +35,16 @@ public class Properties {
   public static BigDecimal getUSD_TO_VND_RATE() {
     return USD_TO_VND_RATE;
   }
+
+  // Thông tin IP và Port của server
+  private static final String SERVER_IP = "127.0.0.1";
+  private static final int SERVER_PORT = 1234;
+
+  public static String getSERVER_IP() {
+    return SERVER_IP;
+  }
+
+  public static int getSERVER_PORT() {
+    return SERVER_PORT;
+  }
 }
