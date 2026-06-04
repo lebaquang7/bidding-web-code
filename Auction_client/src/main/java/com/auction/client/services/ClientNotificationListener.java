@@ -1,6 +1,5 @@
 package com.auction.client.services;
 
-import com.auction.client.Properties;
 import com.auction.client.controllers.AuctionViewController;
 import com.auction.client.controllers.ItemDetailsController;
 import com.auction.shared.models.BidTransaction;
@@ -37,7 +36,7 @@ public class ClientNotificationListener extends Thread {
     // Tạo một kết nối luôn mở để nhận cập nhật về giá vật phẩm, etc
     // new Socket("192.168.x.x", port)
     try {
-      Socket socket = new Socket(Properties.getSERVER_IP(), Properties.getSERVER_PORT());
+      Socket socket = new Socket("127.0.0.1", 1234);
       ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
       out.flush();
       ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
