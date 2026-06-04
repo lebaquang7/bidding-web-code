@@ -60,12 +60,12 @@ bidding-web-code/
 - Khởi tạo Database: Sử dụng XAMPP để chạy Apache và MySQL, mở trang Admin của MySQL và nhập bảng từ đường dẫn `../bidding-web-code/database/auction_system.sql`
 - Tiếp tục với #5
 ## 5. Hướng dẫn chạy Server/Client theo thứ tự cụ thể
-- Chạy server: Sau khi build (#4), rồi mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+- Chạy server: Sau khi build (#4) và khởi tạo database, mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
 ```
 cd Auction_server/target
 java -jar Auction_server-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-- Chạy client: Sau khi build (#4), mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
+- Chạy client: Sau khi build (#4) và chạy server, mở một terminal mới đến đường dẫn `bidding-web-code`, và chạy:
 ```
 cd Auction_client
 mvn javafx:run
