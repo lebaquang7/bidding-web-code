@@ -4,6 +4,8 @@ import com.auction.server.services.AuctionManager;
 import com.auction.server.services.AuctionSession;
 import com.auction.shared.models.Auction;
 import com.auction.shared.models.Item;
+import com.auction.shared.models.NetworkConfig;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainServer {
-  private static final int PORT = 1234; // Cổng kết nối
+  private static final int PORT = NetworkConfig.PORT; // Cổng kết nối
   // Tạo list các luồng ClientHandler để realtimeUpdate tới tất cả người dùng cùng lúc
   public static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
 
