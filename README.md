@@ -57,8 +57,7 @@ bidding-web-code/
 └── server_storage/                              # Chứa những file được load bởi server
 ```
 ## 4. Câu lệnh dòng lệnh để chạy chương trình
-- Nếu máy đang chạy Client không phải là máy đang chạy Server, mở và chỉnh sửa trường ID và Port trong 
-`bidding-web-code/Auction_client/src/main/java/com/auction/client/Properties.java` trước khi build và chạy client để phù hợp với địa chỉ IP của server
+- Nếu máy đang chạy Client không phải là máy đang chạy Server, mở và chỉnh sửa trường ID và Port trong `bidding-web-code/Auction_shared/src/main/java/com/auction/shared/model/NetworkConfig.json` trước khi build và chạy client để phù hợp với địa chỉ IP của server. (Port cần chưa bị chiếm dụng bởi app khác. Có thể cần thay đổi cài đặt tường lửa nếu port bị chặn.)
 - Build và Package: Sử dụng terminal, chạy trên mọi hệ điều hành (Window/Linux/Mac). Mở terminal đến đường dẫn của thư mục `bidding-web-code` và chạy `mvn clean package`
 - Khởi tạo Database: Sử dụng XAMPP để chạy Apache và MySQL, mở trang Admin của MySQL và nhập bảng từ đường dẫn `../bidding-web-code/database/auction_system.sql`
 - Tiếp tục với #5
