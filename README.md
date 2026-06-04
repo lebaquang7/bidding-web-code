@@ -11,8 +11,9 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
 ## 2 - Công nghệ sử dụng, môi trường chạy, yêu cầu cài đặt
 - Công nghệ sử dụng:
   - **Ngôn ngữ:** Java (target JDK 25)
-  - **GUI:** JavaFX 13
+  - **GUI:** JavaFX 21.0.6
   - **Server:** MySQL/Apache (XAMPP)
+  - **Testing:** JUnit 5.10.2, Mockito 5.14.2
   - **Build tool:** Maven
   - **Plugin:** Maven Checkstyle, Diffplug spotless
 - Môi trương chạy: Window, Linux, Mac
