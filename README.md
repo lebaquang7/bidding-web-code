@@ -12,7 +12,8 @@ Bài tập lớn lập trình nâng cao: Phát triển hệ thống đấu giá 
 - Công nghệ sử dụng:
   - **Ngôn ngữ:** Java (target JDK 25)
   - **GUI:** JavaFX 21.0.6
-  - **Server:** MySQL/Apache (XAMPP)
+  - **Server:** Apache (XAMPP)
+  - **Database:** MySQL 10.4.32 - MariaDB (XAMPP)
   - **Testing:** JUnit 5.10.2, Mockito 5.14.2
   - **Build tool:** Maven
   - **Plugin:** Maven Checkstyle, Diffplug spotless
